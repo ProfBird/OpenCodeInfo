@@ -2,7 +2,7 @@
 
 A small static web page that displays **all OpenCode Zen models** (coding benchmark scores, pricing, context) with sortable columns, a computed value index, filters, and a Go-plan toggle.
 
-**Live page:** <https://ProfBird.github.io/AiModelinfo/>
+**Live page:** <https://ProfBird.github.io/OpenCodeInfo/>
 
 ## Files
 
