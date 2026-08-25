@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenCode Go — Model Benchmarks & Cost</title>
+<style>
+  :root {
+    color-scheme: light dark;
+  }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    margin: 0;
+    padding: 2rem;
+    max-width: 1100px;
+    margin-inline: auto;
+  }
+  h1 { font-size: 1.4rem; }
+  .subtitle { color: #666; font-size: 0.85rem; margin-bottom: 1.25rem; }
+  .toplinks { font-size: 0.85rem; margin: 0 0 1rem 0; }
+  .toplinks a { color: #60a5fa; text-decoration: none; }
+  .toplinks a:hover { text-decoration: underline; }
+  .toplinks a:visited { color: #93c5fd; }
+  .subtitle a { color: #60a5fa; text-decoration: none; }
+  .subtitle a:hover { text-decoration: underline; }
+  .subtitle a:visited { color: #93c5fd; }
+  .toolbar { display: flex; gap: 0.75rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
+  button {
+    padding: 0.5rem 0.9rem;
+    border: 1px solid #888;
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  button.active { background: #2563eb; color: #fff; border-color: #2563eb; }
+  .toolbar label { font-size: 0.85rem; display: flex; align-items: center; gap: 0.35rem; }
+  .toolbar input,
+  .toolbar select {
+    padding: 0.45rem 0.6rem;
+    border: 1px solid #888;
+    border-radius: 6px;
+    background: transparent;
+    font-size: 0.85rem;
+    color: inherit;
+  }
+  .toolbar input { width: 7.5rem; }
+  .toolbar select { width: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+  th, td { padding: 0.45rem 0.7rem; text-align: right; border-bottom: 1px solid #ccc; }
+  th { cursor: pointer; user-select: none; white-space: nowrap; }
+  th:first-child, td:first-child { text-align: left; }
+  tbody tr:hover { background: rgba(128,128,128,0.12); }
+  .num { font-variant-numeric: tabular-nums; }
+  .na { color: #999; }
+  .arrow { opacity: 0.5; }
+  .footer { color: #666; font-size: 0.75rem; margin-top: 1rem; }
+  td a { color: #60a5fa; text-decoration: none; }
+  td a:hover { text-decoration: underline; }
+  td a:visited { color: #93c5fd; }
+</style>
+</head>
+<body>
+  <h1>OpenCode Zen &amp; Go — Model Benchmarks &amp; Cost</h1>
+  <p class="toplinks"><a href="https://opencode.ai/zen" target="_blank" rel="noopener noreferrer">OpenCode Zen</a> · <a href="https://opencode.ai/docs/go" target="_blank" rel="noopener noreferrer">OpenCode Go</a></p>
+  <p class="subtitle">All OpenCode Zen models (pay-as-you-go). Use the <strong>Plan</strong> filter to show only the $10/mo <strong>Go</strong> plan subset. Costs are USD per 1M tokens (Zen / Go plan pricing). Benchmark is the <a href="https://benchlm.ai/benchmarks/aacodingindex" target="_blank" rel="noopener noreferrer">Artificial Analysis Coding Index</a> (%), snapshot 2026-08-21 (via <a href="https://benchlm.ai/benchmarks/aacodingindex" target="_blank" rel="noopener noreferrer">BenchLM</a> mirror of <a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener noreferrer">Artificial Analysis</a>). Click a column to sort.</p>
+
+  <div class="toolbar">
+    <label>Plan <select id="planFilter"><option value="all">All Zen models</option><option value="go">Go plan only</option></select></label>
+    <label>Max output ($/1M) <input id="filterMaxOutput" type="number" min="0" step="0.01" placeholder="e.g. 2"></label>
+    <label>Min AA index <input id="filterMinAA" type="number" min="0" max="100" step="0.1" placeholder="e.g. 60"></label>
+    <button id="reset">Reset</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th data-key="name">Model</th>
+        <th data-key="codingIndex">AA Coding Index</th>
+        <th data-key="valueIndex" title="AA³ × Context^0.3 ÷ (1+Output cost), normalized 0–100 — AA dominant, context secondary">Value Index</th>
+        <th data-key="inputCost">Input ($/1M)</th>
+        <th data-key="outputCost">Output ($/1M)</th>
+        <th data-key="cachedReadCost">Cached Read ($/1M)</th>
+        <th data-key="context">Context</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+
+  <p class="footer">Sorting by "Cost" uses Input + Output. Models with no benchmark score (—) sort last on benchmark. All AA Coding Index values from <a href="https://benchlm.ai/benchmarks/aacodingindex" target="_blank" rel="noopener noreferrer">BenchLM AA Coding Index</a> (display-only mirror of <a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener noreferrer">Artificial Analysis</a>, verified 2026-08-21, e.g. Kimi K3 76.24, GLM-5.3 74.76, Grok 4.5 72.45, Muse Spark 1.2 72.22, DeepSeek V4 Pro 68.83/Flash 69.06 for builds 0813/0731); Vision Exp, LongCat-2.0 etc. have no published AA Coding Index on that page and show —.</p>
+  <p class="footer"><strong>Value Index:</strong> <code>(AA³ × (Context/1M)^0.3) ÷ (1 + Output $/1M)</code> normalized 0–100 (100 = best). AA is cubed (dominant), context is <code>(Context/1M)^0.3</code> (1M=1.00, 500K≈0.81, 256K≈0.66 — bigger window higher value, less important than AA), price uses diminishing returns <code>1+cost</code> so <code>5→0.5</code> (4×) &gt; <code>0.5→0</code> (1.5×). Computed in browser (<code>models.html:227-235</code>).</p>
+
+<script>
+const DATA_URL = 'models.json';
+
+let models = [];
+let sortKey = 'name';
+let sortDir = 1;
+
+const tbody = document.getElementById('tbody');
+
+function fmtCost(v) {
+  if (v === null || v === undefined) return '<span class="na">—</span>';
+  if (v === 0) return 'Free';
+  return '$' + v.toLocaleString(undefined, { maximumFractionDigits: 4 });
+}
+
+function fmtBench(v) {
+  return v === null || v === undefined ? '<span class="na">—</span>' : v.toFixed(1);
+}
+
+function fmtValue(v) {
+  return v === null || v === undefined ? '<span class="na">—</span>' : v.toFixed(1);
+}
+
+function getFilters() {
+  const planEl = document.getElementById('planFilter');
+  const maxOutEl = document.getElementById('filterMaxOutput');
+  const minAAEl = document.getElementById('filterMinAA');
+  const maxOut = maxOutEl && maxOutEl.value !== '' ? parseFloat(maxOutEl.value) : null;
+  const minAA = minAAEl && minAAEl.value !== '' ? parseFloat(minAAEl.value) : null;
+  return {
+    plan: planEl ? planEl.value : 'all',
+    maxOut: Number.isFinite(maxOut) ? maxOut : null,
+    minAA: Number.isFinite(minAA) ? minAA : null
+  };
+}
+
+function render() {
+  const { plan, maxOut, minAA } = getFilters();
+  const filtered = models.filter(m => {
+    if (plan === 'go' && m.plan !== 'go') return false;
+    if (maxOut !== null) {
+      if (m.outputCost === null || m.outputCost === undefined) return false;
+      if (m.outputCost > maxOut) return false;
+    }
+    if (minAA !== null) {
+      if (m.codingIndex === null || m.codingIndex === undefined) return false;
+      if (m.codingIndex < minAA) return false;
+    }
+    return true;
+  });
+  const sorted = [...filtered].sort((a, b) => {
+    let va = a[sortKey];
+    let vb = b[sortKey];
+    if (sortKey === 'name') {
+      return va.localeCompare(vb) * sortDir;
+    }
+    if (sortKey === 'context') {
+      return (contextSize(va) - contextSize(vb)) * sortDir;
+    }
+    const na = (va === null || va === undefined);
+    const nb = (vb === null || vb === undefined);
+    if (na && nb) return 0;
+    if (na) return 1;
+    if (nb) return -1;
+    return (va - vb) * sortDir;
+  });
+  if (!sorted.length) {
+    tbody.innerHTML = '<tr><td colspan="7" class="na">No models match filters.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = sorted.map(m => {
+    const nameHtml = m.hfUrl
+      ? `<a href="${escapeHtml(m.hfUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(m.name)}</a>`
+      : escapeHtml(m.name);
+    return `
+    <tr>
+      <td>${nameHtml}</td>
+      <td class="num">${fmtBench(m.codingIndex)}</td>
+      <td class="num">${fmtValue(m.valueIndex)}</td>
+      <td class="num">${fmtCost(m.inputCost)}</td>
+      <td class="num">${fmtCost(m.outputCost)}</td>
+      <td class="num">${fmtCost(m.cachedReadCost)}</td>
+      <td>${escapeHtml(m.context)}</td>
+    </tr>`;
+  }).join('');
+}
+
+function contextSize(ctx) {
+  const s = String(ctx).trim();
+  const num = parseFloat(s);
+  if (s.endsWith('K')) return num * 1000;
+  if (s.endsWith('M')) return num * 1000000;
+  return num;
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+
+function setSort(key, dir) {
+  if (sortKey === key) {
+    sortDir = dir === undefined ? -sortDir : dir;
+  } else {
+    sortKey = key;
+    sortDir = dir === undefined ? 1 : dir;
+  }
+  render();
+  updateArrows();
+}
+
+function updateArrows() {
+  document.querySelectorAll('th[data-key]').forEach(th => {
+    const key = th.getAttribute('data-key');
+    let arrow = '';
+    if (key === sortKey) arrow = sortDir > 0 ? ' ▲' : ' ▼';
+    th.querySelector('.arrow').textContent = arrow;
+  });
+}
+
+document.getElementById('planFilter').addEventListener('change', render);
+document.getElementById('filterMaxOutput').addEventListener('input', render);
+document.getElementById('filterMinAA').addEventListener('input', render);
+document.getElementById('reset').addEventListener('click', () => {
+  document.getElementById('planFilter').value = 'all';
+  document.getElementById('filterMaxOutput').value = '';
+  document.getElementById('filterMinAA').value = '';
+  setSort('name', 1);
+});
+
+document.querySelectorAll('th[data-key]').forEach(th => {
+  const key = th.getAttribute('data-key');
+  const span = document.createElement('span');
+  span.className = 'arrow';
+  th.appendChild(span);
+  th.addEventListener('click', () => setSort(key));
+});
+
+async function load() {
+  const res = await fetch(DATA_URL);
+  if (!res.ok) throw new Error('Failed to load ' + DATA_URL);
+  const data = await res.json();
+  const withRaw = data.models.map(m => {
+    const ctx = contextSize(m.context);
+    const ctxWeight = ctx ? Math.pow(ctx / 1000000, 0.3) : 1;
+    return {
+      ...m,
+      totalCost: m.inputCost + m.outputCost,
+      _raw: (m.codingIndex === null || m.codingIndex === undefined || m.outputCost === null || m.outputCost === undefined) ? null : Math.pow(m.codingIndex, 3) * ctxWeight / (1 + m.outputCost)
+    };
+  });
+  const maxRaw = Math.max(...withRaw.map(m => m._raw).filter(v => v !== null && v !== undefined), 0);
+  models = withRaw.map(m => ({
+    ...m,
+    valueIndex: m._raw === null || !maxRaw ? null : (m._raw / maxRaw * 100)
+  }));
+  updateArrows();
+  render();
+}
+
+load().catch(err => {
+  tbody.innerHTML = '<tr><td colspan="7">Error loading models.json: ' +
+    escapeHtml(err.message) +
+    ' — serve this folder over HTTP (e.g. `python -m http.server`) so fetch can read the file.</td></tr>';
+});
+</script>
+</body>
+</html>
