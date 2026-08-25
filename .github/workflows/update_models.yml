@@ -25,16 +25,16 @@ jobs:
           python-version: "3.x"
 
       - name: Update models.json
-        run: python update_zen_prices.py
+        run: python update_zen_prices.py --output docs/models.json
 
       - name: Commit and push changes
         run: |
-          if git diff --quiet -- models.json; then
+          if git diff --quiet -- docs/models.json; then
             echo "No changes to models.json; skipping commit."
           else
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add models.json
+            git add docs/models.json
             git commit -m "chore: update Zen model pricing (daily)"
             git push
           fi
