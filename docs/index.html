@@ -76,6 +76,7 @@
     <label>Plan <select id="planFilter"><option value="all">All Zen models</option><option value="go">Go plan only</option></select></label>
     <label>Max output ($/1M) <input id="filterMaxOutput" type="number" min="0" step="0.01" placeholder="e.g. 2"></label>
     <label>Min AA index <input id="filterMinAA" type="number" min="0" max="100" step="0.1" placeholder="e.g. 60"></label>
+    <label>Min SWE-bench Pro <input id="filterMinSWE" type="number" min="0" max="100" step="0.1" placeholder="e.g. 55"></label>
     <button id="reset">Reset</button>
   </div>
 
@@ -142,17 +143,20 @@ function getFilters() {
   const planEl = document.getElementById('planFilter');
   const maxOutEl = document.getElementById('filterMaxOutput');
   const minAAEl = document.getElementById('filterMinAA');
+  const minSWEEl = document.getElementById('filterMinSWE');
   const maxOut = maxOutEl && maxOutEl.value !== '' ? parseFloat(maxOutEl.value) : null;
   const minAA = minAAEl && minAAEl.value !== '' ? parseFloat(minAAEl.value) : null;
+  const minSWE = minSWEEl && minSWEEl.value !== '' ? parseFloat(minSWEEl.value) : null;
   return {
     plan: planEl ? planEl.value : 'all',
     maxOut: Number.isFinite(maxOut) ? maxOut : null,
-    minAA: Number.isFinite(minAA) ? minAA : null
+    minAA: Number.isFinite(minAA) ? minAA : null,
+    minSWE: Number.isFinite(minSWE) ? minSWE : null
   };
 }
 
 function render() {
-  const { plan, maxOut, minAA } = getFilters();
+  const { plan, maxOut, minAA, minSWE } = getFilters();
   const filtered = models.filter(m => {
     if (plan === 'go' && m.plan !== 'go') return false;
     if (maxOut !== null) {
@@ -162,6 +166,10 @@ function render() {
     if (minAA !== null) {
       if (m.codingIndex === null || m.codingIndex === undefined) return false;
       if (m.codingIndex < minAA) return false;
+    }
+    if (minSWE !== null) {
+      if (m.swePro === null || m.swePro === undefined) return false;
+      if (m.swePro < minSWE) return false;
     }
     return true;
   });
@@ -241,10 +249,12 @@ function updateArrows() {
 document.getElementById('planFilter').addEventListener('change', render);
 document.getElementById('filterMaxOutput').addEventListener('input', render);
 document.getElementById('filterMinAA').addEventListener('input', render);
+document.getElementById('filterMinSWE').addEventListener('input', render);
 document.getElementById('reset').addEventListener('click', () => {
   document.getElementById('planFilter').value = 'all';
   document.getElementById('filterMaxOutput').value = '';
   document.getElementById('filterMinAA').value = '';
+  document.getElementById('filterMinSWE').value = '';
   setSort('name', 1);
 });
 

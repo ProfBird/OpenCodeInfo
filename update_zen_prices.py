@@ -422,8 +422,11 @@ def bench_slug_for(name: str) -> str:
         return BENCH_SLUG_OVERRIDES[name]
     return id_from_name(name)
 
-def merge_swe_pro(models, bench_items, dry_run=False):
-    """Merge SWE-bench Pro scores (benchmarks.coding.swePro) from BenchLM."""
+# BenchLM coding benchmark fields merged into each model (null if unpublished).
+BENCH_FIELDS = ("swePro", "aaSciCode")
+
+def merge_benchmarks(models, bench_items, dry_run=False):
+    """Merge coding benchmark scores (BENCH_FIELDS) from BenchLM into models."""
     by_slug = {}
     by_norm = {}
     for it in bench_items:
@@ -435,14 +438,16 @@ def merge_swe_pro(models, bench_items, dry_run=False):
         it = by_slug.get(bench_slug_for(m["name"])) or by_norm.get(normalize(m["name"]))
         if not it:
             continue
-        score = (it.get("benchmarks", {}).get("coding", {}) or {}).get("swePro")
-        if score is None:
-            continue
-        old = m.get("swePro")
-        if old is None or abs(old - score) > 1e-9:
-            changed.append((m["name"], old, score))
-            if not dry_run:
-                m["swePro"] = score
+        coding = it.get("benchmarks", {}).get("coding", {}) or {}
+        for field in BENCH_FIELDS:
+            score = coding.get(field)
+            if score is None:
+                continue
+            old = m.get(field)
+            if old is None or abs(old - score) > 1e-9:
+                changed.append((field, m["name"], old, score))
+                if not dry_run:
+                    m[field] = score
     return changed
 
 def main():
