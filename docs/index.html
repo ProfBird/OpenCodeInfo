@@ -206,9 +206,10 @@ function render() {
     return;
   }
   tbody.innerHTML = sorted.map(m => {
-    const nameHtml = m.hfUrl
+    const goBadge = m.plan === 'go' ? ' (Go)' : '';
+    const nameHtml = (m.hfUrl
       ? `<a href="${escapeHtml(m.hfUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(m.name)}</a>`
-      : escapeHtml(m.name);
+      : escapeHtml(m.name)) + goBadge;
     const isStealthNote = /^(big pickle|ox alpha)/i.test(m.name);
     const noteLink = isStealthNote ? ` <a href="#stealth-notes" title="Stealth-model note — see below" style="font-size:0.75em;opacity:0.65;text-decoration:none">ⓘ</a>` : '';
     return `
