@@ -86,9 +86,9 @@
         <th data-key="name">Model</th>
         <th data-key="codingIndex">AA Coding Index</th>
         <th data-key="swePro" title="SWE-bench Pro (Scale AI) — % resolved on contamination-resistant long-horizon coding tasks">SWE-bench Pro</th>
+        <th data-key="aaSciCode" title="AA SciCode (Artificial Analysis) — science-code reasoning, %">AA SciCode</th>
         <th data-key="inputCost">Input ($/1M)</th>
         <th data-key="outputCost">Output ($/1M)</th>
-        <th data-key="cachedReadCost">Cached Read ($/1M)</th>
         <th data-key="context">Context</th>
       </tr>
     </thead>
@@ -97,6 +97,7 @@
 
   <p class="footer">Sorting by "Cost" uses Input + Output. Models with no benchmark score (—) sort last on benchmark. All AA Coding Index values from <a href="https://benchlm.ai/benchmarks/aacodingindex" target="_blank" rel="noopener noreferrer">BenchLM AA Coding Index</a> (display-only mirror of <a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener noreferrer">Artificial Analysis</a>, verified 2026-08-21, e.g. Kimi K3 76.24, GLM-5.3 74.76, Grok 4.5 72.45, Muse Spark 1.2 72.22, DeepSeek V4 Pro 68.83/Flash 69.06 for builds 0813/0731); Vision Exp, LongCat-2.0 etc. have no published AA Coding Index on that page and show —.</p>
   <p class="footer"><strong>SWE-bench Pro:</strong> Scale AI's contamination-resistant coding benchmark (1,865 tasks, standardized harness), mirrored from <a href="https://benchlm.ai/benchmarks/swe-bench-pro" target="_blank" rel="noopener noreferrer">BenchLM</a>. OpenAI's July 2026 audit found ~30% of its public tasks broken, so treat scores as directional.</p>
+  <p class="footer"><strong>AA SciCode:</strong> Artificial Analysis <a href="https://benchlm.ai/benchmarks/sciCode" target="_blank" rel="noopener noreferrer">SciCode</a> (research-code generation), mirrored from <a href="https://benchlm.ai" target="_blank" rel="noopener noreferrer">BenchLM</a> — the broadest benchmark coverage on this page.</p>
 
   <section class="notes" id="stealth-notes">
     <h2>Stealth-model notes</h2>
@@ -204,9 +205,9 @@ function render() {
       <td>${nameHtml}${noteLink}</td>
       <td class="num">${fmtBench(m.codingIndex)}</td>
       <td class="num">${fmtScore(m.swePro)}</td>
+      <td class="num">${fmtScore(m.aaSciCode)}</td>
       <td class="num">${fmtCost(m.inputCost)}</td>
       <td class="num">${fmtCost(m.outputCost)}</td>
-      <td class="num">${fmtCost(m.cachedReadCost)}</td>
       <td>${escapeHtml(m.context)}</td>
     </tr>`;
   }).join('');

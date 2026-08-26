@@ -1,6 +1,6 @@
 # OpenCodeInfo — OpenCode Zen & Go Model Benchmarks & Cost
 
-Static site + refresh script for OpenCode Zen model pricing, AA Coding Index, and SWE-bench Pro.
+Static site + refresh script for OpenCode Zen model pricing, AA Coding Index, SWE-bench Pro, and AA SciCode.
 
 ## Commands
 - Serve the page:            `python -m http.server` → http://localhost:8000/docs/index.html
@@ -20,6 +20,7 @@ Static site + refresh script for OpenCode Zen model pricing, AA Coding Index, an
 ## models.json data model
 Each entry: `name`, `codingIndex` (AA Coding Index %, 0–100, `null` if unpublished),
 `swePro` (SWE-bench Pro %, 0–100, `null` if unpublished),
+`aaSciCode` (AA SciCode %, 0–100, `null` if unpublished),
 `inputCost`/`outputCost`/`cachedReadCost` (USD per 1M tokens), `context` (e.g. "1M", "500K"),
 `plan` (`"go"` = Go $10/mo plan, `"zen"` = Zen-only), `hfUrl` (HF card, else BenchLM specs, else manufacturer).
 
@@ -27,10 +28,10 @@ Each entry: `name`, `codingIndex` (AA Coding Index %, 0–100, `null` if unpubli
 - Catalog = union of https://opencode.ai/zen/v1/models + .../zen/go/v1/models; `plan` reflects Go membership.
 - Pricing from https://opencode.ai/docs/zen#pricing and https://opencode.ai/docs/go; Go price wins where both exist.
 - Context/cost fallback from https://models.dev/api.json; `CONTEXT_OVERRIDES`/`KNOWN_URLS` maps hold verified values.
-- SWE-bench Pro from https://benchlm.ai/data/models.json (`benchmarks.coding.swePro`); `BENCH_SLUG_OVERRIDES` maps display names to BenchLM slugs.
+- SWE-bench Pro + AA SciCode from https://benchlm.ai/data/models.json (`benchmarks.coding.swePro` / `.aaSciCode`); `BENCH_SLUG_OVERRIDES` maps display names to BenchLM slugs.
 - Do NOT hand-edit models.json — run the script.
 
 ## Web page (docs/index.html)
-- Columns: Model, AA Coding Index, SWE-bench Pro, Input ($/1M), Output ($/1M), Cached Read ($/1M), Context.
-- Filters: Plan (All Zen / Go only), Max output ($/1M), Min AA index; Reset clears all.
+- Columns: Model, AA Coding Index, SWE-bench Pro, AA SciCode, Input ($/1M), Output ($/1M), Context.
+- Filters: Plan (All Zen / Go only), Max output ($/1M), Min AA index, Min SWE-bench Pro; Reset clears all.
 - Click column headers to sort; `null` scores sort last and render as "—".

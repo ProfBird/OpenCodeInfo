@@ -495,16 +495,16 @@ def main():
     else:
         added = removed = changed = []
 
-    swe_changed = merge_swe_pro(data["models"], bench_items, dry_run=args.dry_run)
+    bench_changed = merge_benchmarks(data["models"], bench_items, dry_run=args.dry_run)
 
     if changed:
         print(f"\n{len(changed)} price/plan update(s):" + (" (dry-run)" if args.dry_run else ""), file=sys.stderr)
         for name, updates in changed:
             print(f"  {name:34} {updates}", file=sys.stderr)
-    if swe_changed:
-        print(f"\n{len(swe_changed)} SWE-bench Pro update(s):" + (" (dry-run)" if args.dry_run else ""), file=sys.stderr)
-        for name, old, new in swe_changed:
-            print(f"  {name:34} {old} -> {new}", file=sys.stderr)
+    if bench_changed:
+        print(f"\n{len(bench_changed)} benchmark update(s):" + (" (dry-run)" if args.dry_run else ""), file=sys.stderr)
+        for field, name, old, new in bench_changed:
+            print(f"  {field:10} {name:34} {old} -> {new}", file=sys.stderr)
     if added:
         print(f"\n{len(added)} model(s) to add:" if args.dry_run else f"\n{len(added)} model(s) added:", file=sys.stderr)
         for name, i in added:
@@ -513,14 +513,15 @@ def main():
         print(f"\n{len(removed)} model(s) to remove:" if args.dry_run else f"\n{len(removed)} model(s) removed:", file=sys.stderr)
         for name in removed:
             print(f"  - {name}", file=sys.stderr)
-    if not (changed or added or removed or swe_changed):
-        print("\nCatalog, prices and SWE-bench Pro in sync (no changes).", file=sys.stderr)
+    if not (changed or added or removed or bench_changed):
+        print("\nCatalog, prices and benchmarks in sync (no changes).", file=sys.stderr)
 
-    if not args.dry_run and (changed or added or removed or swe_changed):
+    if not args.dry_run and (changed or added or removed or bench_changed):
         today = date.today().isoformat()
         data["source"] = f"OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved {today}"
         data["goSource"] = f"OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved {today}"
         data["benchmarkPro"] = f"SWE-bench Pro (Scale AI), via {DEFAULT_BENCHLM_URL}, retrieved {today}"
+        data["benchmarkSciCode"] = f"AA SciCode (Artificial Analysis), via {DEFAULT_BENCHLM_URL}, retrieved {today}"
         args.output.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         print(f"\nWrote {args.output}", file=sys.stderr)
     elif args.dry_run:
