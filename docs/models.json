@@ -22,7 +22,8 @@
       "cachedReadCost": 1,
       "context": "1M",
       "plan": "zen",
-      "hfUrl": "https://benchlm.ai/models/claude-fable-5"
+      "hfUrl": "https://benchlm.ai/models/claude-fable-5",
+      "swePro": 80
     },
     {
       "name": "Claude Haiku 4.5",
@@ -42,7 +43,8 @@
       "cachedReadCost": 0.5,
       "context": "200K",
       "plan": "zen",
-      "hfUrl": "https://benchlm.ai/models/claude-opus-4-5"
+      "hfUrl": "https://benchlm.ai/models/claude-opus-4-5",
+      "swePro": 57.1
     },
     {
       "name": "Claude Opus 4.6",
@@ -52,7 +54,8 @@
       "cachedReadCost": 0.5,
       "context": "1M",
       "plan": "zen",
-      "hfUrl": "https://benchlm.ai/models/claude-opus-4-6"
+      "hfUrl": "https://benchlm.ai/models/claude-opus-4-6",
+      "swePro": 53.4
     },
     {
       "name": "Claude Opus 4.7",
@@ -72,7 +75,8 @@
       "cachedReadCost": 0.5,
       "context": "1M",
       "plan": "zen",
-      "hfUrl": "https://benchlm.ai/models/claude-opus-4-8"
+      "hfUrl": "https://benchlm.ai/models/claude-opus-4-8",
+      "swePro": 69.2
     },
     {
       "name": "Claude Opus 5",
@@ -82,7 +86,8 @@
       "cachedReadCost": 0.5,
       "context": "1M",
       "plan": "zen",
-      "hfUrl": "https://benchlm.ai/models/claude-opus-5"
+      "hfUrl": "https://benchlm.ai/models/claude-opus-5",
+      "swePro": 79.2
     },
     {
       "name": "Claude Sonnet 4",
@@ -122,7 +127,8 @@
       "cachedReadCost": 0.2,
       "context": "1M",
       "plan": "zen",
-      "hfUrl": "https://benchlm.ai/models/claude-sonnet-5"
+      "hfUrl": "https://benchlm.ai/models/claude-sonnet-5",
+      "swePro": 63.2
     },
     {
       "name": "DeepSeek V4 Flash",
@@ -132,7 +138,8 @@
       "cachedReadCost": 0.007,
       "context": "1M",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash",
-      "plan": "go"
+      "plan": "go",
+      "swePro": 52.6
     },
     {
       "name": "DeepSeek V4 Flash Free",
@@ -162,7 +169,8 @@
       "cachedReadCost": 0.022,
       "context": "1M",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro",
-      "plan": "go"
+      "plan": "go",
+      "swePro": 55.4
     },
     {
       "name": "Gemini 3 Flash",
@@ -192,7 +200,8 @@
       "cachedReadCost": 0.15,
       "context": "1M",
       "plan": "zen",
-      "hfUrl": "https://benchlm.ai/models/gemini-3-5-flash"
+      "hfUrl": "https://benchlm.ai/models/gemini-3-5-flash",
+      "swePro": 55.1
     },
     {
       "name": "Gemini 3.5 Flash Lite",
@@ -202,7 +211,8 @@
       "cachedReadCost": 0.03,
       "context": "1M",
       "plan": "zen",
-      "hfUrl": "https://benchlm.ai/models/gemini-3.5-flash-lite"
+      "hfUrl": "https://benchlm.ai/models/gemini-3.5-flash-lite",
+      "swePro": 54.2
     },
     {
       "name": "Gemini 3.6 Flash",
@@ -232,7 +242,8 @@
       "cachedReadCost": 0.2,
       "context": "203K",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5",
-      "plan": "go"
+      "plan": "go",
+      "swePro": 55.1
     },
     {
       "name": "GLM-5.1",
@@ -242,7 +253,8 @@
       "cachedReadCost": 0.26,
       "context": "203K",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.1",
-      "plan": "go"
+      "plan": "go",
+      "swePro": 58.4
     },
     {
       "name": "GLM-5.2",
@@ -252,7 +264,8 @@
       "cachedReadCost": 0.26,
       "context": "1M",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.2",
-      "plan": "go"
+      "plan": "go",
+      "swePro": 62.1
     },
     {
       "name": "GLM-5.3",
@@ -342,7 +355,8 @@
       "cachedReadCost": 0.175,
       "context": "400K",
       "plan": "zen",
-      "hfUrl": "https://benchlm.ai/models/gpt-5.2"
+      "hfUrl": "https://benchlm.ai/models/gpt-5.2",
+      "swePro": 55.6
     },
     {
       "name": "GPT 5.2 Codex",
@@ -362,7 +376,8 @@
       "cachedReadCost": 0.175,
       "context": "400K",
       "plan": "zen",
-      "hfUrl": "https://benchlm.ai/models/gpt-5.3-codex"
+      "hfUrl": "https://benchlm.ai/models/gpt-5.3-codex",
+      "swePro": 56.8
     },
     {
       "name": "GPT 5.3 Codex Spark",
@@ -382,7 +397,8 @@
       "cachedReadCost": 0.25,
       "context": "1.05M",
       "plan": "zen",
-      "hfUrl": "https://benchlm.ai/models/gpt-5.4"
+      "hfUrl": "https://benchlm.ai/models/gpt-5.4",
+      "swePro": 57.7
     },
     {
       "name": "GPT 5.4 Mini",
@@ -422,7 +438,8 @@
       "cachedReadCost": 0.5,
       "context": "1.05M",
       "plan": "zen",
-      "hfUrl": "https://benchlm.ai/models/gpt-5.5"
+      "hfUrl": "https://benchlm.ai/models/gpt-5.5",
+      "swePro": 58.6
     },
     {
       "name": "GPT 5.5 Pro",
@@ -442,7 +459,8 @@
       "cachedReadCost": 0.02,
       "context": "1.05M",
       "hfUrl": "https://developers.openai.com/api/docs/models/gpt-5.6-luna",
-      "plan": "go"
+      "plan": "go",
+      "swePro": 62.7
     },
     {
       "name": "GPT 5.6 Sol",
@@ -452,7 +470,8 @@
       "cachedReadCost": 0.2,
       "context": "1.05M",
       "plan": "zen",
-      "hfUrl": "https://benchlm.ai/models/gpt-5.6-sol"
+      "hfUrl": "https://benchlm.ai/models/gpt-5.6-sol",
+      "swePro": 64.6
     },
     {
       "name": "GPT 5.6 Terra",
@@ -462,7 +481,8 @@
       "cachedReadCost": 0.2,
       "context": "1.05M",
       "plan": "zen",
-      "hfUrl": "https://benchlm.ai/models/gpt-5.6-terra"
+      "hfUrl": "https://benchlm.ai/models/gpt-5.6-terra",
+      "swePro": 63.4
     },
     {
       "name": "Grok 4.5",
@@ -472,7 +492,8 @@
       "cachedReadCost": 0.3,
       "context": "500K",
       "hfUrl": "https://docs.x.ai/developers/models/grok-4.5",
-      "plan": "go"
+      "plan": "go",
+      "swePro": 64.7
     },
     {
       "name": "Grok 4.6",
@@ -532,7 +553,8 @@
       "cachedReadCost": 0.1,
       "context": "256K",
       "hfUrl": "https://huggingface.co/moonshotai/Kimi-K2.5",
-      "plan": "go"
+      "plan": "go",
+      "swePro": 50.7
     },
     {
       "name": "Kimi K2.6",
@@ -542,7 +564,8 @@
       "cachedReadCost": 0.16,
       "context": "262K",
       "hfUrl": "https://huggingface.co/moonshotai/Kimi-K2.6",
-      "plan": "go"
+      "plan": "go",
+      "swePro": 58.6
     },
     {
       "name": "Kimi K2.7 Code",
@@ -612,7 +635,8 @@
       "cachedReadCost": 0.0028,
       "context": "1M",
       "hfUrl": "https://huggingface.co/XiaomiMiMo/MiMo-V2.5",
-      "plan": "go"
+      "plan": "go",
+      "swePro": 56.1
     },
     {
       "name": "MiMo-V2.5 Free",
@@ -632,7 +656,8 @@
       "cachedReadCost": 0.003625,
       "context": "1M",
       "hfUrl": "https://huggingface.co/XiaomiMiMo/MiMo-V2.5-Pro",
-      "plan": "go"
+      "plan": "go",
+      "swePro": 57.2
     },
     {
       "name": "MiniMax M2.5",
@@ -652,7 +677,8 @@
       "cachedReadCost": 0.06,
       "context": "205K",
       "hfUrl": "https://huggingface.co/MiniMaxAI/MiniMax-M2.7",
-      "plan": "go"
+      "plan": "go",
+      "swePro": 56.2
     },
     {
       "name": "MiniMax M3",
@@ -662,7 +688,8 @@
       "cachedReadCost": 0.06,
       "context": "1M",
       "hfUrl": "https://huggingface.co/MiniMaxAI/MiniMax-M3",
-      "plan": "go"
+      "plan": "go",
+      "swePro": 59
     },
     {
       "name": "Muse Spark 1.2",
@@ -742,7 +769,8 @@
       "cachedReadCost": 0.05,
       "context": "1M",
       "hfUrl": "https://huggingface.co/Qwen/Qwen3.6-27B",
-      "plan": "go"
+      "plan": "go",
+      "swePro": 56.6
     },
     {
       "name": "Qwen3.7 Max",
@@ -752,7 +780,8 @@
       "cachedReadCost": 0.5,
       "context": "1M",
       "hfUrl": "https://qwen.ai/blog?id=qwen3.7",
-      "plan": "go"
+      "plan": "go",
+      "swePro": 60.6
     },
     {
       "name": "Qwen3.7 Plus",
@@ -762,7 +791,8 @@
       "cachedReadCost": 0.04,
       "context": "1M",
       "hfUrl": "https://qwen.ai/blog?id=qwen3.7-plus",
-      "plan": "go"
+      "plan": "go",
+      "swePro": 57.6
     },
     {
       "name": "Qwen3.8 Max",
@@ -774,5 +804,6 @@
       "hfUrl": "https://huggingface.co/Qwen/Qwen3.8-2.4T-A95B",
       "plan": "go"
     }
-  ]
+  ],
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-08-25"
 }

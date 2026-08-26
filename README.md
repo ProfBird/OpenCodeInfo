@@ -1,14 +1,14 @@
 # OpenCode Zen & Go — Model Benchmarks & Cost
 
-A small static web page that displays **all OpenCode Zen models** (coding benchmark scores, pricing, context) with sortable columns, a computed value index, filters, and a Go-plan toggle.
+A small static web page that displays **all OpenCode Zen models** (coding benchmark scores, pricing, context) with sortable columns, a SWE-bench Pro score column, filters, and a Go-plan toggle.
 
-**Live page:** <https://ProfBird.github.io/OpenCodeInfo/>
+**Live page:** <https://ProfBird.github.io/AiModelinfo/>
 
 ## Files
 
-- `docs/models.json` — Model data: AA Coding Index score, USD-per-1M-token pricing (input, output, cached read), context window, and a `plan` field (`"go"` for models on the Go $10/mo plan, `"zen"` for Zen-only) for every model in the Zen catalog. Each model also has a link (`hfUrl`) to its model card — Hugging Face when weights are open, otherwise BenchLM model specs, or the manufacturer's site.
-- `docs/index.html` — The page itself. Loads `models.json` and renders the table. AA Coding Index → Value Index computation, filtering, and sorting all happen in the browser. Published to GitHub Pages via the `docs/` folder.
-- `update_zen_prices.py` — Fetches the current OpenCode Zen catalog and pricing, the Go plan, and model context/cost data, then updates `docs/models.json` (adds/removes models that join or leave the Zen catalog, refreshes prices, maintains the `plan` flag).
+- `docs/models.json` — Model data: AA Coding Index score, SWE-bench Pro score, USD-per-1M-token pricing (input, output, cached read), context window, and a `plan` field (`"go"` for models on the Go $10/mo plan, `"zen"` for Zen-only) for every model in the Zen catalog. Each model also has a link (`hfUrl`) to its model card — Hugging Face when weights are open, otherwise BenchLM model specs, or the manufacturer's site.
+- `docs/index.html` — The page itself. Loads `models.json` and renders the table. Filtering and sorting all happen in the browser. Published to GitHub Pages via the `docs/` folder.
+- `update_zen_prices.py` — Fetches the current OpenCode Zen catalog and pricing, the Go plan, model context/cost data, and SWE-bench Pro scores, then updates `docs/models.json` (adds/removes models that join or leave the Zen catalog, refreshes prices, maintains the `plan` flag).
 - `opencode-go-models.md` — A Markdown snapshot of the same data.
 - `.github/workflows/update_models.yml` — Daily GitHub Actions job (03:00 UTC) that runs the update script and commits any changes to `docs/models.json`.
 
@@ -30,15 +30,9 @@ A small static web page that displays **all OpenCode Zen models** (coding benchm
 - **Reset** clears all filters and restores the default (alphabetical) order.
 - Models with no benchmark score (`—`) sort to the bottom when sorting by benchmark.
 
-## Value Index
+## SWE-bench Pro
 
-Computed in the browser for each row:
-
-```
-Value Index = (AA³ × (Context/1M)^0.3) ÷ (1 + Output $/1M)
-```
-
-normalized so the best model scores 100. AA Coding Index is cubed (dominant), context window enters sub-linearly (`^0.3`, so 1M = 1.00, 500K ≈ 0.81, 256K ≈ 0.66), and price has diminishing returns via the `1 + cost` denominator.
+Scale AI's contamination-resistant coding benchmark (1,865 tasks, standardized harness), mirrored from BenchLM. Scores are % of tasks resolved. OpenAI's July 2026 audit found ~30% of its public tasks broken, so treat values as directional.
 
 ## Updating the data
 
@@ -56,6 +50,7 @@ Sources:
 - **Catalog** — `https://opencode.ai/zen/v1/models` (all Zen models) and `https://opencode.ai/zen/go/v1/models` (Go plan subset, `plan: "go"`).
 - **Pricing** — `https://opencode.ai/docs/zen#pricing` (Zen pay-per-use) and `https://opencode.ai/docs/go` (Go plan pricing table). Go plan pricing wins where a model is on both.
 - **Context / cost fallback** — `https://models.dev/api.json` (opencode provider), with verified context overrides in the script.
-- **Benchmark** — AA Coding Index via the BenchLM mirror: `https://benchlm.ai/benchmarks/aacodingindex` (display-only mirror of Artificial Analysis), snapshot 2026-08-21.
+- **Benchmark (AA)** — AA Coding Index via the BenchLM mirror: `https://benchlm.ai/benchmarks/aacodingindex` (display-only mirror of Artificial Analysis), snapshot 2026-08-21.
+- **Benchmark (SWE-bench Pro)** — `https://benchlm.ai/data/models.json` (`benchmarks.coding.swePro`), refreshed on every run.
 
 Models that appear in the catalog but aren't priced in either docs table are shown as `Free` until a price is published.

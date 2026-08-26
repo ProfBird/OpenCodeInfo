@@ -84,7 +84,7 @@
       <tr>
         <th data-key="name">Model</th>
         <th data-key="codingIndex">AA Coding Index</th>
-        <th data-key="valueIndex" title="AA³ × Context^0.3 ÷ (1+Output cost), normalized 0–100 — AA dominant, context secondary">Value Index</th>
+        <th data-key="swePro" title="SWE-bench Pro (Scale AI) — % resolved on contamination-resistant long-horizon coding tasks">SWE-bench Pro</th>
         <th data-key="inputCost">Input ($/1M)</th>
         <th data-key="outputCost">Output ($/1M)</th>
         <th data-key="cachedReadCost">Cached Read ($/1M)</th>
@@ -95,7 +95,7 @@
   </table>
 
   <p class="footer">Sorting by "Cost" uses Input + Output. Models with no benchmark score (—) sort last on benchmark. All AA Coding Index values from <a href="https://benchlm.ai/benchmarks/aacodingindex" target="_blank" rel="noopener noreferrer">BenchLM AA Coding Index</a> (display-only mirror of <a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener noreferrer">Artificial Analysis</a>, verified 2026-08-21, e.g. Kimi K3 76.24, GLM-5.3 74.76, Grok 4.5 72.45, Muse Spark 1.2 72.22, DeepSeek V4 Pro 68.83/Flash 69.06 for builds 0813/0731); Vision Exp, LongCat-2.0 etc. have no published AA Coding Index on that page and show —.</p>
-  <p class="footer"><strong>Value Index:</strong> <code>(AA³ × (Context/1M)^0.3) ÷ (1 + Output $/1M)</code> normalized 0–100 (100 = best). AA is cubed (dominant), context is <code>(Context/1M)^0.3</code> (1M=1.00, 500K≈0.81, 256K≈0.66 — bigger window higher value, less important than AA), price uses diminishing returns <code>1+cost</code> so <code>5→0.5</code> (4×) &gt; <code>0.5→0</code> (1.5×). Computed in browser.</p>
+  <p class="footer"><strong>SWE-bench Pro:</strong> Scale AI's contamination-resistant coding benchmark (1,865 tasks, standardized harness), mirrored from <a href="https://benchlm.ai/benchmarks/swe-bench-pro" target="_blank" rel="noopener noreferrer">BenchLM</a>. OpenAI's July 2026 audit found ~30% of its public tasks broken, so treat scores as directional.</p>
 
   <section class="notes" id="stealth-notes">
     <h2>Stealth-model notes</h2>
@@ -134,7 +134,7 @@ function fmtBench(v) {
   return v === null || v === undefined ? '<span class="na">—</span>' : v.toFixed(1);
 }
 
-function fmtValue(v) {
+function fmtScore(v) {
   return v === null || v === undefined ? '<span class="na">—</span>' : v.toFixed(1);
 }
 
@@ -195,7 +195,7 @@ function render() {
     <tr>
       <td>${nameHtml}${noteLink}</td>
       <td class="num">${fmtBench(m.codingIndex)}</td>
-      <td class="num">${fmtValue(m.valueIndex)}</td>
+      <td class="num">${fmtScore(m.swePro)}</td>
       <td class="num">${fmtCost(m.inputCost)}</td>
       <td class="num">${fmtCost(m.outputCost)}</td>
       <td class="num">${fmtCost(m.cachedReadCost)}</td>
@@ -260,19 +260,9 @@ async function load() {
   const res = await fetch(DATA_URL);
   if (!res.ok) throw new Error('Failed to load ' + DATA_URL);
   const data = await res.json();
-  const withRaw = data.models.map(m => {
-    const ctx = contextSize(m.context);
-    const ctxWeight = ctx ? Math.pow(ctx / 1000000, 0.3) : 1;
-    return {
-      ...m,
-      totalCost: m.inputCost + m.outputCost,
-      _raw: (m.codingIndex === null || m.codingIndex === undefined || m.outputCost === null || m.outputCost === undefined) ? null : Math.pow(m.codingIndex, 3) * ctxWeight / (1 + m.outputCost)
-    };
-  });
-  const maxRaw = Math.max(...withRaw.map(m => m._raw).filter(v => v !== null && v !== undefined), 0);
-  models = withRaw.map(m => ({
+  models = data.models.map(m => ({
     ...m,
-    valueIndex: m._raw === null || !maxRaw ? null : (m._raw / maxRaw * 100)
+    totalCost: m.inputCost + m.outputCost
   }));
   updateArrows();
   render();

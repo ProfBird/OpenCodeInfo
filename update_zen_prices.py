@@ -8,6 +8,7 @@ Sources:
   Go plan:     https://opencode.ai/zen/go/v1/models        (Go plan subset)
   Go pricing:  https://opencode.ai/docs/go                 (Go plan pricing table)
   Context/cost: https://models.dev/api.json                (opencode provider: context + cost)
+  SWE-bench Pro: https://benchlm.ai/data/models.json       (per-model benchmarks.coding.swePro)
 
 Every model in models.json carries a "plan" field: "go" for models on the Go
 $10/mo plan, "zen" for Zen-only models. The web page lets you filter by plan.
@@ -34,6 +35,7 @@ DEFAULT_GO_URL = "https://opencode.ai/docs/go"
 DEFAULT_ZEN_API_URL = "https://opencode.ai/zen/v1/models"
 DEFAULT_GO_API_URL = "https://opencode.ai/zen/go/v1/models"
 DEFAULT_MODELSDEV_URL = "https://models.dev/api.json"
+DEFAULT_BENCHLM_URL = "https://benchlm.ai/data/models.json"
 DEFAULT_MODELS_PATH = Path(__file__).with_name("models.json")
 
 # Display-name overrides for models where the registry name is awkward.
@@ -163,6 +165,32 @@ KNOWN_URLS = {
     "muse-spark-1.2": "https://benchlm.ai/models/muse-spark-1-2",
     "nemotron-3-ultra-free": "https://benchlm.ai/models/nemotron-3-ultra",
     "nemotron-3.5-lightning-free": "https://benchlm.ai/models/nemotron-3-5-lightning-30b-a3b-nvfp4",
+}
+
+# OpenCode model name -> BenchLM slug for SWE-bench Pro lookups where the
+# display name doesn't map cleanly to the BenchLM model slug.
+BENCH_SLUG_OVERRIDES = {
+    "Claude Fable 5": "claude-fable",
+    "DeepSeek V4 Flash": "deepseek-v4-flash-0731",
+    "DeepSeek V4 Pro": "deepseek-v4-pro-0813",
+    "Muse Spark 1.2": "muse-spark-1-2",
+    "Muse Spark 1.2 Contributor": "muse-spark-1-2",
+    "Muse Spark 1.2 Contributor Free": "muse-spark-1-2",
+    "MiMo-V2 Omni": "mimo-v2-omni",
+    "MiMo-V2 Pro": "mimo-v2-pro",
+    "MiMo-V2.5": "mimo-v2-5",
+    "MiMo-V2.5-Pro": "mimo-v2-5-pro",
+    "Qwen3.5 Plus": "qwen3-5-plus",
+    "Qwen3.6 Plus": "qwen3-6-plus",
+    "Qwen3.8 Max": "qwen3-8-max-preview",
+    "LongCat-2.0": "longcat-2-0",
+    "Grok Build 0.1": "grok-build-0-1",
+    "MiniMax M2.5": "minimax-m2-5",
+    "GLM-5.3": "glm-5-3",
+    "Gemini 3.5 Flash Lite": "gemini-3-5-flash-lite",
+    "GPT 5.6 Sol": "gpt-5-6-sol",
+    "GPT 5.6 Terra": "gpt-5-6-terra",
+    "GPT 5.6 Luna": "gpt-5-6-luna",
 }
 
 def normalize(name: str) -> str:
@@ -388,6 +416,35 @@ def reconcile(data, desired, zen_pricing, go_pricing, md, dry_run=False):
         data["models"].sort(key=lambda x: x["name"].lower())
     return added, removed, changed
 
+def bench_slug_for(name: str) -> str:
+    """Best-effort BenchLM slug for an OpenCode model name."""
+    if name in BENCH_SLUG_OVERRIDES:
+        return BENCH_SLUG_OVERRIDES[name]
+    return id_from_name(name)
+
+def merge_swe_pro(models, bench_items, dry_run=False):
+    """Merge SWE-bench Pro scores (benchmarks.coding.swePro) from BenchLM."""
+    by_slug = {}
+    by_norm = {}
+    for it in bench_items:
+        by_slug[it.get("slug")] = it
+        by_norm[normalize(it.get("model"))] = it
+
+    changed = []
+    for m in models:
+        it = by_slug.get(bench_slug_for(m["name"])) or by_norm.get(normalize(m["name"]))
+        if not it:
+            continue
+        score = (it.get("benchmarks", {}).get("coding", {}) or {}).get("swePro")
+        if score is None:
+            continue
+        old = m.get("swePro")
+        if old is None or abs(old - score) > 1e-9:
+            changed.append((m["name"], old, score))
+            if not dry_run:
+                m["swePro"] = score
+    return changed
+
 def main():
     parser = argparse.ArgumentParser(description="Update models.json from OpenCode Zen catalog + pricing")
     parser.add_argument("--zen-url", default=DEFAULT_ZEN_URL)
@@ -395,6 +452,7 @@ def main():
     parser.add_argument("--zen-api-url", default=DEFAULT_ZEN_API_URL)
     parser.add_argument("--go-api-url", default=DEFAULT_GO_API_URL)
     parser.add_argument("--modelsdev-url", default=DEFAULT_MODELSDEV_URL)
+    parser.add_argument("--benchlm-url", default=DEFAULT_BENCHLM_URL)
     parser.add_argument("--output", type=Path, default=DEFAULT_MODELS_PATH)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--verbose", action="store_true")
@@ -413,10 +471,16 @@ def main():
         md = fetch_json(args.modelsdev_url).get("opencode", {}).get("models", {})
     except Exception:
         md = {}
+    try:
+        bench_items = fetch_json(args.benchlm_url)["items"]
+    except Exception as e:
+        bench_items = []
+        print(f"Warning: could not fetch BenchLM data: {e}", file=sys.stderr)
 
     if args.verbose:
         print(f"Zen catalog: {len(zen_ids)}, Go plan: {len(go_ids)}", file=sys.stderr)
         print(f"Zen pricing rows: {len(zen_pricing)}, Go pricing rows: {len(go_pricing)}", file=sys.stderr)
+        print(f"BenchLM models: {len(bench_items)}", file=sys.stderr)
 
     data = json.loads(args.output.read_text(encoding="utf-8"))
 
@@ -426,10 +490,16 @@ def main():
     else:
         added = removed = changed = []
 
+    swe_changed = merge_swe_pro(data["models"], bench_items, dry_run=args.dry_run)
+
     if changed:
         print(f"\n{len(changed)} price/plan update(s):" + (" (dry-run)" if args.dry_run else ""), file=sys.stderr)
         for name, updates in changed:
             print(f"  {name:34} {updates}", file=sys.stderr)
+    if swe_changed:
+        print(f"\n{len(swe_changed)} SWE-bench Pro update(s):" + (" (dry-run)" if args.dry_run else ""), file=sys.stderr)
+        for name, old, new in swe_changed:
+            print(f"  {name:34} {old} -> {new}", file=sys.stderr)
     if added:
         print(f"\n{len(added)} model(s) to add:" if args.dry_run else f"\n{len(added)} model(s) added:", file=sys.stderr)
         for name, i in added:
@@ -438,13 +508,14 @@ def main():
         print(f"\n{len(removed)} model(s) to remove:" if args.dry_run else f"\n{len(removed)} model(s) removed:", file=sys.stderr)
         for name in removed:
             print(f"  - {name}", file=sys.stderr)
-    if not (changed or added or removed):
-        print("\nCatalog and prices in sync (no changes).", file=sys.stderr)
+    if not (changed or added or removed or swe_changed):
+        print("\nCatalog, prices and SWE-bench Pro in sync (no changes).", file=sys.stderr)
 
-    if not args.dry_run and (changed or added or removed):
+    if not args.dry_run and (changed or added or removed or swe_changed):
         today = date.today().isoformat()
         data["source"] = f"OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved {today}"
         data["goSource"] = f"OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved {today}"
+        data["benchmarkPro"] = f"SWE-bench Pro (Scale AI), via {DEFAULT_BENCHLM_URL}, retrieved {today}"
         args.output.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         print(f"\nWrote {args.output}", file=sys.stderr)
     elif args.dry_run:
