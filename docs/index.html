@@ -56,7 +56,21 @@
   tbody tr:hover { background: rgba(128,128,128,0.12); }
   .num { font-variant-numeric: tabular-nums; }
   .na { color: #999; }
-  .arrow { opacity: 0.5; }
+  .sortbtn {
+    margin-left: 0.35rem;
+    padding: 0.05rem 0.3rem;
+    border: 1px solid #888;
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+    font-size: 0.8rem;
+    line-height: 1;
+    color: inherit;
+    vertical-align: middle;
+  }
+  .sortbtn:hover { background: rgba(128,128,128,0.12); }
+  .sortbtn .arrow { opacity: 0.45; }
+  .sortbtn.active .arrow { opacity: 1; }
   .footer { color: #666; font-size: 0.75rem; margin-top: 1rem; }
   td a { color: #60a5fa; text-decoration: none; }
   td a:hover { text-decoration: underline; }
@@ -253,9 +267,10 @@ function setSort(key, dir) {
 function updateArrows() {
   document.querySelectorAll('th[data-key]').forEach(th => {
     const key = th.getAttribute('data-key');
-    let arrow = '';
-    if (key === sortKey) arrow = sortDir > 0 ? ' ▲' : ' ▼';
+    const active = key === sortKey;
+    const arrow = active ? (sortDir > 0 ? '▲' : '▼') : '⇅';
     th.querySelector('.arrow').textContent = arrow;
+    th.querySelector('.sortbtn').classList.toggle('active', active);
   });
 }
 
@@ -275,11 +290,22 @@ document.getElementById('reset').addEventListener('click', () => {
 
 document.querySelectorAll('th[data-key]').forEach(th => {
   const key = th.getAttribute('data-key');
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'sortbtn';
+  btn.setAttribute('aria-label', 'Sort by ' + key);
+  btn.title = 'Sort by ' + key;
   const span = document.createElement('span');
   span.className = 'arrow';
-  th.appendChild(span);
+  span.textContent = '⇅';
+  btn.appendChild(span);
+  th.appendChild(btn);
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    setSort(key);
+  });
   th.addEventListener('click', e => {
-    if (e.target.closest('a')) return;
+    if (e.target.closest('a') || e.target.closest('button')) return;
     setSort(key);
   });
 });
