@@ -49,6 +49,8 @@
   table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
   th, td { padding: 0.45rem 0.7rem; text-align: right; border-bottom: 1px solid #ccc; }
   th { cursor: pointer; user-select: none; white-space: nowrap; }
+  th a { color: inherit; text-decoration: none; }
+  th a:hover { text-decoration: underline; }
   th:first-child, td:first-child { text-align: left; }
   tbody tr:hover { background: rgba(128,128,128,0.12); }
   .num { font-variant-numeric: tabular-nums; }
@@ -85,9 +87,9 @@
     <thead>
       <tr>
         <th data-key="name">Model</th>
-        <th data-key="codingIndex">AA Coding Index</th>
-        <th data-key="swePro" title="SWE-bench Pro (Scale AI) — % resolved on contamination-resistant long-horizon coding tasks">SWE-bench Pro</th>
-        <th data-key="aaSciCode" title="AA SciCode (Artificial Analysis) — science-code reasoning, %">AA SciCode</th>
+        <th data-key="codingIndex"><a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener noreferrer">AA Coding Index</a></th>
+        <th data-key="swePro" title="SWE-bench Pro (Scale AI) — % resolved on contamination-resistant long-horizon coding tasks"><a href="https://labs.scale.com/leaderboard/swe_bench_pro_public" target="_blank" rel="noopener noreferrer">SWE-bench Pro</a></th>
+        <th data-key="aaSciCode" title="AA SciCode (Artificial Analysis) — science-code reasoning, %"><a href="https://scicode-bench.github.io/" target="_blank" rel="noopener noreferrer">AA SciCode</a></th>
         <th data-key="inputCost">Input ($/1M)</th>
         <th data-key="outputCost">Output ($/1M)</th>
         <th data-key="context">Context</th>
@@ -274,7 +276,10 @@ document.querySelectorAll('th[data-key]').forEach(th => {
   const span = document.createElement('span');
   span.className = 'arrow';
   th.appendChild(span);
-  th.addEventListener('click', () => setSort(key));
+  th.addEventListener('click', e => {
+    if (e.target.closest('a')) return;
+    setSort(key);
+  });
 });
 
 async function load() {
