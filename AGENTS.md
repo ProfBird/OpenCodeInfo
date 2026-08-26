@@ -4,7 +4,7 @@ Static site + refresh script for OpenCode Zen model pricing, AA Coding Index, SW
 
 ## Commands
 - Serve the page:            `python -m http.server` → http://localhost:8000/docs/index.html
-- Update data:               `python update_zen_prices.py --output docs/models.json`   (adds/removes models, refreshes prices + SWE-bench Pro)
+- Update data:               `python update_zen_prices.py --output docs/models.json`   (adds/removes models, refreshes prices + SWE-bench Pro + AA SciCode)
 - Preview changes:           `python update_zen_prices.py --dry-run --output docs/models.json`
 - Prices only, no sync:      `python update_zen_prices.py --no-sync --output docs/models.json`
 - Validate data file:        `python3 -m json.tool docs/models.json`
@@ -14,8 +14,8 @@ Static site + refresh script for OpenCode Zen model pricing, AA Coding Index, SW
 - `docs/models.json`         — data source (77 models); the page fetches this
 - `update_zen_prices.py`     — fetches catalogs/pricing and rewrites docs/models.json
 - `opencode-go-models.md`    — markdown snapshot of the same data
-- `readme.md`                — usage docs
-- `.github/workflows/update_models.yml` — daily job (03:00 UTC) that runs the script and commits changes
+- `readme.md`                — usage docs (README.md)
+- `.github/workflows/update_models.yml` — daily job (03:00 UTC) that runs the script and commits docs/models.json + docs/index.html
 
 ## models.json data model
 Each entry: `name`, `codingIndex` (AA Coding Index %, 0–100, `null` if unpublished),
@@ -29,9 +29,10 @@ Each entry: `name`, `codingIndex` (AA Coding Index %, 0–100, `null` if unpubli
 - Pricing from https://opencode.ai/docs/zen#pricing and https://opencode.ai/docs/go; Go price wins where both exist.
 - Context/cost fallback from https://models.dev/api.json; `CONTEXT_OVERRIDES`/`KNOWN_URLS` maps hold verified values.
 - SWE-bench Pro + AA SciCode from https://benchlm.ai/data/models.json (`benchmarks.coding.swePro` / `.aaSciCode`); `BENCH_SLUG_OVERRIDES` maps display names to BenchLM slugs.
+- Every run refreshes the "Checked <date>." footer note in docs/index.html (`update_checked_date`); dry-run never writes.
 - Do NOT hand-edit models.json — run the script.
 
 ## Web page (docs/index.html)
 - Columns: Model, AA Coding Index, SWE-bench Pro, AA SciCode, Input ($/1M), Output ($/1M), Context.
 - Filters: Plan (All Zen / Go only), Max output ($/1M), Min AA index, Min SWE-bench Pro, Min AA SciCode; Reset clears all.
-- Click column headers to sort; `null` scores sort last and render as "—".
+- Click the sort button (⇅) or column header to sort; `null` scores sort last and render as "—". Benchmark header names link to the originator's page.

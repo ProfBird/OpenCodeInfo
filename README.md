@@ -10,7 +10,7 @@ A small static web page that displays **all OpenCode Zen models** (coding benchm
 - `docs/index.html` — The page itself. Loads `models.json` and renders the table. Filtering and sorting all happen in the browser. Published to GitHub Pages via the `docs/` folder.
 - `update_zen_prices.py` — Fetches the current OpenCode Zen catalog and pricing, the Go plan, model context/cost data, and SWE-bench Pro / AA SciCode scores, then updates `docs/models.json` (adds/removes models that join or leave the Zen catalog, refreshes prices, maintains the `plan` flag).
 - `opencode-go-models.md` — A Markdown snapshot of the same data.
-- `.github/workflows/update_models.yml` — Daily GitHub Actions job (03:00 UTC) that runs the update script and commits any changes to `docs/models.json`.
+- `.github/workflows/update_models.yml` — Daily GitHub Actions job (03:00 UTC) that runs the update script and commits any changes to `docs/models.json` and `docs/index.html`.
 
 ## Usage
 
@@ -24,9 +24,9 @@ A small static web page that displays **all OpenCode Zen models** (coding benchm
 
 ## Sorting & filtering
 
-- Click any column header to sort (click again to reverse direction).
+- Click the sort button (⇅) next to a column name, or the column header itself, to sort (click again to reverse direction).
 - **Plan** filter: show all Zen models or just the **Go** plan subset.
-- Filter by **Max output price ($/1M)**, **Min AA index**, and **Min SWE-bench Pro**.
+- Filter by **Max output price ($/1M)**, **Min AA index**, **Min SWE-bench Pro**, and **Min AA SciCode**.
 - **Reset** clears all filters and restores the default (alphabetical) order.
 - Models with no benchmark score (`—`) sort to the bottom when sorting by benchmark.
 
