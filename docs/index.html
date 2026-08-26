@@ -77,6 +77,7 @@
     <label>Max output ($/1M) <input id="filterMaxOutput" type="number" min="0" step="0.01" placeholder="e.g. 2"></label>
     <label>Min AA index <input id="filterMinAA" type="number" min="0" max="100" step="0.1" placeholder="e.g. 60"></label>
     <label>Min SWE-bench Pro <input id="filterMinSWE" type="number" min="0" max="100" step="0.1" placeholder="e.g. 55"></label>
+    <label>Min AA SciCode <input id="filterMinSciCode" type="number" min="0" max="100" step="0.1" placeholder="e.g. 45"></label>
     <button id="reset">Reset</button>
   </div>
 
@@ -145,19 +146,22 @@ function getFilters() {
   const maxOutEl = document.getElementById('filterMaxOutput');
   const minAAEl = document.getElementById('filterMinAA');
   const minSWEEl = document.getElementById('filterMinSWE');
+  const minSciCodeEl = document.getElementById('filterMinSciCode');
   const maxOut = maxOutEl && maxOutEl.value !== '' ? parseFloat(maxOutEl.value) : null;
   const minAA = minAAEl && minAAEl.value !== '' ? parseFloat(minAAEl.value) : null;
   const minSWE = minSWEEl && minSWEEl.value !== '' ? parseFloat(minSWEEl.value) : null;
+  const minSciCode = minSciCodeEl && minSciCodeEl.value !== '' ? parseFloat(minSciCodeEl.value) : null;
   return {
     plan: planEl ? planEl.value : 'all',
     maxOut: Number.isFinite(maxOut) ? maxOut : null,
     minAA: Number.isFinite(minAA) ? minAA : null,
-    minSWE: Number.isFinite(minSWE) ? minSWE : null
+    minSWE: Number.isFinite(minSWE) ? minSWE : null,
+    minSciCode: Number.isFinite(minSciCode) ? minSciCode : null
   };
 }
 
 function render() {
-  const { plan, maxOut, minAA, minSWE } = getFilters();
+  const { plan, maxOut, minAA, minSWE, minSciCode } = getFilters();
   const filtered = models.filter(m => {
     if (plan === 'go' && m.plan !== 'go') return false;
     if (maxOut !== null) {
@@ -171,6 +175,10 @@ function render() {
     if (minSWE !== null) {
       if (m.swePro === null || m.swePro === undefined) return false;
       if (m.swePro < minSWE) return false;
+    }
+    if (minSciCode !== null) {
+      if (m.aaSciCode === null || m.aaSciCode === undefined) return false;
+      if (m.aaSciCode < minSciCode) return false;
     }
     return true;
   });
@@ -251,11 +259,13 @@ document.getElementById('planFilter').addEventListener('change', render);
 document.getElementById('filterMaxOutput').addEventListener('input', render);
 document.getElementById('filterMinAA').addEventListener('input', render);
 document.getElementById('filterMinSWE').addEventListener('input', render);
+document.getElementById('filterMinSciCode').addEventListener('input', render);
 document.getElementById('reset').addEventListener('click', () => {
   document.getElementById('planFilter').value = 'all';
   document.getElementById('filterMaxOutput').value = '';
   document.getElementById('filterMinAA').value = '';
   document.getElementById('filterMinSWE').value = '';
+  document.getElementById('filterMinSciCode').value = '';
   setSort('name', 1);
 });
 

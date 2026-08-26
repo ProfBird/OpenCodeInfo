@@ -33,5 +33,5 @@ Each entry: `name`, `codingIndex` (AA Coding Index %, 0–100, `null` if unpubli
 
 ## Web page (docs/index.html)
 - Columns: Model, AA Coding Index, SWE-bench Pro, AA SciCode, Input ($/1M), Output ($/1M), Context.
-- Filters: Plan (All Zen / Go only), Max output ($/1M), Min AA index, Min SWE-bench Pro; Reset clears all.
+- Filters: Plan (All Zen / Go only), Max output ($/1M), Min AA index, Min SWE-bench Pro, Min AA SciCode; Reset clears all.
 - Click column headers to sort; `null` scores sort last and render as "—".
