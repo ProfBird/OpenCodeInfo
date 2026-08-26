@@ -450,6 +450,19 @@ def merge_benchmarks(models, bench_items, dry_run=False):
                     m[field] = score
     return changed
 
+def update_checked_date(index_path: Path, today) -> bool:
+    """Refresh the 'Checked <date>.' footer note in the web page. Returns True if changed."""
+    try:
+        text = index_path.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        return False
+    new_date = today.strftime("%b %d, %Y").replace(" 0", " ")
+    new_text, n = re.subn(r'Checked [A-Z][a-z]{2} \d{1,2}, \d{4}\.', f'Checked {new_date}.', text)
+    if n and new_text != text:
+        index_path.write_text(new_text, encoding="utf-8")
+        return True
+    return False
+
 def main():
     parser = argparse.ArgumentParser(description="Update models.json from OpenCode Zen catalog + pricing")
     parser.add_argument("--zen-url", default=DEFAULT_ZEN_URL)
@@ -528,6 +541,11 @@ def main():
         print("\nDry-run: no file written.", file=sys.stderr)
     else:
         print("\nNo changes to write.", file=sys.stderr)
+
+    if not args.dry_run:
+        index_path = args.output.parent / "index.html"
+        if update_checked_date(index_path, date.today()):
+            print(f"Updated 'Checked' date in {index_path}", file=sys.stderr)
 
 if __name__ == "__main__":
     main()
