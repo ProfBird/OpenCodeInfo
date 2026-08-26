@@ -12,7 +12,7 @@
       "cachedReadCost": 0,
       "context": "200K",
       "plan": "zen",
-      "hfUrl": "https://openrouter.ai/big-pickle"
+      "hfUrl": "https://opencode.ai/docs/zen"
     },
     {
       "name": "Claude Fable 5",

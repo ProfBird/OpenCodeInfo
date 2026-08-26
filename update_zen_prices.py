@@ -124,7 +124,7 @@ KNOWN_URLS = {
     "mimo-v2-omni": "https://mimo.xiaomi.com/mimo-v2-omni",
     "ox-alpha-free": "https://openrouter.ai/stealth/ox-alpha",
     "claude-sonnet-4": "https://www.anthropic.com/claude",
-    "big-pickle": "https://openrouter.ai/big-pickle",
+    "big-pickle": "https://opencode.ai/docs/zen",
     # closed models -> BenchLM specs
     "claude-fable-5": "https://benchlm.ai/models/claude-fable-5",
     "claude-opus-5": "https://benchlm.ai/models/claude-opus-5",
