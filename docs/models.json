@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-08-25",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-08-27",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-08-25",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-08-27",
   "models": [
     {
       "name": "Big Pickle",
@@ -249,6 +249,15 @@
       "plan": "zen",
       "hfUrl": "https://benchlm.ai/models/gemini-3.7-flash",
       "aaSciCode": 56.8
+    },
+    {
+      "name": "Glm 5.3 Flash",
+      "codingIndex": null,
+      "inputCost": 0.15,
+      "outputCost": 0.5,
+      "cachedReadCost": 0.03,
+      "context": "1M",
+      "plan": "go"
     },
     {
       "name": "GLM-5",
@@ -791,16 +800,6 @@
       "hfUrl": "https://benchlm.ai/models/nemotron-3-5-lightning-30b-a3b-nvfp4"
     },
     {
-      "name": "Ox Alpha Free",
-      "codingIndex": null,
-      "inputCost": 0,
-      "outputCost": 0,
-      "cachedReadCost": 0,
-      "context": "1M",
-      "hfUrl": "https://openrouter.ai/stealth/ox-alpha",
-      "plan": "go"
-    },
-    {
       "name": "Qwen3.5 Plus",
       "codingIndex": null,
       "inputCost": 0.2,
@@ -858,6 +857,6 @@
       "aaSciCode": 52.9
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-08-25",
-  "benchmarkSciCode": "AA SciCode (Artificial Analysis), via https://benchlm.ai/data/models.json, retrieved 2026-08-25"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-08-27",
+  "benchmarkSciCode": "AA SciCode (Artificial Analysis), via https://benchlm.ai/data/models.json, retrieved 2026-08-27"
 }
