@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-08-27",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-08-28",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-08-27",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-08-28",
   "models": [
     {
       "name": "Big Pickle",
@@ -846,6 +846,15 @@
       "aaSciCode": 45.5
     },
     {
+      "name": "Qwen3.8 Flash",
+      "codingIndex": null,
+      "inputCost": 0.15,
+      "outputCost": 0.47,
+      "cachedReadCost": 0.016,
+      "context": "1M",
+      "plan": "go"
+    },
+    {
       "name": "Qwen3.8 Max",
       "codingIndex": 71.81,
       "inputCost": 2.0,
@@ -857,6 +866,6 @@
       "aaSciCode": 52.9
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-08-27",
-  "benchmarkSciCode": "AA SciCode (Artificial Analysis), via https://benchlm.ai/data/models.json, retrieved 2026-08-27"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-08-28",
+  "benchmarkSciCode": "AA SciCode (Artificial Analysis), via https://benchlm.ai/data/models.json, retrieved 2026-08-28"
 }
