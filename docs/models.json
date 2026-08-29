@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-08-28",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-08-29",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-08-28",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-08-29",
   "models": [
     {
       "name": "Big Pickle",
@@ -257,7 +257,8 @@
       "outputCost": 0.5,
       "cachedReadCost": 0.03,
       "context": "1M",
-      "plan": "go"
+      "plan": "go",
+      "aaSciCode": 46.1
     },
     {
       "name": "GLM-5",
@@ -592,6 +593,16 @@
       "aaSciCode": 47.6
     },
     {
+      "name": "Hy4 Preview",
+      "codingIndex": null,
+      "inputCost": 0.834,
+      "outputCost": 2.501,
+      "cachedReadCost": 0.042,
+      "context": "1M",
+      "plan": "go",
+      "swePro": 65.7
+    },
+    {
       "name": "Kimi K2.5",
       "codingIndex": 46.78,
       "inputCost": 0.6,
@@ -646,6 +657,15 @@
       "context": "256K",
       "plan": "zen",
       "hfUrl": "https://huggingface.co/poolside/Laguna-S-2.1"
+    },
+    {
+      "name": "Ling 3.0 Flash Fin Free",
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "262K",
+      "plan": "zen"
     },
     {
       "name": "LongCat-2.0",
@@ -866,6 +886,6 @@
       "aaSciCode": 52.9
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-08-28",
-  "benchmarkSciCode": "AA SciCode (Artificial Analysis), via https://benchlm.ai/data/models.json, retrieved 2026-08-28"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-08-29",
+  "benchmarkSciCode": "AA SciCode (Artificial Analysis), via https://benchlm.ai/data/models.json, retrieved 2026-08-29"
 }
