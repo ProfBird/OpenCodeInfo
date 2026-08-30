@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-08-29",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-08-30",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-08-29",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-08-30",
   "models": [
     {
       "name": "Big Pickle",
@@ -572,16 +572,6 @@
       "aaSciCode": 47.6
     },
     {
-      "name": "Hy3 Free",
-      "codingIndex": null,
-      "inputCost": 0,
-      "outputCost": 0,
-      "cachedReadCost": 0,
-      "context": "190K",
-      "plan": "zen",
-      "hfUrl": "https://huggingface.co/tencent/HY3"
-    },
-    {
       "name": "Hy3 Preview",
       "codingIndex": 58.8,
       "inputCost": 0,
@@ -886,6 +876,6 @@
       "aaSciCode": 52.9
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-08-29",
-  "benchmarkSciCode": "AA SciCode (Artificial Analysis), via https://benchlm.ai/data/models.json, retrieved 2026-08-29"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-08-30",
+  "benchmarkSciCode": "AA SciCode (Artificial Analysis), via https://benchlm.ai/data/models.json, retrieved 2026-08-30"
 }
