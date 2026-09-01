@@ -69,7 +69,7 @@ DISPLAY_NAME = {
     "gpt-5.6-luna": "GPT 5.6 Luna", "grok-4.5": "Grok 4.5",
     "deepseek-v4-pro": "DeepSeek V4 Pro", "deepseek-v4-flash": "DeepSeek V4 Flash",
     "deepseek-v4-flash-vision-exp": "DeepSeek V4 Flash Vision Exp",
-    "glm-5.3": "GLM-5.3", "glm-5.2": "GLM-5.2", "glm-5.1": "GLM-5.1", "glm-5": "GLM-5",
+    "glm-5.3-flash": "GLM-5.3-Flash", "glm-5.3": "GLM-5.3", "glm-5.2": "GLM-5.2", "glm-5.1": "GLM-5.1", "glm-5": "GLM-5",
     "minimax-m3": "MiniMax M3", "minimax-m2.7": "MiniMax M2.7", "minimax-m2.5": "MiniMax M2.5",
     "kimi-k3": "Kimi K3", "kimi-k2.7-code": "Kimi K2.7 Code", "kimi-k2.6": "Kimi K2.6",
     "kimi-k2.5": "Kimi K2.5", "qwen3.6-plus": "Qwen3.6 Plus", "qwen3.5-plus": "Qwen3.5 Plus",
@@ -91,6 +91,7 @@ KNOWN_URLS = {
     "glm-5": "https://huggingface.co/zai-org/GLM-5",
     "glm-5.1": "https://huggingface.co/zai-org/GLM-5.1",
     "glm-5.2": "https://huggingface.co/zai-org/GLM-5.2",
+    "glm-5.3-flash": "https://huggingface.co/zai-org/GLM-5.3-Flash",
     "kimi-k2.5": "https://huggingface.co/moonshotai/Kimi-K2.5",
     "kimi-k2.6": "https://huggingface.co/moonshotai/Kimi-K2.6",
     "kimi-k2.7-code": "https://huggingface.co/moonshotai/Kimi-K2.7-Code",
@@ -186,6 +187,7 @@ BENCH_SLUG_OVERRIDES = {
     "LongCat-2.0": "longcat-2-0",
     "Grok Build 0.1": "grok-build-0-1",
     "MiniMax M2.5": "minimax-m2-5",
+    "GLM-5.3-Flash": "glm-5-3-flash",
     "GLM-5.3": "glm-5-3",
     "Gemini 3.5 Flash Lite": "gemini-3-5-flash-lite",
     "GPT 5.6 Sol": "gpt-5-6-sol",
@@ -289,7 +291,7 @@ def fmt_ctx(n):
 
 # Verified context overrides (authoritative), take precedence over models.dev.
 CONTEXT_OVERRIDES = {
-    "glm-5": "203K", "glm-5.1": "203K", "glm-5.2": "1M", "glm-5.3": "1M",
+    "glm-5": "203K", "glm-5.1": "203K", "glm-5.2": "1M", "glm-5.3": "1M", "glm-5.3-flash": "1M",
     "hy3": "256K", "hy3-preview": "256K",
     "kimi-k2.5": "256K", "kimi-k2.6": "262K", "kimi-k2.7-code": "262K", "kimi-k3": "1M",
     "minimax-m2.5": "200K", "minimax-m2.7": "205K", "minimax-m3": "1M",
@@ -319,6 +321,7 @@ PARAM_OVERRIDES = {
     "glm-5.1": "744B",
     "glm-5.2": "744B",
     "glm-5.3": "744B",
+    "glm-5.3-flash": "320B",
     "kimi-k2.5": "1T",
     "kimi-k2.6": "1T",
     "kimi-k2.7-code": "1T",

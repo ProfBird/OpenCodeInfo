@@ -324,6 +324,18 @@
       "hfUrl": "https://docs.z.ai/guides/llm/glm-5.3"
     },
     {
+      "name": "GLM-5.3-Flash",
+      "params": "320B",
+      "context": "1M",
+      "codingIndex": null,
+      "inputCost": 0.15,
+      "outputCost": 0.5,
+      "cachedReadCost": 0.03,
+      "plan": "go",
+      "hfUrl": "https://huggingface.co/zai-org/GLM-5.3-Flash",
+      "aaSciCode": 46.1
+    },
+    {
       "name": "GPT 5",
       "params": "635B",
       "context": "400K",
