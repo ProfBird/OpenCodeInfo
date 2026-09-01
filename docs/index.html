@@ -24,7 +24,10 @@
   .subtitle a { color: #60a5fa; text-decoration: none; }
   .subtitle a:hover { text-decoration: underline; }
   .subtitle a:visited { color: #93c5fd; }
-  .toolbar { display: flex; gap: 0.75rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
+  .toolbar { margin-bottom: 1rem; }
+  .toolbar-row { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; }
+  .toolbar-row + .toolbar-row { margin-top: 0.6rem; }
+  .toolbar-filters, .toolbar-filters label { align-items: flex-end; }
   button {
     padding: 0.5rem 0.9rem;
     border: 1px solid #888;
@@ -84,12 +87,18 @@
   .notes ul { margin: 0.35rem 0 0.5rem 1.25rem; }
   .notes li { margin: 0.2rem 0; }
   .notes code { font-size: 0.82rem; }
-  @media (max-width: 640px) {
+  @media (max-width: 900px) {
+    body { padding: 1.25rem 1rem; }
+    th, td { padding: 0.35rem 0.3rem; }
+    table { font-size: 0.85rem; }
+    .sortbtn { padding: 0.05rem 0.2rem; }
+  }
+  @media (max-width: 760px) {
     body { padding: 1rem 0.75rem; }
     h1 { font-size: 1.15rem; }
     .subtitle { font-size: 0.8rem; }
     .toplinks { font-size: 0.8rem; }
-    .toolbar { gap: 0.5rem; }
+    .toolbar-row { gap: 0.5rem; }
     .toolbar input { width: 3rem; }
     #mobileSort { display: flex; }
     table, tbody, tr, td { display: block; }
@@ -106,28 +115,32 @@
 <body>
   <h1>OpenCode Zen &amp; Go — Model Benchmarks &amp; Cost</h1>
   <p class="toplinks"><a href="https://opencode.ai/zen" target="_blank" rel="noopener noreferrer">OpenCode Zen</a> · <a href="https://opencode.ai/docs/go" target="_blank" rel="noopener noreferrer">OpenCode Go</a></p>
-  <p class="subtitle">All OpenCode Zen models (pay-as-you-go). Use the <strong>Plan</strong> filter to show only the $10/mo <strong>Go</strong> plan subset. Costs are USD per 1M tokens (Zen / Go plan pricing). Benchmark is the <a href="https://benchlm.ai/benchmarks/aacodingindex" target="_blank" rel="noopener noreferrer">Artificial Analysis Coding Index</a> (%), snapshot 2026-08-21 (via <a href="https://benchlm.ai/benchmarks/aacodingindex" target="_blank" rel="noopener noreferrer">BenchLM</a> mirror of <a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener noreferrer">Artificial Analysis</a>). Click a column to sort.</p>
+  <p class="subtitle">All OpenCode Zen models (pay-as-you-go). Use the <strong>Plan</strong> filter to show all models, Zen-only models, or the $10/mo <strong>Go</strong> plan subset. Costs are USD per 1M tokens (Zen / Go plan pricing). Benchmark is the <a href="https://benchlm.ai/benchmarks/aacodingindex" target="_blank" rel="noopener noreferrer">Artificial Analysis Coding Index</a> (%), snapshot 2026-08-21 (via <a href="https://benchlm.ai/benchmarks/aacodingindex" target="_blank" rel="noopener noreferrer">BenchLM</a> mirror of <a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener noreferrer">Artificial Analysis</a>). Click a column to sort.</p>
 
   <div class="toolbar">
-    <label>Plan <select id="planFilter"><option value="all">All Zen models</option><option value="go">Go plan only</option></select></label>
-    <label>Max output ($/1M) <input id="filterMaxOutput" type="number" min="0" step="0.01" placeholder="e.g. 2"></label>
-    <label>Min AA index <input id="filterMinAA" type="number" min="0" max="100" step="0.1" placeholder="e.g. 60"></label>
-    <label>Min SWE-bench Pro <input id="filterMinSWE" type="number" min="0" max="100" step="0.1" placeholder="e.g. 55"></label>
-    <label>Min Terminal-Bench <input id="filterMinTerminal" type="number" min="0" max="100" step="0.1" placeholder="e.g. 75"></label>
-    <label>Min DeepSWE <input id="filterMinDeepSwe" type="number" min="0" max="100" step="0.1" placeholder="e.g. 55"></label>
-    <label id="mobileSort">Sort
-      <select id="sortSelect">
-        <option value="name">Model</option>
-        <option value="params">Params</option>
-        <option value="context">Context</option>
-        <option value="codingIndex">AA index</option>
-        <option value="swePro">SWE-bench Pro</option>
-        <option value="terminalBench">Terminal-Bench</option>
-        <option value="deepSwe">DeepSWE</option>
-        <option value="outputCost">Output price</option>
-      </select>
-    </label>
-    <button id="reset">Reset</button>
+    <div class="toolbar-row">
+      <label>Plan <select id="planFilter"><option value="all">All Models</option><option value="zen">Zen Models</option><option value="go">Go Plan Models</option></select></label>
+      <label id="mobileSort">Sort
+        <select id="sortSelect">
+          <option value="name">Model</option>
+          <option value="params">Params</option>
+          <option value="context">Context</option>
+          <option value="codingIndex">AA index</option>
+          <option value="swePro">SWE-bench Pro</option>
+          <option value="terminalBench">Terminal-Bench</option>
+          <option value="deepSwe">DeepSWE</option>
+          <option value="outputCost">Output price</option>
+        </select>
+      </label>
+      <button id="reset">Reset</button>
+    </div>
+    <div class="toolbar-row toolbar-filters">
+      <label><span>Max output<br>($/1M)</span> <input id="filterMaxOutput" type="number" min="0" step="0.01" placeholder="e.g. 2"></label>
+      <label><span>Min AA<br>index</span> <input id="filterMinAA" type="number" min="0" max="100" step="0.1" placeholder="e.g. 60"></label>
+      <label><span>Min SWE-bench<br>Pro</span> <input id="filterMinSWE" type="number" min="0" max="100" step="0.1" placeholder="e.g. 55"></label>
+      <label><span>Min Terminal-<br>Bench</span> <input id="filterMinTerminal" type="number" min="0" max="100" step="0.1" placeholder="e.g. 75"></label>
+      <label><span>Min DeepSWE</span> <input id="filterMinDeepSwe" type="number" min="0" max="100" step="0.1" placeholder="e.g. 55"></label>
+    </div>
   </div>
 
   <table>
@@ -222,6 +235,7 @@ function render() {
   const { plan, maxOut, minAA, minSWE, minTerminal, minDeepSwe } = getFilters();
   const filtered = models.filter(m => {
     if (plan === 'go' && m.plan !== 'go') return false;
+    if (plan === 'zen' && m.plan !== 'zen') return false;
     if (maxOut !== null) {
       if (m.outputCost === null || m.outputCost === undefined) return false;
       if (m.outputCost > maxOut) return false;

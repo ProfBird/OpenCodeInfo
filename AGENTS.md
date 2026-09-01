@@ -35,5 +35,5 @@ Each entry: `name`, `params` (total parameters, e.g. "744B", "1.6T", `null` if u
 
 ## Web page (docs/index.html)
 - Columns: Model, Params, Context, AA Coding Index, SWE-bench Pro, Terminal-Bench, DeepSWE, Output ($/1M).
-- Filters: Plan (All Zen / Go only), Max output ($/1M), Min AA index, Min SWE-bench Pro, Min Terminal-Bench, Min DeepSWE; Reset clears all.
+- Filters: Plan (All Models / Zen Models / Go Plan Models), Max output ($/1M), Min AA index, Min SWE-bench Pro, Min Terminal-Bench, Min DeepSWE; Reset clears all.
 - Click the sort button (⇅) or column header to sort; `null` scores/params sort last and render as "—". Benchmark header names link to the originator's page.
