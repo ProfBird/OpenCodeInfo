@@ -46,9 +46,11 @@
   }
   .toolbar input { width: 3.5rem; }
   .toolbar select { width: auto; }
-  table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+  #mobileSort { display: none; }
+  table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 0.9rem; }
   th, td { padding: 0.45rem 0.7rem; text-align: right; border-bottom: 1px solid #ccc; }
   th { cursor: pointer; user-select: none; white-space: nowrap; }
+  thead th { position: sticky; top: 0; background: #fff; background: Canvas; z-index: 2; }
   th a { color: #60a5fa; text-decoration: none; }
   th a:hover { text-decoration: underline; }
   th a:visited { color: #93c5fd; }
@@ -82,6 +84,23 @@
   .notes ul { margin: 0.35rem 0 0.5rem 1.25rem; }
   .notes li { margin: 0.2rem 0; }
   .notes code { font-size: 0.82rem; }
+  @media (max-width: 640px) {
+    body { padding: 1rem 0.75rem; }
+    h1 { font-size: 1.15rem; }
+    .subtitle { font-size: 0.8rem; }
+    .toplinks { font-size: 0.8rem; }
+    .toolbar { gap: 0.5rem; }
+    .toolbar input { width: 3rem; }
+    #mobileSort { display: flex; }
+    table, tbody, tr, td { display: block; }
+    thead { display: none; }
+    table { font-size: 0.85rem; }
+    tbody tr { border: 1px solid #bbb; border-radius: 10px; margin-bottom: 0.7rem; padding: 0.45rem 0.6rem; }
+    tbody tr:hover { background: rgba(128,128,128,0.06); }
+    td { border-bottom: none; text-align: right; padding: 0.2rem 0.1rem; }
+    td[data-label]::before { content: attr(data-label); float: left; font-weight: 600; opacity: 0.65; margin-right: 0.75rem; }
+    td:first-child { text-align: left; font-weight: 600; border-bottom: 1px solid #ccc; padding-bottom: 0.35rem; margin-bottom: 0.3rem; }
+  }
 </style>
 </head>
 <body>
@@ -96,6 +115,18 @@
     <label>Min SWE-bench Pro <input id="filterMinSWE" type="number" min="0" max="100" step="0.1" placeholder="e.g. 55"></label>
     <label>Min Terminal-Bench <input id="filterMinTerminal" type="number" min="0" max="100" step="0.1" placeholder="e.g. 75"></label>
     <label>Min DeepSWE <input id="filterMinDeepSwe" type="number" min="0" max="100" step="0.1" placeholder="e.g. 55"></label>
+    <label id="mobileSort">Sort
+      <select id="sortSelect">
+        <option value="name">Model</option>
+        <option value="params">Params</option>
+        <option value="context">Context</option>
+        <option value="codingIndex">AA index</option>
+        <option value="swePro">SWE-bench Pro</option>
+        <option value="terminalBench">Terminal-Bench</option>
+        <option value="deepSwe">DeepSWE</option>
+        <option value="outputCost">Output price</option>
+      </select>
+    </label>
     <button id="reset">Reset</button>
   </div>
 
@@ -256,13 +287,13 @@ function render() {
     return `
     <tr>
       <td>${nameHtml}${noteLink}</td>
-      <td>${fmtParams(m.params)}</td>
-      <td>${escapeHtml(m.context)}</td>
-      <td class="num">${fmtBench(m.codingIndex)}</td>
-      <td class="num">${fmtScore(m.swePro)}</td>
-      <td class="num">${fmtScore(m.terminalBench)}</td>
-      <td class="num">${fmtScore(m.deepSwe)}</td>
-      <td class="num">${fmtCost(m.outputCost)}</td>
+      <td data-label="Params">${fmtParams(m.params)}</td>
+      <td data-label="Context">${escapeHtml(m.context)}</td>
+      <td class="num" data-label="AA Coding Index">${fmtBench(m.codingIndex)}</td>
+      <td class="num" data-label="SWE-bench Pro">${fmtScore(m.swePro)}</td>
+      <td class="num" data-label="Terminal-Bench">${fmtScore(m.terminalBench)}</td>
+      <td class="num" data-label="DeepSWE">${fmtScore(m.deepSwe)}</td>
+      <td class="num" data-label="Output ($/1M)">${fmtCost(m.outputCost)}</td>
     </tr>`;
   }).join('');
 }
@@ -300,6 +331,8 @@ function setSort(key, dir) {
     sortKey = key;
     sortDir = dir === undefined ? 1 : dir;
   }
+  const ss = document.getElementById('sortSelect');
+  if (ss && ss.value !== key) ss.value = key;
   render();
   updateArrows();
 }
@@ -320,6 +353,7 @@ document.getElementById('filterMinAA').addEventListener('input', render);
 document.getElementById('filterMinSWE').addEventListener('input', render);
 document.getElementById('filterMinTerminal').addEventListener('input', render);
 document.getElementById('filterMinDeepSwe').addEventListener('input', render);
+document.getElementById('sortSelect').addEventListener('change', e => setSort(e.target.value, 1));
 document.getElementById('reset').addEventListener('click', () => {
   document.getElementById('planFilter').value = 'all';
   document.getElementById('filterMaxOutput').value = '';
