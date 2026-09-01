@@ -738,13 +738,14 @@
     },
     {
       "name": "Ling 3.0 Flash Fin Free",
-      "params": null,
+      "params": "124B",
       "context": "262K",
       "codingIndex": null,
       "inputCost": 0,
       "outputCost": 0,
       "cachedReadCost": 0,
-      "plan": "zen"
+      "plan": "zen",
+      "hfUrl": "https://benchlm.ai/models/ling-3-0-flash-fin"
     },
     {
       "name": "LongCat-2.0",

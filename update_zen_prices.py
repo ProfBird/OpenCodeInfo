@@ -68,6 +68,7 @@ DISPLAY_NAME = {
     "nemotron-3-ultra-free": "Nemotron 3 Ultra Free",
     "nemotron-3.5-lightning-free": "Nemotron 3.5 Lightning Free",
     "laguna-s-2.1-free": "Laguna S 2.1 Free",
+    "ling-3.0-flash-fin-free": "Ling 3.0 Flash Fin Free",
     "gpt-5.6-luna": "GPT 5.6 Luna", "grok-4.5": "Grok 4.5",
     "deepseek-v4-pro": "DeepSeek V4 Pro", "deepseek-v4-flash": "DeepSeek V4 Flash",
     "deepseek-v4-flash-vision-exp": "DeepSeek V4 Flash Vision Exp",
@@ -169,6 +170,9 @@ KNOWN_URLS = {
     "muse-spark-1.2": "https://benchlm.ai/models/muse-spark-1-2",
     "nemotron-3-ultra-free": "https://benchlm.ai/models/nemotron-3-ultra",
     "nemotron-3.5-lightning-free": "https://benchlm.ai/models/nemotron-3-5-lightning-30b-a3b-nvfp4",
+    # Ling 3.0 Flash Fin: finance fine-tune; weights not on HF yet (API-only launch
+    # 2026-08-27) -> BenchLM spec profile per the fallback chain.
+    "ling-3.0-flash-fin-free": "https://benchlm.ai/models/ling-3-0-flash-fin",
 }
 
 # OpenCode model name -> BenchLM slug for SWE-bench Pro lookups where the
@@ -308,6 +312,7 @@ CONTEXT_OVERRIDES = {
     "mimo-v2-pro": "1M", "mimo-v2-omni": "1M",
     "muse-spark-1.2-contributor": "1M", "ox-alpha-free": "1M",
     "deepseek-v4-flash-vision-exp": "1M",
+    "ling-3.0-flash-fin-free": "262K",
     "gpt-5.6-luna": "1.05M", "grok-4.5": "500K",
     "deepseek-v4-pro": "1M", "deepseek-v4-flash": "1M",
 }
@@ -336,6 +341,7 @@ PARAM_OVERRIDES = {
     "longcat-2.0": "1.6T",
     "mimo-v2.5": "310B",
     "mimo-v2.5-free": "310B",
+    "ling-3.0-flash-fin-free": "124B",  # finance fine-tune of Ling 3.0 Flash, retains its 124B-total / 5.1B-active MoE (InclusionAI launch notes via BenchLM/Benchable)
     "mimo-v2.5-pro": "1.02T",
     "mimo-v2-pro": "1T",
     "mimo-v2-omni": "1T",
@@ -492,6 +498,9 @@ def reconcile(data, desired, zen_pricing, go_pricing, md, dry_run=False):
             has_zen = bool(existing.get("alsoOnZen"))
             if want_zen != has_zen:
                 updates["alsoOnZen"] = want_zen
+            # hfUrl (maintain for existing rows when a known URL exists; never auto-clear)
+            if i in KNOWN_URLS and existing.get("hfUrl") != KNOWN_URLS[i]:
+                updates["hfUrl"] = KNOWN_URLS[i]
             # context (only update if we have a real value)
             if d["context"] and existing.get("context") != d["context"]:
                 updates["context"] = d["context"]
