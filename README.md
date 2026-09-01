@@ -24,7 +24,7 @@ A small static web page that displays **all OpenCode Zen models** (coding benchm
 ## Sorting & filtering
 
 - Click the sort button (⇅) next to a column name, or the column header itself, to sort (click again to reverse direction).
-- **Plan** filter: show all models, **Zen** models only, or **Go Plan** models.
+- **Plan** filter: show all models or just the **Go Plan** models.
 - Filter by **Min AA index**, **Min SWE-bench Pro**, **Min Terminal-Bench**, **Min DeepSWE**, and **Max output price ($/1M)** — same order as the columns.
 - **Reset** clears all filters and restores the default (alphabetical) order.
 - Models with no benchmark score (`—`) sort to the bottom when sorting by benchmark.
