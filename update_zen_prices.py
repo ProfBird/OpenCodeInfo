@@ -526,21 +526,25 @@ OPENROUTER_CODING_INDEX = {
 }
 
 def or_display_name(or_id, or_name):
+    """Base display name for an OpenRouter row (the (OpenRouter) badge is added by the page)."""
     base = OPENROUTER_DISPLAY.get(or_id)
     if base is None:
         base = or_name.split(": ", 1)[-1]  # strip "Vendor: " prefix
-    return f"{base} (OpenRouter)"
+    return base
 
 def sync_openrouter(models, or_models, dry_run=False):
     """Add/update rows for OpenRouter's programming-category models (plan 'openrouter').
 
     Pricing/context come from OpenRouter's catalog and can differ from the same
-    model's Zen/Go pricing, so every OpenRouter model gets its own row named
-    '<Display> (OpenRouter)'. Rows are never removed (same retention policy).
+    model's Zen/Go pricing, so every OpenRouter model gets its own row (the page
+    marks them with an (OpenRouter) badge). Rows are never removed (same
+    retention policy). Legacy rows named '<Display> (OpenRouter)' are renamed to
+    the bare display name on sync.
     """
     by_name = {}
     for m in models:
-        by_name[normalize(m["name"])] = m
+        if m.get("plan") == "openrouter":
+            by_name[normalize(m["name"])] = m
     added = []
     changed = []
     for om in or_models:
@@ -566,7 +570,12 @@ def sync_openrouter(models, or_models, dry_run=False):
         hf = om.get("hugging_face_id")
         new_url = f"https://huggingface.co/{hf}" if hf else f"https://openrouter.ai/{oid.split(':')[0]}"
         row_data["hfUrl"] = new_url
-        existing = by_name.get(normalize(name))
+        existing = by_name.get(normalize(name)) or by_name.get(normalize(name + " (OpenRouter)"))
+        if existing is not None and existing.get("name") != name:
+            changed.append((existing.get("name"), {"name": name}))
+            if not dry_run:
+                existing["name"] = name
+                by_name[normalize(name)] = existing
         if existing is None:
             row = {"name": name, "codingIndex": None, "swePro": None,
                    "terminalBench": None, "deepSwe": None}
@@ -629,6 +638,8 @@ def reconcile(data, desired, zen_pricing, go_pricing, md, dry_run=False):
     models = data.setdefault("models", [])
     by_id = {}
     for m in models:
+        if m.get("plan") == "openrouter":
+            continue  # separate identity space; synced by name in sync_openrouter
         by_id[normalize(id_from_name(m["name"]))] = m
         by_id[normalize(m["name"])] = m
 
@@ -874,15 +885,27 @@ UNCERTAIN_BENCH_OVERRIDES = {
     },
 }
 
+# canonical key placement for benchmark fields: each goes after its predecessor
+_BENCH_FIELD_PREDS = {
+    "codingIndex": ("context",),
+    "swePro": ("codingIndex", "context"),
+    "terminalBench": ("swePro", "codingIndex", "context"),
+    "deepSwe": ("terminalBench", "swePro", "codingIndex", "context"),
+}
+
+def _set_bench_field(m, field, val):
+    """Set a benchmark field on a row, keeping canonical key order."""
+    if field in m:
+        m[field] = val
+        return
+    for after in _BENCH_FIELD_PREDS.get(field, ()):
+        if after in m:
+            _insert_after(m, field, val, after)
+            return
+    m[field] = val
+
 def apply_uncertain_bench_overrides(models, dry_run=False):
     """Set uncertain (identity-inferred) benchmark values verbatim, with '?' intact."""
-    # canonical key placement: each field goes after the last present predecessor
-    preds = {
-        "codingIndex": ("context",),
-        "swePro": ("codingIndex", "context"),
-        "terminalBench": ("swePro", "codingIndex", "context"),
-        "deepSwe": ("terminalBench", "swePro", "codingIndex", "context"),
-    }
     changed = []
     for m in models:
         for field, val in UNCERTAIN_BENCH_OVERRIDES.get(m["name"], {}).items():
@@ -891,15 +914,34 @@ def apply_uncertain_bench_overrides(models, dry_run=False):
             changed.append((field, m["name"], m.get(field), val))
             if dry_run:
                 continue
-            if field in m:
-                m[field] = val
-            else:
-                for after in preds.get(field, ()):
-                    if after in m:
-                        _insert_after(m, field, val, after)
-                        break
-                else:
-                    m[field] = val
+            _set_bench_field(m, field, val)
+    return changed
+
+def cross_copy_benchmarks(models, dry_run=False):
+    """Fill missing benchmark scores by copying between rows for the same model.
+
+    Zen/Go rows and their OpenRouter twins share the same underlying model, so
+    any benchmark field published for one and missing on the other (including
+    codingIndex, which merge_benchmarks never touches) is copied across.
+    Existing values are never overwritten.
+    """
+    groups = {}
+    for m in models:
+        groups.setdefault(normalize(m["name"]), []).append(m)
+    changed = []
+    for rows in groups.values():
+        if len(rows) < 2:
+            continue
+        for field in ("codingIndex", "swePro", "terminalBench", "deepSwe"):
+            have = [m for m in rows if m.get(field) is not None]
+            if not have or len(have) == len(rows):
+                continue
+            val = have[0].get(field)
+            for m in rows:
+                if m.get(field) is None:
+                    changed.append((field, m["name"], None, val))
+                    if not dry_run:
+                        _set_bench_field(m, field, val)
     return changed
 
 # Availability: models.dev is the catalog OpenCode's model picker consumes.
@@ -1050,6 +1092,7 @@ def main():
     bench_changed += apply_bench_overrides(data["models"], dry_run=args.dry_run)
     bench_changed += inherit_benchmarks(data["models"], bench_items, dry_run=args.dry_run)
     bench_changed += apply_uncertain_bench_overrides(data["models"], dry_run=args.dry_run)
+    bench_changed += cross_copy_benchmarks(data["models"], dry_run=args.dry_run)
     na_changed = apply_na_flags(data["models"], md, mdgo, catalog_ids=list(zen_ids) + list(go_ids), dry_run=args.dry_run)
 
     if changed:
