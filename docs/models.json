@@ -328,12 +328,13 @@
       "params": "320B",
       "context": "1M",
       "codingIndex": null,
+      "swePro": null,
+      "aaSciCode": 46.1,
       "inputCost": 0.15,
       "outputCost": 0.5,
       "cachedReadCost": 0.03,
       "plan": "go",
-      "hfUrl": "https://huggingface.co/zai-org/GLM-5.3-Flash",
-      "aaSciCode": 46.1
+      "hfUrl": "https://huggingface.co/zai-org/GLM-5.3-Flash"
     },
     {
       "name": "GPT 5",
