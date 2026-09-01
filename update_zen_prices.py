@@ -38,6 +38,7 @@ DEFAULT_ZEN_API_URL = "https://opencode.ai/zen/v1/models"
 DEFAULT_GO_API_URL = "https://opencode.ai/zen/go/v1/models"
 DEFAULT_MODELSDEV_URL = "https://models.dev/api.json"
 DEFAULT_BENCHLM_URL = "https://benchlm.ai/data/models.json"
+DEFAULT_OPENROUTER_URL = "https://openrouter.ai/api/v1/models"
 DEFAULT_MODELS_PATH = Path(__file__).with_name("models.json")
 
 # Display-name overrides for models where the registry name is awkward.
@@ -408,6 +409,188 @@ PARAM_OVERRIDES = {
     # Below are best-effort or undisclosed; null means unknown (rendered as —)
 }
 
+# OpenRouter programming-category models. The UI's Programming category
+# (https://openrouter.ai/models?categories=programming, 47 models) is computed
+# client-side; OPENROUTER_DISPLAY lists the verified subset (31 rendered from the
+# filtered UI + 5 from the API's narrower ?category=programming list). Each gets
+# its own row named "<Display> (OpenRouter)" because OpenRouter's pricing and
+# context can differ from the Zen/Go twins. Params mirror the Zen/Go twins.
+OPENROUTER_DISPLAY = {
+    "anthropic/claude-opus-5": "Claude Opus 5",
+    "anthropic/claude-sonnet-5": "Claude Sonnet 5",
+    "anthropic/claude-fable-5": "Claude Fable 5",
+    "deepseek/deepseek-v4-flash": "DeepSeek V4 Flash",
+    "deepseek/deepseek-v4-flash-0731": "DeepSeek V4 Flash 0731",
+    "deepseek/deepseek-v4-flash-vision-exp": "DeepSeek V4 Flash Vision Exp",
+    "deepseek/deepseek-v4-pro": "DeepSeek V4 Pro",
+    "deepseek/deepseek-v4-pro-0813": "DeepSeek V4 Pro 0813",
+    "google/gemini-3.6-flash": "Gemini 3.6 Flash",
+    "google/gemini-3.7-flash": "Gemini 3.7 Flash",
+    "meta/muse-spark-1.2-contributor": "Muse Spark 1.2 Contributor",
+    "minimax/minimax-m3": "MiniMax M3",
+    "minimax/minimax-m3:free": "MiniMax M3 Free",
+    "moonshotai/kimi-k2.7-code": "Kimi K2.7 Code",
+    "moonshotai/kimi-k3": "Kimi K3",
+    "nvidia/nemotron-3-ultra-550b-a55b:free": "Nemotron 3 Ultra Free",
+    "nvidia/nemotron-3.5-lightning:free": "Nemotron 3.5 Lightning Free",
+    "openai/gpt-5.6-luna": "GPT 5.6 Luna",
+    "openai/gpt-5.6-luna-pro": "GPT 5.6 Luna Pro",
+    "openai/gpt-5.6-sol": "GPT 5.6 Sol",
+    "openai/gpt-5.6-terra": "GPT 5.6 Terra",
+    "poolside/laguna-s-2.1:free": "Laguna S 2.1 Free",
+    "qwen/qwen3.7-flash": "Qwen3.7 Flash",
+    "qwen/qwen3.8-27b": "Qwen3.8 27B",
+    "qwen/qwen3.8-flash": "Qwen3.8 Flash",
+    "qwen/qwen3.8-max": "Qwen3.8 Max",
+    "thinkingmachines/inkling:free": "Inkling Free",
+    "tencent/hy3": "Hy3",
+    "tencent/hy4-preview": "Hy4 Preview",
+    "upstage/solar-pro4": "Solar Pro 4",
+    "xiaomi/mimo-v2.5": "MiMo-V2.5",
+    "x-ai/grok-4.5": "Grok 4.5",
+    "x-ai/grok-4.6": "Grok 4.6",
+    "z-ai/glm-5.2": "GLM-5.2",
+    "z-ai/glm-5.3": "GLM-5.3",
+    "z-ai/glm-5.3-flash": "GLM-5.3-Flash",
+}
+
+OPENROUTER_PARAMS = {
+    "anthropic/claude-opus-5": "5T",
+    "anthropic/claude-sonnet-5": "1T",
+    "anthropic/claude-fable-5": "10T",
+    "deepseek/deepseek-v4-flash": "284B",
+    "deepseek/deepseek-v4-flash-0731": "284B",
+    "deepseek/deepseek-v4-flash-vision-exp": "284B",
+    "deepseek/deepseek-v4-pro": "1.6T",
+    "deepseek/deepseek-v4-pro-0813": "1.6T",
+    "google/gemini-3.6-flash": "500B",
+    "google/gemini-3.7-flash": "600B",
+    "meta/muse-spark-1.2-contributor": "405B",
+    "minimax/minimax-m3": "428B",
+    "minimax/minimax-m3:free": "428B",
+    "moonshotai/kimi-k2.7-code": "1T",
+    "moonshotai/kimi-k3": "2.8T",
+    "nvidia/nemotron-3-ultra-550b-a55b:free": "550B",
+    "nvidia/nemotron-3.5-lightning:free": "30B",
+    "openai/gpt-5.6-luna": "85B",
+    "openai/gpt-5.6-sol": "635B",
+    "openai/gpt-5.6-terra": "635B",
+    "poolside/laguna-s-2.1:free": "118B",
+    "qwen/qwen3.8-27b": "27B",
+    "qwen/qwen3.8-flash": "125B",
+    "qwen/qwen3.8-max": "2.4T",
+    "tencent/hy3": "295B",
+    "xiaomi/mimo-v2.5": "310B",
+    "x-ai/grok-4.5": "1.7T",
+    "x-ai/grok-4.6": "1.7T",
+    "z-ai/glm-5.2": "744B",
+    "z-ai/glm-5.3": "744B",
+    "z-ai/glm-5.3-flash": "320B",
+}
+
+# AA Coding Index for OpenRouter programming rows, from OpenRouter's benchmarks
+# API (https://openrouter.ai/api/v1/benchmarks, source "artificial-analysis",
+# matched permaslug = model id + build date). That endpoint requires auth, so
+# these are applied as a curated snapshot rather than fetched by daily runs.
+# Models without a published AA coding index (Hy3, Hy4 Preview, Claude Fable 5,
+# DeepSeek V4 Flash Vision Exp, Muse Spark 1.2 Contributor, GPT 5.6 Luna Pro,
+# Laguna S 2.1, Qwen3.7 Flash, Qwen3.8 Flash) stay null.
+OPENROUTER_CODING_INDEX = {
+    "anthropic/claude-opus-5": 78,
+    "anthropic/claude-sonnet-5": 71.5,
+    "deepseek/deepseek-v4-flash": 56.2,
+    "deepseek/deepseek-v4-flash-0731": 69.1,
+    "deepseek/deepseek-v4-pro": 59.4,
+    "deepseek/deepseek-v4-pro-0813": 68.8,
+    "google/gemini-3.6-flash": 69.2,
+    "google/gemini-3.7-flash": 76.1,
+    "minimax/minimax-m3": 58.6,
+    "minimax/minimax-m3:free": 58.6,
+    "moonshotai/kimi-k2.7-code": 60.8,
+    "moonshotai/kimi-k3": 76.2,
+    "nvidia/nemotron-3-ultra-550b-a55b:free": 49.3,
+    "nvidia/nemotron-3.5-lightning:free": 26.8,
+    "openai/gpt-5.6-luna": 71.4,
+    "openai/gpt-5.6-sol": 77.4,
+    "openai/gpt-5.6-terra": 76.7,
+    "qwen/qwen3.8-27b": 68.1,
+    "qwen/qwen3.8-max": 71.8,
+    "thinkingmachines/inkling:free": 52.1,
+    "upstage/solar-pro4": 52.7,
+    "x-ai/grok-4.5": 72.4,
+    "x-ai/grok-4.6": 76.8,
+    "xiaomi/mimo-v2.5": 56.8,
+    "z-ai/glm-5.2": 68.8,
+    "z-ai/glm-5.3": 74.8,
+    "z-ai/glm-5.3-flash": 71.5,
+}
+
+def or_display_name(or_id, or_name):
+    base = OPENROUTER_DISPLAY.get(or_id)
+    if base is None:
+        base = or_name.split(": ", 1)[-1]  # strip "Vendor: " prefix
+    return f"{base} (OpenRouter)"
+
+def sync_openrouter(models, or_models, dry_run=False):
+    """Add/update rows for OpenRouter's programming-category models (plan 'openrouter').
+
+    Pricing/context come from OpenRouter's catalog and can differ from the same
+    model's Zen/Go pricing, so every OpenRouter model gets its own row named
+    '<Display> (OpenRouter)'. Rows are never removed (same retention policy).
+    """
+    by_name = {}
+    for m in models:
+        by_name[normalize(m["name"])] = m
+    added = []
+    changed = []
+    for om in or_models:
+        oid = om.get("id", "")
+        if oid not in OPENROUTER_DISPLAY:
+            continue  # only curated Programming-category models get rows
+        name = or_display_name(oid, om.get("name") or oid)
+        price = om.get("pricing", {}) or {}
+        def per_million(v):
+            try:
+                return round(float(v) * 1_000_000, 6)
+            except (TypeError, ValueError):
+                return 0
+        row_data = {
+            "params": OPENROUTER_PARAMS.get(oid),
+            "context": fmt_ctx(om.get("context_length")),
+            "inputCost": per_million(price.get("prompt")),
+            "outputCost": per_million(price.get("completion")),
+            "cachedReadCost": per_million(price.get("input_cache_read")),
+            "plan": "openrouter",
+            "codingIndex": OPENROUTER_CODING_INDEX.get(oid),
+        }
+        hf = om.get("hugging_face_id")
+        new_url = f"https://huggingface.co/{hf}" if hf else f"https://openrouter.ai/{oid.split(':')[0]}"
+        row_data["hfUrl"] = new_url
+        existing = by_name.get(normalize(name))
+        if existing is None:
+            row = {"name": name, "codingIndex": None, "swePro": None,
+                   "terminalBench": None, "deepSwe": None}
+            row.update(row_data)
+            added.append((name, oid))
+            if not dry_run:
+                models.append(row)
+                by_name[normalize(name)] = row
+        else:
+            updates = {}
+            for k, v in row_data.items():
+                if v is None:
+                    continue
+                if existing.get(k) != v:
+                    updates[k] = v
+            if updates:
+                changed.append((name, updates))
+                if not dry_run:
+                    for k, v in updates.items():
+                        existing[k] = v
+    if not dry_run:
+        models.sort(key=lambda x: x["name"].lower())
+    return added, changed
+
 def build_desired(zen_ids, go_ids, md, mdgo=None):
     """Return dict id -> row data for the full union of Zen + Go models."""
     go_set = set(go_ids)
@@ -769,6 +952,8 @@ def apply_na_flags(models, md, mdgo, catalog_ids=(), dry_run=False, today=None):
     cat_norm = {normalize(i) for i in catalog_ids}
     changed = []
     for m in models:
+        if m.get("plan") == "openrouter":
+            continue  # availability maintained via the OpenRouter catalog sync
         mid = id_from_name(m["name"])
         na = normalize(mid) not in cat_norm or not is_available(mid, md, mdgo)
         if bool(m.get("na")) == na and (not na or m.get("naSince")):
@@ -811,6 +996,7 @@ def main():
     parser.add_argument("--go-api-url", default=DEFAULT_GO_API_URL)
     parser.add_argument("--modelsdev-url", default=DEFAULT_MODELSDEV_URL)
     parser.add_argument("--benchlm-url", default=DEFAULT_BENCHLM_URL)
+    parser.add_argument("--openrouter-url", default=DEFAULT_OPENROUTER_URL)
     parser.add_argument("--output", type=Path, default=DEFAULT_MODELS_PATH)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--verbose", action="store_true")
@@ -850,6 +1036,15 @@ def main():
         added, changed = reconcile(data, desired, zen_pricing, go_pricing, md, dry_run=args.dry_run)
     else:
         added = changed = []
+
+    try:
+        or_models = fetch_json(args.openrouter_url)["data"]
+    except Exception as e:
+        or_models = []
+        print(f"Warning: could not fetch OpenRouter catalog: {e}", file=sys.stderr)
+    or_added, or_changed = sync_openrouter(data["models"], or_models, dry_run=args.dry_run)
+    added = list(added) + or_added
+    changed = list(changed) + or_changed
 
     bench_changed = merge_benchmarks(data["models"], bench_items, dry_run=args.dry_run)
     bench_changed += apply_bench_overrides(data["models"], dry_run=args.dry_run)

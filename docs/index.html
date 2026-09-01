@@ -116,11 +116,11 @@
 <body>
   <h1>OpenCode Zen &amp; Go — Model Benchmarks &amp; Cost</h1>
   <p class="toplinks"><a href="https://opencode.ai/zen" target="_blank" rel="noopener noreferrer">OpenCode Zen</a> · <a href="https://opencode.ai/docs/go" target="_blank" rel="noopener noreferrer">OpenCode Go</a></p>
-  <p class="subtitle">All OpenCode Zen models (pay-as-you-go). Use the <strong>Plan</strong> filter to show all models, models available on Zen pay-as-you-go, or the $10/mo <strong>Go</strong> plan subset. Go-plan models are also on Zen where marked (Go · Zen). Costs are USD per 1M tokens (Zen / Go plan pricing). Benchmark is the <a href="https://benchlm.ai/benchmarks/aacodingindex" target="_blank" rel="noopener noreferrer">Artificial Analysis Coding Index</a> (%), snapshot 2026-08-21 (via <a href="https://benchlm.ai/benchmarks/aacodingindex" target="_blank" rel="noopener noreferrer">BenchLM</a> mirror of <a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener noreferrer">Artificial Analysis</a>). Click a column to sort.</p>
+  <p class="subtitle">All OpenCode Zen models (pay-as-you-go). Use the <strong>Plan</strong> filter to show all models, models available on Zen pay-as-you-go, the $10/mo <strong>Go</strong> plan subset, or <strong>OpenRouter</strong> programming-category models — rows named "(OpenRouter)" carry OpenRouter's own pricing and context, which can differ from their Zen/Go twins. Go-plan models are also on Zen where marked (Go · Zen). Costs are USD per 1M tokens. Benchmark is the <a href="https://benchlm.ai/benchmarks/aacodingindex" target="_blank" rel="noopener noreferrer">Artificial Analysis Coding Index</a> (%), snapshot 2026-08-21 (via <a href="https://benchlm.ai/benchmarks/aacodingindex" target="_blank" rel="noopener noreferrer">BenchLM</a> mirror of <a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener noreferrer">Artificial Analysis</a>). Click a column to sort.</p>
 
   <div class="toolbar">
     <div class="toolbar-row">
-      <label>Plan <select id="planFilter"><option value="all">All Models</option><option value="zen">Zen Models</option><option value="go">Go Plan Models</option></select></label>
+      <label>Plan <select id="planFilter"><option value="all">All Models</option><option value="zen">Zen Models</option><option value="go">Go Plan Models</option><option value="openrouter">OpenRouter Models</option></select></label>
       <label class="avail-check" title="Hide models marked (N.A.) — no longer selectable in OpenCode's model picker"><input type="checkbox" id="availFilter"> Available only</label>
       <label id="mobileSort">Sort
         <select id="sortSelect">
@@ -261,6 +261,7 @@ function render() {
   const filtered = models.filter(m => {
     if (plan === 'go' && m.plan !== 'go') return false;
     if (plan === 'zen' && !(m.plan === 'zen' || m.alsoOnZen)) return false;
+    if (plan === 'openrouter' && m.plan !== 'openrouter') return false;
     if (availOnly && m.na) return false;
     if (maxOut !== null) {
       if (m.outputCost === null || m.outputCost === undefined) return false;
