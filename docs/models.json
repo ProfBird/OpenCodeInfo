@@ -6,9 +6,11 @@
   "models": [
     {
       "name": "Big Pickle",
-      "params": "357B",
+      "params": "357B?",
       "context": "200K",
       "codingIndex": null,
+      "swePro": "9.67?",
+      "terminalBench": "49.4?",
       "inputCost": 0,
       "outputCost": 0,
       "cachedReadCost": 0,

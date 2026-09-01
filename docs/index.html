@@ -165,7 +165,7 @@
   <p class="footer"><strong>SWE-bench Pro:</strong> Scale AI's contamination-resistant coding benchmark (1,865 tasks, standardized harness), mirrored from <a href="https://benchlm.ai/benchmarks/swe-bench-pro" target="_blank" rel="noopener noreferrer">BenchLM</a>. OpenAI's July 2026 audit found ~30% of its public tasks broken, so treat scores as directional.</p>
   <p class="footer"><strong>Terminal-Bench:</strong> Laude Institute's agentic terminal &amp; CLI coding benchmark, mirrored from <a href="https://benchlm.ai/benchmarks/terminalbench21" target="_blank" rel="noopener noreferrer">BenchLM</a>. Shows Terminal-Bench 2.1 where published, else 2.0. — = not published.</p>
   <p class="footer"><strong>DeepSWE:</strong> Datacurve's contamination-free long-horizon repo benchmark (113 tasks, 91 repos), pass@1 %, mirrored from <a href="https://benchlm.ai/benchmarks/deepswe" target="_blank" rel="noopener noreferrer">BenchLM</a>. Only models with a published score are shown (— = not published).</p>
-  <p class="footer"><strong>Free tiers</strong> run no benchmark suites of their own and show the scores of the non-free model they serve (e.g. Ox Alpha = GLM-5.3-Flash per Z.ai).</p>
+  <p class="footer"><strong>Free tiers</strong> run no benchmark suites of their own and show the scores of the non-free model they serve (e.g. Ox Alpha = GLM-5.3-Flash per Z.ai). Scores marked <strong>?</strong> (Big Pickle) are its presumed GLM-4.6 identity's published scores — uncertain because the identity is not officially confirmed.</p>
   <p class="footer"><strong>(N.A.)</strong> = <strong>Not Available</strong> — the model no longer appears in OpenCode's model picker (marked <em>deprecated</em> or removed from the <a href="https://models.dev/opencode" target="_blank" rel="noopener noreferrer">model catalog</a> OpenCode uses), though it may still be listed on OpenCode's pricing pages.</p>
 
   <section class="notes" id="stealth-notes">
@@ -174,10 +174,11 @@
 
     <h3>Big Pickle — <code>big-pickle</code> (OpenCode Zen)</h3>
     <p>Free stealth coding model, 200K context / 32K output, $0 in/out. <a href="https://opencode.ai/docs/zen" target="_blank" rel="noopener noreferrer">Zen docs</a> call it “a stealth model … free for a limited time”; data may be used to improve the model during the free period (not zero-retention).</p>
-    <p><strong>Identity:</strong> undisclosed. Community consensus on X/Discord/GitHub points to Zhipu AI's <strong>GLM-4.6</strong>, unconfirmed (<a href="https://github.com/anomalyco/opencode/issues/4276" target="_blank" rel="noopener noreferrer">opencode#4276</a>).</p>
+    <p><strong>Identity:</strong> undisclosed, but almost certainly Zhipu AI's <strong>GLM-4.6</strong> (~357B-param MoE): an OpenCode maintainer answered “Yes it is” when asked exactly that in <a href="https://github.com/anomalyco/opencode/issues/4276" target="_blank" rel="noopener noreferrer">opencode#4276</a> (Nov 2025), and community consensus (Reddit/X/Grokipedia) agrees. The profile fits: 200K context / 32K output, text-only, knowledge cutoff 2025-01, released Oct 17, 2025. Two caveats: <em>(a)</em> it is still not <em>officially</em> confirmed, so params are shown as <strong>357B?</strong> — a trailing <strong>?</strong> marks inferred/uncertain values on this page; <em>(b)</em> an Aug 2026 community run (<a href="https://github.com/PhillipChaffee/big-pickle-swe-atlas" target="_blank" rel="noopener noreferrer">SWE Atlas</a>) reported leaked provider errors suggesting the serving infrastructure may have changed (DeepSeek signatures) — stealth aliases can swap the underlying model without notice. <strong>It is not GLM-5.3-Flash:</strong> that model has a 1M context, text+image+video input, and an Aug 2026 release — and the stealth model identified with GLM-5.3-Flash is <a href="#ox-alpha-note">Ox Alpha</a>, not Big Pickle.</p>
     <p><strong>Benchmarks (community, unofficial):</strong> SWE Atlas Codebase QnA 50.8% (63/124) — <a href="https://github.com/PhillipChaffee/big-pickle-swe-atlas" target="_blank" rel="noopener noreferrer">source</a>; ORPT-Bench 0.615 composite / 67% success — <a href="https://rosspeoples.github.io/orpt-bench/models/opencode-big-pickle.html" target="_blank" rel="noopener noreferrer">source</a>.</p>
+    <p><strong>Benchmarks via GLM-4.6 (shown with <strong>?</strong> — inherited from the unconfirmed identity):</strong> Terminal-Bench v2.1 <strong>49.4?</strong> (Artificial Analysis's own independent run, from its <a href="https://artificialanalysis.ai/models/glm-4-6-reasoning" target="_blank" rel="noopener noreferrer">GLM-4.6 model page</a>, which displays it rounded as 49%); SWE-bench Pro <strong>9.67?</strong> ±2.15 (Scale AI <a href="https://labs.scale.com/leaderboard/swe_bench_pro_public" target="_blank" rel="noopener noreferrer">public leaderboard</a>, Jan 2026). The SWE-bench Pro score is surprisingly low — it sits below same-era open peers (Qwen3-Coder-480B 38.70, Kimi K2 27.67, DeepSeek V3.2 15.56) despite GLM-4.6's CC-Bench parity with Claude Sonnet 4 — and harness choice dominates that board (top entries are marked <em>*Run with mini-swe-agent harness</em>; the GLM-4.6 run's harness is undisclosed), so the low value may reflect an unfavorable config as much as model skill. Sub-10 scores are nonetheless common on the board (Llama 4 Maverick 5.24, Codestral 1.51) and 9.67 is faithfully transcribed from it. GLM-4.6 has <em>no</em> published AA Coding Index (Artificial Analysis deprecated the model and publishes no coding index for it) or DeepSWE — those cells stay —. Other GLM-4.6 numbers exist but for different benchmarks (SWE-bench <em>Verified</em> 55.40 with mini-SWE-agent on <a href="https://www.swebench.com/" target="_blank" rel="noopener noreferrer">swebench.com</a>; vendor-run CC-Bench 48.6% win-rate vs Claude Sonnet 4) and are not comparable to this page's columns.</p>
 
-    <h3>Ox Alpha Free — <code>x-preview-f-free</code> (Zen) / <code>stealth/ox-alpha</code> (OpenRouter) — likely <a href="https://huggingface.co/zai-org/GLM-5.3-Flash" target="_blank" rel="noopener noreferrer">GLM-5.3-Flash</a></h3>
+    <h3 id="ox-alpha-note">Ox Alpha Free — <code>x-preview-f-free</code> (Zen) / <code>stealth/ox-alpha</code> (OpenRouter) — likely <a href="https://huggingface.co/zai-org/GLM-5.3-Flash" target="_blank" rel="noopener noreferrer">GLM-5.3-Flash</a></h3>
     <p>Anonymous reasoning model released <strong>Aug 20, 2026</strong>. 1,048,576 context / 131,072 output, text+image+video → text, tool-calling, $0 preview. “Ox” (letter O); “0x Alpha” is a common typo. <a href="https://openrouter.ai/stealth/ox-alpha" target="_blank" rel="noopener noreferrer">OpenRouter page</a>, <a href="https://x.com/opencode/status/2090544355824038300" target="_blank" rel="noopener noreferrer">OpenCode X Aug 20</a>.</p>
     <p><strong>Privacy differs by route:</strong> OpenRouter retains prompts (not for training); Zen claims zero-retention. Check before sending secrets.</p>
     <p><strong>Identity — GLM-5.3-Flash (high likelihood):</strong> No lab officially claimed Ox Alpha as of Aug 22, but <a href="https://kie.ai/blog/what-is-ox-alpha" target="_blank" rel="noopener noreferrer">kie.ai (Daniel Okonkwo, Aug 22, 2026)</a> fingerprinting is the strongest signal: <code>modelprint</code> tokenizer probes matched GLM family 4/4 (all other labs ≤2/4), and a <code>reasoning_effort:"none"</code> request returned error <code>[1210]</code> — the same code Z.ai’s GLM-5.3 API returns. Public GLM-5.3 is text-only, so the hypothesis was an unreleased multimodal GLM-5.3 variant. On <strong>Aug 26</strong> Z.ai announced <a href="https://z.ai/blog/glm-5.3-flash" target="_blank" rel="noopener noreferrer">GLM-5.3-Flash</a> — 320B total / 18B active, hybrid sparse+linear attention, native multimodal (text/image/video/files), 1M context / 128K output, MIT, $0.15/$0.50 — which matches Ox Alpha’s 1M, video input, and price, making <strong>GLM-5.3-Flash the leading identity with high confidence</strong> (still not officially confirmed as Ox Alpha). See also <a href="https://docs.z.ai/guides/vlm/glm-5.3-flash" target="_blank" rel="noopener noreferrer">Z.ai docs</a> and earlier forensics <a href="https://www.explainx.ai/blog/openrouter-ox-alpha-stealth-model-august-2026" target="_blank" rel="noopener noreferrer">explainx.ai</a>.</p>
@@ -202,11 +203,29 @@ function fmtCost(v) {
 }
 
 function fmtBench(v) {
-  return v === null || v === undefined ? '<span class="na">—</span>' : v.toFixed(1);
+  if (v === null || v === undefined) return '<span class="na">—</span>';
+  if (typeof v === 'number') return v.toFixed(1);
+  return escapeHtml(String(v));
 }
 
 function fmtScore(v) {
-  return v === null || v === undefined ? '<span class="na">—</span>' : v.toFixed(1);
+  if (v === null || v === undefined) return '<span class="na">—</span>';
+  if (typeof v === 'number') return v.toFixed(1);
+  return escapeHtml(String(v));
+}
+
+// Numeric value of a score/params cell; tolerates a trailing "?" (uncertain values).
+function benchNum(v) {
+  if (v === null || v === undefined) return null;
+  if (typeof v === 'number') return v;
+  const n = parseFloat(String(v));
+  return isNaN(n) ? null : n;
+}
+
+function fmtScore(v) {
+  if (v === null || v === undefined) return '<span class="na">—</span>';
+  if (typeof v === 'number') return v.toFixed(1);
+  return escapeHtml(String(v));
 }
 
 function fmtParams(v) {
@@ -248,20 +267,20 @@ function render() {
       if (m.outputCost > maxOut) return false;
     }
     if (minAA !== null) {
-      if (m.codingIndex === null || m.codingIndex === undefined) return false;
-      if (m.codingIndex < minAA) return false;
+      const v = benchNum(m.codingIndex);
+      if (v === null || v < minAA) return false;
     }
     if (minSWE !== null) {
-      if (m.swePro === null || m.swePro === undefined) return false;
-      if (m.swePro < minSWE) return false;
+      const v = benchNum(m.swePro);
+      if (v === null || v < minSWE) return false;
     }
     if (minTerminal !== null) {
-      if (m.terminalBench === null || m.terminalBench === undefined) return false;
-      if (m.terminalBench < minTerminal) return false;
+      const v = benchNum(m.terminalBench);
+      if (v === null || v < minTerminal) return false;
     }
     if (minDeepSwe !== null) {
-      if (m.deepSwe === null || m.deepSwe === undefined) return false;
-      if (m.deepSwe < minDeepSwe) return false;
+      const v = benchNum(m.deepSwe);
+      if (v === null || v < minDeepSwe) return false;
     }
     return true;
   });
@@ -292,7 +311,12 @@ function render() {
     if (na && nb) return 0;
     if (na) return 1;
     if (nb) return -1;
-    return (va - vb) * sortDir;
+    const fa = benchNum(va);
+    const fb = benchNum(vb);
+    if (fa === null && fb === null) return 0;
+    if (fa === null) return 1;
+    if (fb === null) return -1;
+    return (fa - fb) * sortDir;
   });
   if (!sorted.length) {
     tbody.innerHTML = '<tr><td colspan="8" class="na">No models match filters.</td></tr>';
@@ -321,7 +345,7 @@ function render() {
 }
 
 function contextSize(ctx) {
-  const s = String(ctx).trim();
+  const s = String(ctx).trim().replace(/\?+$/, '');
   const num = parseFloat(s);
   if (s.endsWith('K')) return num * 1000;
   if (s.endsWith('M')) return num * 1000000;
@@ -330,7 +354,7 @@ function contextSize(ctx) {
 
 function paramSize(v) {
   if (v === null || v === undefined) return -1;
-  const s = String(v).trim();
+  const s = String(v).trim().replace(/\?+$/, '');
   const num = parseFloat(s);
   if (isNaN(num)) return -1;
   if (s.endsWith('T')) return num * 1e12;

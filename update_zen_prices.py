@@ -397,7 +397,7 @@ PARAM_OVERRIDES = {
     "grok-4.5": "1.7T",
     "grok-4.6": "1.7T",
     "grok-build-0.1": "500B",
-    "big-pickle": "357B",
+    "big-pickle": "357B?",  # inferred from the (unconfirmed) GLM-4.6 identification
     "ox-alpha-free": "500B",
     # Below are best-effort or undisclosed; null means unknown (rendered as —)
 }
@@ -543,6 +543,18 @@ def bench_item_for(model_name, field, by_slug, by_norm):
         slug = bench_slug_for(model_name)
     return by_slug.get(slug) or by_norm.get(normalize(model_name))
 
+def _bench_num(v):
+    """Numeric value of a stored benchmark cell; tolerates strings like '9.67?'."""
+    if v is None:
+        return None
+    try:
+        return float(v)
+    except (TypeError, ValueError):
+        try:
+            return float(str(v).rstrip("?").strip())
+        except ValueError:
+            return None
+
 def merge_benchmarks(models, bench_items, dry_run=False):
     """Merge coding benchmark scores (BENCH_FIELDS) from BenchLM into models."""
     by_slug = {}
@@ -568,7 +580,8 @@ def merge_benchmarks(models, bench_items, dry_run=False):
             if score is None:
                 continue
             old = m.get(field)
-            if old is None or abs(old - score) > 1e-9:
+            old_num = _bench_num(old)
+            if old_num is None or abs(old_num - score) > 1e-9:
                 changed.append((field, m["name"], old, score))
                 if not dry_run:
                     m[field] = score
@@ -631,7 +644,8 @@ def inherit_benchmarks(models, bench_items, dry_run=False):
             if score is None:
                 continue
             old = m.get(field)
-            if old is None or abs(old - score) > 1e-9:
+            old_num = _bench_num(old)
+            if old_num is None or abs(old_num - score) > 1e-9:
                 changed.append((field, m["name"], old, score))
                 if not dry_run:
                     m[field] = score
@@ -645,10 +659,55 @@ def apply_bench_overrides(models, dry_run=False):
         if score is None:
             continue
         old = m.get("swePro")
-        if old is None or abs(old - score) > 1e-9:
+        old_num = _bench_num(old)
+        if old_num is None or abs(old_num - score) > 1e-9:
             changed.append(("swePro", m["name"], old, score))
             if not dry_run:
                 m["swePro"] = score
+    return changed
+
+# Uncertain benchmark values, stored verbatim (with a trailing "?") on rows whose
+# identity is unconfirmed. Big Pickle's scores are its presumed GLM-4.6 identity's;
+# a real published score for the model itself replaces these automatically (the
+# merge functions compare numerically, so "9.67?" == 9.67 and real data wins).
+UNCERTAIN_BENCH_OVERRIDES = {
+    "Big Pickle": {
+        # GLM-4.6 on Scale AI's SWE-bench Pro public leaderboard: 9.67 ±2.15,
+        # rank ~21 (leaderboard max 66.5), entry created 2026-01-27.
+        "swePro": "9.67?",
+        # Terminal-Bench v2.1 49.4% — Artificial Analysis's own independent run,
+        # embedded in https://artificialanalysis.ai/models/glm-4-6-reasoning
+        # (terminalbenchV21 = 0.4944; AA displays it rounded as 49%).
+        "terminalBench": "49.4?",
+    },
+}
+
+def apply_uncertain_bench_overrides(models, dry_run=False):
+    """Set uncertain (identity-inferred) benchmark values verbatim, with '?' intact."""
+    # canonical key placement: each field goes after the last present predecessor
+    preds = {
+        "codingIndex": ("context",),
+        "swePro": ("codingIndex", "context"),
+        "terminalBench": ("swePro", "codingIndex", "context"),
+        "deepSwe": ("terminalBench", "swePro", "codingIndex", "context"),
+    }
+    changed = []
+    for m in models:
+        for field, val in UNCERTAIN_BENCH_OVERRIDES.get(m["name"], {}).items():
+            if str(m.get(field)) == str(val):
+                continue
+            changed.append((field, m["name"], m.get(field), val))
+            if dry_run:
+                continue
+            if field in m:
+                m[field] = val
+            else:
+                for after in preds.get(field, ()):
+                    if after in m:
+                        _insert_after(m, field, val, after)
+                        break
+                else:
+                    m[field] = val
     return changed
 
 # Availability: models.dev is the catalog OpenCode's model picker consumes.
@@ -786,6 +845,7 @@ def main():
     bench_changed = merge_benchmarks(data["models"], bench_items, dry_run=args.dry_run)
     bench_changed += apply_bench_overrides(data["models"], dry_run=args.dry_run)
     bench_changed += inherit_benchmarks(data["models"], bench_items, dry_run=args.dry_run)
+    bench_changed += apply_uncertain_bench_overrides(data["models"], dry_run=args.dry_run)
     na_changed = apply_na_flags(data["models"], md, mdgo, catalog_ids=list(zen_ids) + list(go_ids), dry_run=args.dry_run)
 
     if changed:
