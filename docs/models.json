@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-08-31",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-09-01",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-08-31",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-09-01",
   "models": [
     {
       "name": "Big Pickle",
@@ -617,17 +617,6 @@
       "hfUrl": "https://huggingface.co/tencent/HY3"
     },
     {
-      "name": "Hy3 Free",
-      "params": "295B",
-      "context": "190K",
-      "codingIndex": 58.8,
-      "inputCost": 0,
-      "outputCost": 0,
-      "cachedReadCost": 0,
-      "plan": "zen",
-      "hfUrl": "https://huggingface.co/tencent/HY3"
-    },
-    {
       "name": "Hy3 Preview",
       "params": "295B",
       "context": "256K",
@@ -638,6 +627,19 @@
       "cachedReadCost": 0,
       "plan": "go",
       "hfUrl": "https://huggingface.co/tencent/HY3-Preview"
+    },
+    {
+      "name": "Hy4 Preview",
+      "codingIndex": null,
+      "inputCost": 0.834,
+      "outputCost": 2.501,
+      "cachedReadCost": 0.042,
+      "context": "1M",
+      "params": null,
+      "plan": "go",
+      "swePro": 65.7,
+      "terminalBench": 85.4,
+      "deepSwe": 64.3
     },
     {
       "name": "Kimi K2.5",
@@ -700,6 +702,16 @@
       "cachedReadCost": 0,
       "plan": "zen",
       "hfUrl": "https://huggingface.co/poolside/Laguna-S-2.1"
+    },
+    {
+      "name": "Ling 3.0 Flash Fin Free",
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "262K",
+      "params": null,
+      "plan": "zen"
     },
     {
       "name": "LongCat-2.0",
@@ -873,19 +885,6 @@
       "hfUrl": "https://benchlm.ai/models/nemotron-3-5-lightning-30b-a3b-nvfp4"
     },
     {
-      "name": "Ox Alpha Free",
-      "params": "500B",
-      "context": "1M",
-      "codingIndex": null,
-      "terminalBench": 84.3,
-      "deepSwe": 63.4,
-      "inputCost": 0,
-      "outputCost": 0,
-      "cachedReadCost": 0,
-      "plan": "go",
-      "hfUrl": "https://openrouter.ai/stealth/ox-alpha"
-    },
-    {
       "name": "Qwen3.5 Plus",
       "params": "397B",
       "context": "1M",
@@ -961,7 +960,7 @@
       "hfUrl": "https://huggingface.co/Qwen/Qwen3.8-2.4T-A95B"
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-08-31",
-  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-08-31",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-08-31"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-09-01",
+  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-09-01",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-09-01"
 }
