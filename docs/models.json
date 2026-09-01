@@ -936,6 +936,19 @@
       "hfUrl": "https://qwen.ai/blog?id=qwen3.7-plus"
     },
     {
+      "name": "Qwen3.8 Flash",
+      "params": "125B",
+      "context": "1M",
+      "codingIndex": 73.05,
+      "swePro": 62.5,
+      "aaSciCode": 46.9,
+      "inputCost": 0.15,
+      "outputCost": 0.47,
+      "cachedReadCost": 0.016,
+      "plan": "go",
+      "hfUrl": "https://huggingface.co/Qwen/Qwen3.8-Flash-Next"
+    },
+    {
       "name": "Qwen3.8 Max",
       "params": "2.4T",
       "context": "1M",

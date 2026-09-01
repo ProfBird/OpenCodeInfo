@@ -11,7 +11,7 @@ Static site + refresh script for OpenCode Zen model pricing, AA Coding Index, SW
 
 ## Files
 - `docs/index.html`          — the page (table, filters, sorting)
-- `docs/models.json`         — data source (78 models); the page fetches this
+- `docs/models.json`         — data source (79 models); the page fetches this
 - `update_zen_prices.py`     — fetches catalogs/pricing and rewrites docs/models.json
 - `readme.md`                — usage docs (README.md)
 - `.github/workflows/update_models.yml` — daily job (03:00 UTC) that runs the script and commits docs/models.json + docs/index.html
