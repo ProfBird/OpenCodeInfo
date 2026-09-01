@@ -325,7 +325,7 @@
     },
     {
       "name": "GPT 5",
-      "params": null,
+      "params": "635B",
       "context": "400K",
       "codingIndex": null,
       "inputCost": 1.07,
@@ -336,7 +336,7 @@
     },
     {
       "name": "GPT 5 Codex",
-      "params": null,
+      "params": "635B",
       "context": "400K",
       "codingIndex": null,
       "inputCost": 1.07,
@@ -347,7 +347,7 @@
     },
     {
       "name": "GPT 5 Nano",
-      "params": null,
+      "params": "18B",
       "context": "400K",
       "codingIndex": null,
       "inputCost": 0.05,
@@ -358,7 +358,7 @@
     },
     {
       "name": "GPT 5.1",
-      "params": null,
+      "params": "635B",
       "context": "400K",
       "codingIndex": 49.39,
       "aaSciCode": 43.3,
@@ -370,7 +370,7 @@
     },
     {
       "name": "GPT 5.1 Codex",
-      "params": null,
+      "params": "635B",
       "context": "400K",
       "codingIndex": null,
       "aaSciCode": 40.2,
@@ -382,7 +382,7 @@
     },
     {
       "name": "GPT 5.1 Codex Max",
-      "params": null,
+      "params": "800B",
       "context": "400K",
       "codingIndex": null,
       "aaSciCode": 40.2,
@@ -394,7 +394,7 @@
     },
     {
       "name": "GPT 5.1 Codex Mini",
-      "params": null,
+      "params": "30B",
       "context": "400K",
       "codingIndex": null,
       "inputCost": 0.25,
@@ -405,7 +405,7 @@
     },
     {
       "name": "GPT 5.2",
-      "params": null,
+      "params": "635B",
       "context": "400K",
       "codingIndex": null,
       "swePro": 55.6,
@@ -418,7 +418,7 @@
     },
     {
       "name": "GPT 5.2 Codex",
-      "params": null,
+      "params": "635B",
       "context": "400K",
       "codingIndex": null,
       "aaSciCode": 54.6,
@@ -430,7 +430,7 @@
     },
     {
       "name": "GPT 5.3 Codex",
-      "params": null,
+      "params": "635B",
       "context": "400K",
       "codingIndex": null,
       "swePro": 56.8,
@@ -443,7 +443,7 @@
     },
     {
       "name": "GPT 5.3 Codex Spark",
-      "params": null,
+      "params": "300B",
       "context": "128K",
       "codingIndex": null,
       "inputCost": 1.75,
@@ -454,7 +454,7 @@
     },
     {
       "name": "GPT 5.4",
-      "params": null,
+      "params": "635B",
       "context": "1.05M",
       "codingIndex": 71.05,
       "swePro": 57.7,
@@ -467,7 +467,7 @@
     },
     {
       "name": "GPT 5.4 Mini",
-      "params": null,
+      "params": "85B",
       "context": "400K",
       "codingIndex": 56.08,
       "aaSciCode": 49.9,
@@ -479,7 +479,7 @@
     },
     {
       "name": "GPT 5.4 Nano",
-      "params": null,
+      "params": "18B",
       "context": "400K",
       "codingIndex": 56.07,
       "aaSciCode": 46.9,
@@ -491,7 +491,7 @@
     },
     {
       "name": "GPT 5.4 Pro",
-      "params": null,
+      "params": "1.2T",
       "context": "1.05M",
       "codingIndex": null,
       "inputCost": 30,
@@ -502,7 +502,7 @@
     },
     {
       "name": "GPT 5.5",
-      "params": null,
+      "params": "635B",
       "context": "1.05M",
       "codingIndex": 74.89,
       "swePro": 58.6,
@@ -515,7 +515,7 @@
     },
     {
       "name": "GPT 5.5 Pro",
-      "params": null,
+      "params": "1.2T",
       "context": "1.05M",
       "codingIndex": null,
       "inputCost": 30,
@@ -526,7 +526,7 @@
     },
     {
       "name": "GPT 5.6 Luna",
-      "params": null,
+      "params": "85B",
       "context": "1.05M",
       "codingIndex": 71.45,
       "swePro": 62.7,
@@ -539,7 +539,7 @@
     },
     {
       "name": "GPT 5.6 Sol",
-      "params": null,
+      "params": "635B",
       "context": "1.05M",
       "codingIndex": 77.39,
       "swePro": 64.6,
@@ -552,7 +552,7 @@
     },
     {
       "name": "GPT 5.6 Terra",
-      "params": null,
+      "params": "635B",
       "context": "1.05M",
       "codingIndex": 76.66,
       "swePro": 63.4,

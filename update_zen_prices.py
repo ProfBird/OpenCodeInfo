@@ -305,6 +305,8 @@ CONTEXT_OVERRIDES = {
 
 # Verified parameter count overrides (total parameters). Values are display strings (e.g. "744B", "1.6T").
 # Sources: official model cards / HF repos. MoE models list total params (active params in docs).
+# GPT family: OpenAI does not disclose; estimates from independent benchmark regression (cbowdon.github.io/posts/gpt-params)
+# and industry analysis (cometapi.com/how-many-parameters-does-gpt-5-have, ~2-5T active, 635B regression) — treated as best-effort.
 PARAM_OVERRIDES = {
     "deepseek-v4-flash": "284B",
     "deepseek-v4-flash-free": "284B",
@@ -341,6 +343,26 @@ PARAM_OVERRIDES = {
     "muse-spark-1.2-contributor-free": "405B",
     "nemotron-3-ultra-free": "550B",
     "nemotron-3.5-lightning-free": "30B",
+    "gpt-5": "635B",
+    "gpt-5-codex": "635B",
+    "gpt-5-nano": "18B",
+    "gpt-5.1": "635B",
+    "gpt-5.1-codex": "635B",
+    "gpt-5.1-codex-max": "800B",
+    "gpt-5.1-codex-mini": "30B",
+    "gpt-5.2": "635B",
+    "gpt-5.2-codex": "635B",
+    "gpt-5.3-codex": "635B",
+    "gpt-5.3-codex-spark": "300B",
+    "gpt-5.4": "635B",
+    "gpt-5.4-mini": "85B",
+    "gpt-5.4-nano": "18B",
+    "gpt-5.4-pro": "1.2T",
+    "gpt-5.5": "635B",
+    "gpt-5.5-pro": "1.2T",
+    "gpt-5.6-luna": "85B",
+    "gpt-5.6-sol": "635B",
+    "gpt-5.6-terra": "635B",
     # Below are best-effort or undisclosed; null means unknown (rendered as —)
 }
 
