@@ -538,6 +538,12 @@ BENCH_SLUG_OVERRIDES_DEEPSWE = {
     "Qwen3.8 Max": "qwen3-8-max",
 }
 
+# Hardcoded SWE-bench Pro scores not tracked by BenchLM, sourced from Scale AI's
+# standardized SWE-bench Pro public leaderboard (labs.scale.com/leaderboard/swe_bench_pro_public).
+SWE_PRO_OVERRIDES = {
+    "Claude Haiku 4.5": 39.45,  # claude-4-5-haiku, ±3.55, Scale standardized public set
+}
+
 def bench_item_for(model_name, field, by_slug, by_norm):
     """Resolve the BenchLM item for a model+field (per-field slug overrides)."""
     if field == "deepSwe":
@@ -569,6 +575,20 @@ def merge_benchmarks(models, bench_items, dry_run=False):
                 changed.append((field, m["name"], old, score))
                 if not dry_run:
                     m[field] = score
+    return changed
+
+def apply_bench_overrides(models, dry_run=False):
+    """Apply hardcoded benchmark overrides (e.g. Scale SWE-bench Pro scores BenchLM lacks)."""
+    changed = []
+    for m in models:
+        score = SWE_PRO_OVERRIDES.get(m["name"])
+        if score is None:
+            continue
+        old = m.get("swePro")
+        if old is None or abs(old - score) > 1e-9:
+            changed.append(("swePro", m["name"], old, score))
+            if not dry_run:
+                m["swePro"] = score
     return changed
 
 def update_checked_date(index_path: Path, today) -> bool:
@@ -630,6 +650,7 @@ def main():
         added = removed = changed = []
 
     bench_changed = merge_benchmarks(data["models"], bench_items, dry_run=args.dry_run)
+    bench_changed += apply_bench_overrides(data["models"], dry_run=args.dry_run)
 
     if changed:
         print(f"\n{len(changed)} price/plan update(s):" + (" (dry-run)" if args.dry_run else ""), file=sys.stderr)

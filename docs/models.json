@@ -37,7 +37,8 @@
       "outputCost": 5,
       "cachedReadCost": 0.1,
       "plan": "zen",
-      "hfUrl": "https://benchlm.ai/models/claude-haiku-4-5"
+      "hfUrl": "https://benchlm.ai/models/claude-haiku-4-5",
+      "swePro": 39.45
     },
     {
       "name": "Claude Opus 4.5",

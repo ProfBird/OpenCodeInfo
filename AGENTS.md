@@ -29,7 +29,7 @@ Each entry: `name`, `params` (total parameters, e.g. "744B", "1.6T", `null` if u
 - Catalog = union of https://opencode.ai/zen/v1/models + .../zen/go/v1/models; `plan` reflects Go membership.
 - Pricing from https://opencode.ai/docs/zen#pricing and https://opencode.ai/docs/go; Go price wins where both exist.
 - Context/cost fallback from https://models.dev/api.json; `CONTEXT_OVERRIDES`/`PARAM_OVERRIDES`/`KNOWN_URLS` maps hold verified values.
-- SWE-bench Pro + AA SciCode + DeepSWE from https://benchlm.ai/data/models.json (`benchmarks.coding.swePro` / `.aaSciCode` / `.deepSwe`); `BENCH_SLUG_OVERRIDES` maps display names to BenchLM slugs, `BENCH_SLUG_OVERRIDES_DEEPSWE` overrides slug for the DeepSWE field only.
+- SWE-bench Pro + AA SciCode + DeepSWE from https://benchlm.ai/data/models.json (`benchmarks.coding.swePro` / `.aaSciCode` / `.deepSwe`); `BENCH_SLUG_OVERRIDES` maps display names to BenchLM slugs, `BENCH_SLUG_OVERRIDES_DEEPSWE` overrides slug for the DeepSWE field only. `SWE_PRO_OVERRIDES` hardcodes Scale SWE-bench Pro scores BenchLM lacks (e.g. Claude Haiku 4.5 39.45, from labs.scale.com/leaderboard/swe_bench_pro_public).
 - Every run refreshes the "Checked <date>." footer note in docs/index.html (`update_checked_date`); dry-run never writes.
 - Do NOT hand-edit models.json — run the script.
 
