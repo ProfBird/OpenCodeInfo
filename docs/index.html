@@ -164,6 +164,7 @@
   <p class="footer"><strong>Terminal-Bench:</strong> Laude Institute's agentic terminal &amp; CLI coding benchmark, mirrored from <a href="https://benchlm.ai/benchmarks/terminalbench21" target="_blank" rel="noopener noreferrer">BenchLM</a>. Shows Terminal-Bench 2.1 where published, else 2.0. — = not published.</p>
   <p class="footer"><strong>DeepSWE:</strong> Datacurve's contamination-free long-horizon repo benchmark (113 tasks, 91 repos), pass@1 %, mirrored from <a href="https://benchlm.ai/benchmarks/deepswe" target="_blank" rel="noopener noreferrer">BenchLM</a>. Only models with a published score are shown (— = not published).</p>
   <p class="footer"><strong>Free tiers</strong> run no benchmark suites of their own and show the scores of the non-free model they serve (e.g. Ox Alpha = GLM-5.3-Flash per Z.ai).</p>
+  <p class="footer"><strong>(N.A.)</strong> = <strong>Not Available</strong> — the model no longer appears in OpenCode's model picker (marked <em>deprecated</em> or removed from the <a href="https://models.dev/opencode" target="_blank" rel="noopener noreferrer">model catalog</a> OpenCode uses), though it may still be listed on OpenCode's pricing pages.</p>
 
   <section class="notes" id="stealth-notes">
     <h2>Stealth-model notes</h2>
@@ -293,9 +294,10 @@ function render() {
   }
   tbody.innerHTML = sorted.map(m => {
     const goBadge = m.plan === 'go' ? ' (Go)' : '';
+    const naBadge = m.na ? ' (N.A.)' : '';
     const nameHtml = (m.hfUrl
       ? `<a href="${escapeHtml(m.hfUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(m.name)}</a>`
-      : escapeHtml(m.name)) + goBadge;
+      : escapeHtml(m.name)) + goBadge + naBadge;
     const isStealthNote = /^(big pickle|ox alpha)/i.test(m.name);
     const noteLink = isStealthNote ? ` <a href="#stealth-notes" title="Stealth-model note — see below" style="font-size:0.75em;opacity:0.65;text-decoration:none">ⓘ</a>` : '';
     return `

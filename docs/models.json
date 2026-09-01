@@ -173,6 +173,7 @@
       "outputCost": 0,
       "cachedReadCost": 0,
       "plan": "zen",
+      "na": true,
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash"
     },
     {
@@ -626,6 +627,7 @@
       "outputCost": 0,
       "cachedReadCost": 0,
       "plan": "go",
+      "na": true,
       "hfUrl": "https://huggingface.co/tencent/HY3-Preview"
     },
     {
@@ -701,6 +703,7 @@
       "outputCost": 0,
       "cachedReadCost": 0,
       "plan": "zen",
+      "na": true,
       "hfUrl": "https://huggingface.co/poolside/Laguna-S-2.1"
     },
     {
@@ -733,6 +736,7 @@
       "outputCost": 0,
       "cachedReadCost": 0,
       "plan": "go",
+      "na": true,
       "hfUrl": "https://mimo.xiaomi.com/mimo-v2-omni"
     },
     {
@@ -744,6 +748,7 @@
       "outputCost": 0,
       "cachedReadCost": 0,
       "plan": "go",
+      "na": true,
       "hfUrl": "https://mimo.xiaomi.com/mimo-v2-pro"
     },
     {

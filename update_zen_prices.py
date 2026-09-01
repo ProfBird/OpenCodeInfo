@@ -651,6 +651,51 @@ def apply_bench_overrides(models, dry_run=False):
                 m["swePro"] = score
     return changed
 
+# Availability: models.dev is the catalog OpenCode's model picker consumes.
+# A model is (N.A.) when it has no non-deprecated entry in either the `opencode`
+# (Zen pay-as-you-go) or `opencode-go` (Go plan) provider.
+UNAVAILABLE_STATUSES = {"deprecated"}
+STATUS_ALIAS_IDS = {"x-preview-f-free": ("x-preview-f-free", "ox-alpha-free")}
+
+def is_available(mid, md, mdgo):
+    """True if the model is selectable in OpenCode (active entry in either provider)."""
+    aliases = {normalize(a) for a in STATUS_ALIAS_IDS.get(mid, (mid,))} | {normalize(mid)}
+    for prov in (md, mdgo):
+        for pid, entry in prov.items():
+            if normalize(pid) not in aliases:
+                continue
+            st = entry.get("status")
+            if st is None or st not in UNAVAILABLE_STATUSES:
+                return True
+    return False
+
+def apply_na_flags(models, md, mdgo, dry_run=False):
+    """Set/unset the `na` field (Not Available) on every row from models.dev statuses."""
+    changed = []
+    for m in models:
+        mid = id_from_name(m["name"])
+        na = not is_available(mid, md, mdgo)
+        if bool(m.get("na")) == na:
+            continue
+        changed.append((m["name"], na))
+        if dry_run:
+            continue
+        if na:
+            new = {}
+            inserted = False
+            for k, v in m.items():
+                new[k] = v
+                if k == "plan":
+                    new["na"] = True
+                    inserted = True
+            if not inserted:
+                new["na"] = True
+            m.clear()
+            m.update(new)
+        else:
+            m.pop("na", None)
+    return changed
+
 def update_checked_date(index_path: Path, today) -> bool:
     """Refresh the 'Checked <date>.' footer note in the web page. Returns True if changed."""
     try:
@@ -687,9 +732,12 @@ def main():
     zen_pricing = extract_pricing_table(fetch_html(args.zen_url), is_go=False)
     go_pricing = extract_pricing_table(fetch_html(args.go_url), is_go=True)
     try:
-        md = fetch_json(args.modelsdev_url).get("opencode", {}).get("models", {})
+        mdev = fetch_json(args.modelsdev_url)
+        md = mdev.get("opencode", {}).get("models", {})
+        mdgo = mdev.get("opencode-go", {}).get("models", {})
     except Exception:
         md = {}
+        mdgo = {}
     try:
         bench_items = fetch_json(args.benchlm_url)["items"]
     except Exception as e:
@@ -712,6 +760,7 @@ def main():
     bench_changed = merge_benchmarks(data["models"], bench_items, dry_run=args.dry_run)
     bench_changed += apply_bench_overrides(data["models"], dry_run=args.dry_run)
     bench_changed += inherit_benchmarks(data["models"], bench_items, dry_run=args.dry_run)
+    na_changed = apply_na_flags(data["models"], md, mdgo, dry_run=args.dry_run)
 
     if changed:
         print(f"\n{len(changed)} price/plan update(s):" + (" (dry-run)" if args.dry_run else ""), file=sys.stderr)
@@ -721,6 +770,10 @@ def main():
         print(f"\n{len(bench_changed)} benchmark update(s):" + (" (dry-run)" if args.dry_run else ""), file=sys.stderr)
         for field, name, old, new in bench_changed:
             print(f"  {field:10} {name:34} {old} -> {new}", file=sys.stderr)
+    if na_changed:
+        print(f"\n{len(na_changed)} availability update(s):" + (" (dry-run)" if args.dry_run else ""), file=sys.stderr)
+        for name, na in na_changed:
+            print(f"  {name:34} -> {'(N.A.)' if na else 'available'}", file=sys.stderr)
     if added:
         print(f"\n{len(added)} model(s) to add:" if args.dry_run else f"\n{len(added)} model(s) added:", file=sys.stderr)
         for name, i in added:
@@ -729,10 +782,10 @@ def main():
         print(f"\n{len(removed)} model(s) to remove:" if args.dry_run else f"\n{len(removed)} model(s) removed:", file=sys.stderr)
         for name in removed:
             print(f"  - {name}", file=sys.stderr)
-    if not (changed or added or removed or bench_changed):
+    if not (changed or added or removed or bench_changed or na_changed):
         print("\nCatalog, prices and benchmarks in sync (no changes).", file=sys.stderr)
 
-    if not args.dry_run and (changed or added or removed or bench_changed):
+    if not args.dry_run and (changed or added or removed or bench_changed or na_changed):
         today = date.today().isoformat()
         data["source"] = f"OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved {today}"
         data["goSource"] = f"OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved {today}"

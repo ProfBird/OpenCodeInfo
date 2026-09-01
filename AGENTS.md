@@ -23,13 +23,15 @@ Each entry: `name`, `params` (total parameters, e.g. "744B", "1.6T", `null` if u
 `terminalBench` (Terminal-Bench %, 0–100, `null` if unpublished; 2.1 preferred, else 2.0),
 `deepSwe` (DeepSWE %, 0–100, `null` if unpublished),
 `inputCost`/`outputCost`/`cachedReadCost` (USD per 1M tokens),
-`plan` (`"go"` = Go $10/mo plan, `"zen"` = Zen-only), `hfUrl` (HF card, else BenchLM specs, else manufacturer).
+`plan` (`"go"` = Go $10/mo plan, `"zen"` = Zen-only), `na` (`true` = N.A. — no longer selectable in OpenCode's model picker; omitted otherwise),
+`hfUrl` (HF card, else BenchLM specs, else manufacturer).
 
 ## Update rules (update_zen_prices.py)
 - Catalog = union of https://opencode.ai/zen/v1/models + .../zen/go/v1/models; `plan` reflects Go membership.
 - Pricing from https://opencode.ai/docs/zen#pricing and https://opencode.ai/docs/go; Go price wins where both exist.
 - Context/cost fallback from https://models.dev/api.json; `CONTEXT_OVERRIDES`/`PARAM_OVERRIDES`/`KNOWN_URLS` maps hold verified values.
 - SWE-bench Pro + Terminal-Bench + DeepSWE from https://benchlm.ai/data/models.json (`benchmarks.coding.swePro` / `.terminalBench21`+`.terminalBench2` / `.deepSwe`); `BENCH_SLUG_OVERRIDES` maps display names to BenchLM slugs, `BENCH_SLUG_OVERRIDES_DEEPSWE`/`BENCH_SLUG_OVERRIDES_TERMINAL` override slug for the DeepSWE/Terminal-Bench fields only. `SWE_PRO_OVERRIDES` hardcodes Scale SWE-bench Pro scores BenchLM lacks (e.g. Claude Haiku 4.5 39.45, from labs.scale.com/leaderboard/swe_bench_pro_public). `BENCH_INHERIT_FROM` copies a free variant's benchmarks from its non-free counterpart (e.g. Ox Alpha Free ← GLM-5.3-Flash, incl. codingIndex from `.aaCodingIndex`).
+- Availability: models.dev is the catalog OpenCode's model picker consumes; `na: true` when a model has no non-`deprecated` entry in either its `opencode` (Zen) or `opencode-go` (Go plan) provider.
 - Every run refreshes the "Checked <date>." footer note in docs/index.html (`update_checked_date`); dry-run never writes.
 - Do NOT hand-edit models.json — run the script.
 
