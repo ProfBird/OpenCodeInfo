@@ -48,6 +48,7 @@
     color: inherit;
   }
   .toolbar input { width: 3.5rem; }
+  .toolbar label.avail-check input[type="checkbox"] { width: auto; }
   .toolbar select { width: auto; }
   #mobileSort { display: none; }
   table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 0.9rem; }
@@ -115,11 +116,12 @@
 <body>
   <h1>OpenCode Zen &amp; Go — Model Benchmarks &amp; Cost</h1>
   <p class="toplinks"><a href="https://opencode.ai/zen" target="_blank" rel="noopener noreferrer">OpenCode Zen</a> · <a href="https://opencode.ai/docs/go" target="_blank" rel="noopener noreferrer">OpenCode Go</a></p>
-  <p class="subtitle">All OpenCode Zen models (pay-as-you-go). Use the <strong>Plan</strong> filter to show all models or only the $10/mo <strong>Go</strong> plan subset. Costs are USD per 1M tokens (Zen / Go plan pricing). Benchmark is the <a href="https://benchlm.ai/benchmarks/aacodingindex" target="_blank" rel="noopener noreferrer">Artificial Analysis Coding Index</a> (%), snapshot 2026-08-21 (via <a href="https://benchlm.ai/benchmarks/aacodingindex" target="_blank" rel="noopener noreferrer">BenchLM</a> mirror of <a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener noreferrer">Artificial Analysis</a>). Click a column to sort.</p>
+  <p class="subtitle">All OpenCode Zen models (pay-as-you-go). Use the <strong>Plan</strong> filter to show all models, models available on Zen pay-as-you-go, or the $10/mo <strong>Go</strong> plan subset. Go-plan models are also on Zen where marked (Go · Zen). Costs are USD per 1M tokens (Zen / Go plan pricing). Benchmark is the <a href="https://benchlm.ai/benchmarks/aacodingindex" target="_blank" rel="noopener noreferrer">Artificial Analysis Coding Index</a> (%), snapshot 2026-08-21 (via <a href="https://benchlm.ai/benchmarks/aacodingindex" target="_blank" rel="noopener noreferrer">BenchLM</a> mirror of <a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener noreferrer">Artificial Analysis</a>). Click a column to sort.</p>
 
   <div class="toolbar">
     <div class="toolbar-row">
-      <label>Plan <select id="planFilter"><option value="all">All Models</option><option value="go">Go Plan Models</option></select></label>
+      <label>Plan <select id="planFilter"><option value="all">All Models</option><option value="zen">Zen Models</option><option value="go">Go Plan Models</option></select></label>
+      <label class="avail-check" title="Hide models marked (N.A.) — no longer selectable in OpenCode's model picker"><input type="checkbox" id="availFilter"> Available only</label>
       <label id="mobileSort">Sort
         <select id="sortSelect">
           <option value="name">Model</option>
@@ -213,6 +215,7 @@ function fmtParams(v) {
 
 function getFilters() {
   const planEl = document.getElementById('planFilter');
+  const availEl = document.getElementById('availFilter');
   const maxOutEl = document.getElementById('filterMaxOutput');
   const minAAEl = document.getElementById('filterMinAA');
   const minSWEEl = document.getElementById('filterMinSWE');
@@ -225,6 +228,7 @@ function getFilters() {
   const minDeepSwe = minDeepSweEl && minDeepSweEl.value !== '' ? parseFloat(minDeepSweEl.value) : null;
   return {
     plan: planEl ? planEl.value : 'all',
+    availOnly: availEl ? availEl.checked : false,
     maxOut: Number.isFinite(maxOut) ? maxOut : null,
     minAA: Number.isFinite(minAA) ? minAA : null,
     minSWE: Number.isFinite(minSWE) ? minSWE : null,
@@ -234,9 +238,11 @@ function getFilters() {
 }
 
 function render() {
-  const { plan, maxOut, minAA, minSWE, minTerminal, minDeepSwe } = getFilters();
+  const { plan, availOnly, maxOut, minAA, minSWE, minTerminal, minDeepSwe } = getFilters();
   const filtered = models.filter(m => {
     if (plan === 'go' && m.plan !== 'go') return false;
+    if (plan === 'zen' && !(m.plan === 'zen' || m.alsoOnZen)) return false;
+    if (availOnly && m.na) return false;
     if (maxOut !== null) {
       if (m.outputCost === null || m.outputCost === undefined) return false;
       if (m.outputCost > maxOut) return false;
@@ -293,7 +299,7 @@ function render() {
     return;
   }
   tbody.innerHTML = sorted.map(m => {
-    const goBadge = m.plan === 'go' ? ' (Go)' : '';
+    const goBadge = m.plan === 'go' ? (m.alsoOnZen ? ' (Go · Zen)' : ' (Go)') : '';
     const naBadge = m.na ? ' (N.A.)' : '';
     const nameHtml = (m.hfUrl
       ? `<a href="${escapeHtml(m.hfUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(m.name)}</a>`
@@ -364,6 +370,7 @@ function updateArrows() {
 }
 
 document.getElementById('planFilter').addEventListener('change', render);
+document.getElementById('availFilter').addEventListener('change', render);
 document.getElementById('filterMaxOutput').addEventListener('input', render);
 document.getElementById('filterMinAA').addEventListener('input', render);
 document.getElementById('filterMinSWE').addEventListener('input', render);
@@ -372,6 +379,7 @@ document.getElementById('filterMinDeepSwe').addEventListener('input', render);
 document.getElementById('sortSelect').addEventListener('change', e => setSort(e.target.value, 1));
 document.getElementById('reset').addEventListener('click', () => {
   document.getElementById('planFilter').value = 'all';
+  document.getElementById('availFilter').checked = false;
   document.getElementById('filterMaxOutput').value = '';
   document.getElementById('filterMinAA').value = '';
   document.getElementById('filterMinSWE').value = '';

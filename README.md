@@ -6,9 +6,10 @@ A small static web page that displays **all OpenCode Zen models** (coding benchm
 
 ## Files
 
-- `docs/models.json` — Model data: AA Coding Index score, SWE-bench Pro score, Terminal-Bench score, DeepSWE score, USD-per-1M-token pricing (input, output, cached read), `params` (total parameters, e.g. "744B", "1.6T", `null` if undisclosed), `context` window (e.g. "1M", "500K"), a `plan` field (`"go"` for models on the Go $10/mo plan, `"zen"` for Zen-only), and `na: true` when a model is no longer selectable in OpenCode (shown as (N.A.) on the page), for every model in the Zen catalog. Each model also has a link (`hfUrl`) to its model card — Hugging Face when weights are open, otherwise BenchLM model specs, or the manufacturer's site.
+- `docs/models.json` — Model data: AA Coding Index score, SWE-bench Pro score, Terminal-Bench score, DeepSWE score, USD-per-1M-token pricing (input, output, cached read), `params` (total parameters, e.g. "744B", "1.6T", `null` if undisclosed), `context` window (e.g. "1M", "500K"), a `plan` field (`"go"` for models on the Go $10/mo plan, `"zen"` for Zen-only), `alsoOnZen: true` when a Go-plan model is also available on Zen pay-as-you-go, and `na: true` when a model is no longer selectable in OpenCode (shown as (N.A.) on the page), for every model in the Zen catalog. Models that leave the catalog are never removed; they stay listed as (N.A.). Each model also has a link (`hfUrl`) to its model card — Hugging Face when weights are open, otherwise BenchLM model specs, or the manufacturer's site.
 - `docs/index.html` — The page itself. Loads `models.json` and renders the table. Filtering and sorting all happen in the browser. Published to GitHub Pages via the `docs/` folder.
-- `update_zen_prices.py` — Fetches the current OpenCode Zen catalog and pricing, the Go plan, model context/cost data, and SWE-bench Pro / Terminal-Bench / DeepSWE scores, then updates `docs/models.json` (adds/removes models that join or leave the Zen catalog, refreshes prices, maintains the `plan` flag, and flags models that are no longer selectable in OpenCode as `na`).
+- `update_zen_prices.py` — Fetches the current OpenCode Zen catalog and pricing, the Go plan, model context/cost data, and SWE-bench Pro / Terminal-Bench / DeepSWE scores, then updates `docs/models.json` (adds models that join the catalog, refreshes prices, maintains the `plan`/`alsoOnZen` flags, and flags models that are no longer selectable in OpenCode as `na` — models are never removed).
+- `prune_na_models.py` — Removes models that have been flagged `na` (N.A.) for over 6 months (tracked via each model's `naSince` date); `--dry-run` previews, `--months` overrides the cutoff. Run automatically in the daily CI job after the update.
 - `.github/workflows/update_models.yml` — Daily GitHub Actions job (03:00 UTC) that runs the update script and commits any changes to `docs/models.json` and `docs/index.html`.
 
 ## Usage
@@ -24,7 +25,8 @@ A small static web page that displays **all OpenCode Zen models** (coding benchm
 ## Sorting & filtering
 
 - Click the sort button (⇅) next to a column name, or the column header itself, to sort (click again to reverse direction).
-- **Plan** filter: show all models or just the **Go Plan** models.
+- **Plan** filter: show all models, models available on Zen pay-as-you-go (including Go-plan models also on Zen), or **Go Plan** models only.
+- **Available only** checkbox: hide models marked (N.A.) — those no longer selectable in OpenCode's model picker.
 - Filter by **Min AA index**, **Min SWE-bench Pro**, **Min Terminal-Bench**, **Min DeepSWE**, and **Max output price ($/1M)** — same order as the columns.
 - **Reset** clears all filters and restores the default (alphabetical) order.
 - Models with no benchmark score (`—`) sort to the bottom when sorting by benchmark.
@@ -48,6 +50,8 @@ python update_zen_prices.py --output docs/models.json  # fetch + update in place
 python update_zen_prices.py --dry-run --output docs/models.json # preview changes without writing
 python update_zen_prices.py --no-sync --output docs/models.json # only refresh prices of existing models
 python update_zen_prices.py --verbose --output docs/models.json # show parsed sources and per-model changes
+python prune_na_models.py --output docs/models.json    # remove models N.A. for over 6 months
+python prune_na_models.py --dry-run --output docs/models.json   # preview the prune without writing
 ```
 
 The GitHub Actions workflow runs the same command on a daily schedule and pushes any changes.

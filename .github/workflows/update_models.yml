@@ -27,6 +27,9 @@ jobs:
       - name: Update models.json
         run: python update_zen_prices.py --output docs/models.json
 
+      - name: Prune N.A. models older than 6 months
+        run: python prune_na_models.py --output docs/models.json
+
       - name: Commit and push changes
         run: |
           if git diff --quiet -- docs/models.json docs/index.html; then

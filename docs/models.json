@@ -159,6 +159,7 @@
       "outputCost": 0.66,
       "cachedReadCost": 0.007,
       "plan": "go",
+      "alsoOnZen": true,
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash"
     },
     {
@@ -174,6 +175,7 @@
       "cachedReadCost": 0,
       "plan": "zen",
       "na": true,
+      "naSince": "2026-09-01",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash"
     },
     {
@@ -199,6 +201,7 @@
       "outputCost": 1.98,
       "cachedReadCost": 0.022,
       "plan": "go",
+      "alsoOnZen": true,
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro"
     },
     {
@@ -282,6 +285,7 @@
       "outputCost": 3.2,
       "cachedReadCost": 0.2,
       "plan": "go",
+      "alsoOnZen": true,
       "hfUrl": "https://huggingface.co/zai-org/GLM-5"
     },
     {
@@ -294,6 +298,7 @@
       "outputCost": 4.4,
       "cachedReadCost": 0.26,
       "plan": "go",
+      "alsoOnZen": true,
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.1"
     },
     {
@@ -307,6 +312,7 @@
       "outputCost": 4.4,
       "cachedReadCost": 0.26,
       "plan": "go",
+      "alsoOnZen": true,
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.2"
     },
     {
@@ -540,6 +546,7 @@
       "outputCost": 1.2,
       "cachedReadCost": 0.02,
       "plan": "go",
+      "alsoOnZen": true,
       "hfUrl": "https://developers.openai.com/api/docs/models/gpt-5.6-luna"
     },
     {
@@ -581,6 +588,7 @@
       "outputCost": 6.0,
       "cachedReadCost": 0.3,
       "plan": "go",
+      "alsoOnZen": true,
       "hfUrl": "https://docs.x.ai/developers/models/grok-4.5"
     },
     {
@@ -593,6 +601,7 @@
       "outputCost": 6,
       "cachedReadCost": 0.5,
       "plan": "go",
+      "alsoOnZen": true,
       "hfUrl": "https://benchlm.ai/models/grok-4.6"
     },
     {
@@ -618,6 +627,19 @@
       "hfUrl": "https://huggingface.co/tencent/HY3"
     },
     {
+      "name": "Hy3 Free",
+      "params": "295B",
+      "context": "190K",
+      "codingIndex": 58.8,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "plan": "zen",
+      "na": true,
+      "naSince": "2026-09-01",
+      "hfUrl": "https://huggingface.co/tencent/HY3"
+    },
+    {
       "name": "Hy3 Preview",
       "params": "295B",
       "context": "256K",
@@ -628,20 +650,21 @@
       "cachedReadCost": 0,
       "plan": "go",
       "na": true,
+      "naSince": "2026-09-01",
       "hfUrl": "https://huggingface.co/tencent/HY3-Preview"
     },
     {
       "name": "Hy4 Preview",
+      "params": null,
+      "context": "1M",
       "codingIndex": null,
+      "swePro": 65.7,
+      "terminalBench": 85.4,
+      "deepSwe": 64.3,
       "inputCost": 0.834,
       "outputCost": 2.501,
       "cachedReadCost": 0.042,
-      "context": "1M",
-      "params": null,
-      "plan": "go",
-      "swePro": 65.7,
-      "terminalBench": 85.4,
-      "deepSwe": 64.3
+      "plan": "go"
     },
     {
       "name": "Kimi K2.5",
@@ -653,6 +676,7 @@
       "outputCost": 3.0,
       "cachedReadCost": 0.1,
       "plan": "go",
+      "alsoOnZen": true,
       "hfUrl": "https://huggingface.co/moonshotai/Kimi-K2.5"
     },
     {
@@ -666,6 +690,7 @@
       "outputCost": 4.0,
       "cachedReadCost": 0.16,
       "plan": "go",
+      "alsoOnZen": true,
       "hfUrl": "https://huggingface.co/moonshotai/Kimi-K2.6"
     },
     {
@@ -677,6 +702,7 @@
       "outputCost": 4.0,
       "cachedReadCost": 0.19,
       "plan": "go",
+      "alsoOnZen": true,
       "hfUrl": "https://huggingface.co/moonshotai/Kimi-K2.7-Code"
     },
     {
@@ -689,6 +715,7 @@
       "outputCost": 15.0,
       "cachedReadCost": 0.3,
       "plan": "go",
+      "alsoOnZen": true,
       "hfUrl": "https://huggingface.co/moonshotai/Kimi-K3"
     },
     {
@@ -704,16 +731,17 @@
       "cachedReadCost": 0,
       "plan": "zen",
       "na": true,
+      "naSince": "2026-09-01",
       "hfUrl": "https://huggingface.co/poolside/Laguna-S-2.1"
     },
     {
       "name": "Ling 3.0 Flash Fin Free",
+      "params": null,
+      "context": "262K",
       "codingIndex": null,
       "inputCost": 0,
       "outputCost": 0,
       "cachedReadCost": 0,
-      "context": "262K",
-      "params": null,
       "plan": "zen"
     },
     {
@@ -737,6 +765,7 @@
       "cachedReadCost": 0,
       "plan": "go",
       "na": true,
+      "naSince": "2026-09-01",
       "hfUrl": "https://mimo.xiaomi.com/mimo-v2-omni"
     },
     {
@@ -749,6 +778,7 @@
       "cachedReadCost": 0,
       "plan": "go",
       "na": true,
+      "naSince": "2026-09-01",
       "hfUrl": "https://mimo.xiaomi.com/mimo-v2-pro"
     },
     {
@@ -799,6 +829,7 @@
       "outputCost": 1.2,
       "cachedReadCost": 0.06,
       "plan": "go",
+      "alsoOnZen": true,
       "hfUrl": "https://huggingface.co/MiniMaxAI/MiniMax-M2.5"
     },
     {
@@ -811,6 +842,7 @@
       "outputCost": 1.2,
       "cachedReadCost": 0.06,
       "plan": "go",
+      "alsoOnZen": true,
       "hfUrl": "https://huggingface.co/MiniMaxAI/MiniMax-M2.7"
     },
     {
@@ -824,6 +856,7 @@
       "outputCost": 1.2,
       "cachedReadCost": 0.06,
       "plan": "go",
+      "alsoOnZen": true,
       "hfUrl": "https://huggingface.co/MiniMaxAI/MiniMax-M3"
     },
     {
@@ -890,6 +923,22 @@
       "hfUrl": "https://benchlm.ai/models/nemotron-3-5-lightning-30b-a3b-nvfp4"
     },
     {
+      "name": "Ox Alpha Free",
+      "params": "500B",
+      "context": "1M",
+      "codingIndex": null,
+      "terminalBench": 84.3,
+      "deepSwe": 63.4,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "plan": "go",
+      "alsoOnZen": true,
+      "na": true,
+      "naSince": "2026-09-01",
+      "hfUrl": "https://openrouter.ai/stealth/ox-alpha"
+    },
+    {
       "name": "Qwen3.5 Plus",
       "params": "397B",
       "context": "1M",
@@ -898,6 +947,7 @@
       "outputCost": 1.2,
       "cachedReadCost": 0.02,
       "plan": "go",
+      "alsoOnZen": true,
       "hfUrl": "https://qwen.ai/blog?id=qwen3.5-plus"
     },
     {
@@ -910,6 +960,7 @@
       "outputCost": 3.0,
       "cachedReadCost": 0.05,
       "plan": "go",
+      "alsoOnZen": true,
       "hfUrl": "https://huggingface.co/Qwen/Qwen3.6-27B"
     },
     {

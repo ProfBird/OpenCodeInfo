@@ -402,9 +402,10 @@ PARAM_OVERRIDES = {
     # Below are best-effort or undisclosed; null means unknown (rendered as —)
 }
 
-def build_desired(zen_ids, go_ids, md):
+def build_desired(zen_ids, go_ids, md, mdgo=None):
     """Return dict id -> row data for the full union of Zen + Go models."""
     go_set = set(go_ids)
+    zen_set = set(zen_ids)
     desired = {}
     for i in list(zen_ids) + list(go_ids):
         if i in desired:
@@ -421,6 +422,7 @@ def build_desired(zen_ids, go_ids, md):
             "id": i,
             "name": DISPLAY_NAME.get(i, m.get("name") or display_from_id(i)),
             "plan": plan,
+            "alsoOnZen": plan == "go" and i in zen_set,
             "inputCost": cost.get("input"),
             "outputCost": cost.get("output"),
             "cachedReadCost": cost.get("cache_read"),
@@ -430,7 +432,11 @@ def build_desired(zen_ids, go_ids, md):
     return desired
 
 def reconcile(data, desired, zen_pricing, go_pricing, md, dry_run=False):
-    """Add/remove/update models to match the desired catalog."""
+    """Add/update models to match the desired catalog.
+
+    Models that leave the catalog are NEVER removed — they stay listed and
+    get flagged `na` (Not Available) by apply_na_flags (see main()).
+    """
     models = data.setdefault("models", [])
     by_id = {}
     for m in models:
@@ -438,23 +444,7 @@ def reconcile(data, desired, zen_pricing, go_pricing, md, dry_run=False):
         by_id[normalize(m["name"])] = m
 
     added = []
-    removed = []
     changed = []
-
-    desired_norm = {normalize(i) for i in desired}
-
-    # Remove models no longer in the Zen catalog
-    keep = []
-    for m in models:
-        mid = normalize(id_from_name(m["name"]))
-        if mid not in desired_norm:
-            removed.append(m["name"])
-            if not dry_run:
-                continue
-        keep.append(m)
-    if not dry_run:
-        data["models"] = keep
-        models = keep
 
     # Update existing + add new
     for i, d in desired.items():
@@ -481,6 +471,8 @@ def reconcile(data, desired, zen_pricing, go_pricing, md, dry_run=False):
                 "params": d.get("params"),
                 "plan": d["plan"],
             }
+            if d.get("alsoOnZen"):
+                row["alsoOnZen"] = True
             if i in KNOWN_URLS:
                 row["hfUrl"] = KNOWN_URLS[i]
             # null price -> treat as Free
@@ -495,6 +487,11 @@ def reconcile(data, desired, zen_pricing, go_pricing, md, dry_run=False):
             # plan
             if existing.get("plan") != d["plan"]:
                 updates["plan"] = d["plan"]
+            # alsoOnZen (Go-plan model also available on Zen pay-as-you-go)
+            want_zen = bool(d.get("alsoOnZen"))
+            has_zen = bool(existing.get("alsoOnZen"))
+            if want_zen != has_zen:
+                updates["alsoOnZen"] = want_zen
             # context (only update if we have a real value)
             if d["context"] and existing.get("context") != d["context"]:
                 updates["context"] = d["context"]
@@ -518,11 +515,14 @@ def reconcile(data, desired, zen_pricing, go_pricing, md, dry_run=False):
                 changed.append((existing.get("name"), updates))
                 if not dry_run:
                     for k, v in updates.items():
-                        existing[k] = v
+                        if k == "alsoOnZen" and v is False:
+                            existing.pop("alsoOnZen", None)
+                        else:
+                            existing[k] = v
 
     if not dry_run:
         data["models"].sort(key=lambda x: x["name"].lower())
-    return added, removed, changed
+    return added, changed
 
 def bench_slug_for(name: str) -> str:
     """Best-effort BenchLM slug for an OpenCode model name."""
@@ -669,31 +669,57 @@ def is_available(mid, md, mdgo):
                 return True
     return False
 
-def apply_na_flags(models, md, mdgo, dry_run=False):
-    """Set/unset the `na` field (Not Available) on every row from models.dev statuses."""
+def _insert_after(d, new_key, value, after_key):
+    """Insert new_key/value into dict d right after after_key (in place)."""
+    if new_key in d:
+        d[new_key] = value
+        return
+    out = {}
+    placed = False
+    for k, v in d.items():
+        out[k] = v
+        if k == after_key:
+            out[new_key] = value
+            placed = True
+    if not placed:
+        out[new_key] = value
+    d.clear()
+    d.update(out)
+
+def apply_na_flags(models, md, mdgo, catalog_ids=(), dry_run=False, today=None):
+    """Set/unset the `na` field (Not Available) on every row.
+
+    A model is Not Available when it has no non-deprecated entry in models.dev
+    (opencode / opencode-go providers) OR it is no longer in the live Zen+Go
+    catalogs. Rows are never removed; retired models simply stay flagged.
+    Also maintains `naSince` (date the model was first flagged) so
+    prune_na_models.py can retire rows that have been N.A. for over 6 months.
+    Returns list of (name, kind) where kind is 'flag' | 'unflag' | 'backfill'.
+    """
+    if today is None:
+        today = date.today()
+    cat_norm = {normalize(i) for i in catalog_ids}
     changed = []
     for m in models:
         mid = id_from_name(m["name"])
-        na = not is_available(mid, md, mdgo)
-        if bool(m.get("na")) == na:
+        na = normalize(mid) not in cat_norm or not is_available(mid, md, mdgo)
+        if bool(m.get("na")) == na and (not na or m.get("naSince")):
             continue
-        changed.append((m["name"], na))
+        kind = "flag" if na else "unflag"
+        if na and bool(m.get("na")) and not m.get("naSince"):
+            kind = "backfill"
+        changed.append((m["name"], kind))
         if dry_run:
             continue
         if na:
-            new = {}
-            inserted = False
-            for k, v in m.items():
-                new[k] = v
-                if k == "plan":
-                    new["na"] = True
-                    inserted = True
-            if not inserted:
-                new["na"] = True
-            m.clear()
-            m.update(new)
+            if "na" not in m:
+                _insert_after(m, "na", True, "plan")
+            else:
+                m["na"] = True
+            _insert_after(m, "naSince", today.isoformat(), "na")
         else:
             m.pop("na", None)
+            m.pop("naSince", None)
     return changed
 
 def update_checked_date(index_path: Path, today) -> bool:
@@ -752,15 +778,15 @@ def main():
     data = json.loads(args.output.read_text(encoding="utf-8"))
 
     if not args.no_sync:
-        desired = build_desired(zen_ids, go_ids, md)
-        added, removed, changed = reconcile(data, desired, zen_pricing, go_pricing, md, dry_run=args.dry_run)
+        desired = build_desired(zen_ids, go_ids, md, mdgo)
+        added, changed = reconcile(data, desired, zen_pricing, go_pricing, md, dry_run=args.dry_run)
     else:
-        added = removed = changed = []
+        added = changed = []
 
     bench_changed = merge_benchmarks(data["models"], bench_items, dry_run=args.dry_run)
     bench_changed += apply_bench_overrides(data["models"], dry_run=args.dry_run)
     bench_changed += inherit_benchmarks(data["models"], bench_items, dry_run=args.dry_run)
-    na_changed = apply_na_flags(data["models"], md, mdgo, dry_run=args.dry_run)
+    na_changed = apply_na_flags(data["models"], md, mdgo, catalog_ids=list(zen_ids) + list(go_ids), dry_run=args.dry_run)
 
     if changed:
         print(f"\n{len(changed)} price/plan update(s):" + (" (dry-run)" if args.dry_run else ""), file=sys.stderr)
@@ -772,20 +798,17 @@ def main():
             print(f"  {field:10} {name:34} {old} -> {new}", file=sys.stderr)
     if na_changed:
         print(f"\n{len(na_changed)} availability update(s):" + (" (dry-run)" if args.dry_run else ""), file=sys.stderr)
-        for name, na in na_changed:
-            print(f"  {name:34} -> {'(N.A.)' if na else 'available'}", file=sys.stderr)
+        for name, kind in na_changed:
+            label = {"flag": "-> (N.A.)", "unflag": "-> available", "backfill": "-> (N.A.) [recorded naSince]"}[kind]
+            print(f"  {name:34} {label}", file=sys.stderr)
     if added:
         print(f"\n{len(added)} model(s) to add:" if args.dry_run else f"\n{len(added)} model(s) added:", file=sys.stderr)
         for name, i in added:
             print(f"  + {name:34} ({i})", file=sys.stderr)
-    if removed:
-        print(f"\n{len(removed)} model(s) to remove:" if args.dry_run else f"\n{len(removed)} model(s) removed:", file=sys.stderr)
-        for name in removed:
-            print(f"  - {name}", file=sys.stderr)
-    if not (changed or added or removed or bench_changed or na_changed):
+    if not (changed or added or bench_changed or na_changed):
         print("\nCatalog, prices and benchmarks in sync (no changes).", file=sys.stderr)
 
-    if not args.dry_run and (changed or added or removed or bench_changed or na_changed):
+    if not args.dry_run and (changed or added or bench_changed or na_changed):
         today = date.today().isoformat()
         data["source"] = f"OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved {today}"
         data["goSource"] = f"OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved {today}"
