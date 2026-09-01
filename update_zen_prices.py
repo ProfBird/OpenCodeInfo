@@ -592,6 +592,51 @@ SWE_PRO_OVERRIDES = {
     "Claude Haiku 4.5": 39.45,  # claude-4-5-haiku, ±3.55, Scale standardized public set
 }
 
+# Free-tier variants publish no benchmark runs of their own; they serve the same
+# model as their non-free counterpart, so they inherit its scores.
+# (Z.ai confirms Ox Alpha was the internal testing name for GLM-5.3-Flash.)
+BENCH_INHERIT_FROM = {
+    "DeepSeek V4 Flash Free": "DeepSeek V4 Flash",
+    "MiMo-V2.5 Free": "MiMo-V2.5",
+    "Hy3 Free": "Hy3",
+    "Ox Alpha Free": "GLM-5.3-Flash",
+    "Laguna S 2.1 Free": "Laguna S 2.1",
+    "Muse Spark 1.2 Contributor Free": "Muse Spark 1.2",
+}
+
+def inherit_benchmarks(models, bench_items, dry_run=False):
+    """Copy benchmark scores from each free variant's non-free counterpart (BENCH_INHERIT_FROM)."""
+    by_slug = {}
+    by_norm = {}
+    for it in bench_items:
+        by_slug[it.get("slug")] = it
+        by_norm[normalize(it.get("model"))] = it
+
+    changed = []
+    for m in models:
+        counterpart = BENCH_INHERIT_FROM.get(m["name"])
+        if not counterpart:
+            continue
+        it = by_slug.get(bench_slug_for(counterpart)) or by_norm.get(normalize(counterpart))
+        if not it:
+            continue
+        coding = it.get("benchmarks", {}).get("coding", {}) or {}
+        pairs = [
+            ("codingIndex", coding.get("aaCodingIndex")),
+            ("swePro", coding.get("swePro")),
+            ("deepSwe", coding.get("deepSwe")),
+            ("terminalBench", coding.get("terminalBench21") if coding.get("terminalBench21") is not None else coding.get("terminalBench2")),
+        ]
+        for field, score in pairs:
+            if score is None:
+                continue
+            old = m.get(field)
+            if old is None or abs(old - score) > 1e-9:
+                changed.append((field, m["name"], old, score))
+                if not dry_run:
+                    m[field] = score
+    return changed
+
 def apply_bench_overrides(models, dry_run=False):
     """Apply hardcoded benchmark overrides (e.g. Scale SWE-bench Pro scores BenchLM lacks)."""
     changed = []
@@ -666,6 +711,7 @@ def main():
 
     bench_changed = merge_benchmarks(data["models"], bench_items, dry_run=args.dry_run)
     bench_changed += apply_bench_overrides(data["models"], dry_run=args.dry_run)
+    bench_changed += inherit_benchmarks(data["models"], bench_items, dry_run=args.dry_run)
 
     if changed:
         print(f"\n{len(changed)} price/plan update(s):" + (" (dry-run)" if args.dry_run else ""), file=sys.stderr)
