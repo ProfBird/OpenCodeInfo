@@ -601,7 +601,7 @@
     },
     {
       "name": "Hy3",
-      "params": null,
+      "params": "295B",
       "context": "256K",
       "codingIndex": 58.8,
       "aaSciCode": 47.6,
@@ -613,7 +613,7 @@
     },
     {
       "name": "Hy3 Free",
-      "params": null,
+      "params": "295B",
       "context": "190K",
       "codingIndex": null,
       "inputCost": 0,
@@ -624,7 +624,7 @@
     },
     {
       "name": "Hy3 Preview",
-      "params": null,
+      "params": "295B",
       "context": "256K",
       "codingIndex": 58.8,
       "aaSciCode": 47.6,
@@ -686,7 +686,7 @@
     },
     {
       "name": "Laguna S 2.1 Free",
-      "params": null,
+      "params": "118B",
       "context": "256K",
       "codingIndex": null,
       "inputCost": 0,
@@ -708,7 +708,7 @@
     },
     {
       "name": "MiMo-V2 Omni",
-      "params": null,
+      "params": "1T",
       "context": "1M",
       "codingIndex": null,
       "aaSciCode": 36.7,
@@ -720,7 +720,7 @@
     },
     {
       "name": "MiMo-V2 Pro",
-      "params": null,
+      "params": "1T",
       "context": "1M",
       "codingIndex": null,
       "aaSciCode": 42.5,
@@ -768,7 +768,7 @@
     },
     {
       "name": "MiniMax M2.5",
-      "params": null,
+      "params": "230B",
       "context": "200K",
       "codingIndex": null,
       "inputCost": 0.3,
@@ -779,7 +779,7 @@
     },
     {
       "name": "MiniMax M2.7",
-      "params": null,
+      "params": "230B",
       "context": "205K",
       "codingIndex": 52.62,
       "swePro": 56.2,
@@ -792,7 +792,7 @@
     },
     {
       "name": "MiniMax M3",
-      "params": null,
+      "params": "428B",
       "context": "1M",
       "codingIndex": 58.57,
       "swePro": 59,
@@ -841,7 +841,7 @@
     },
     {
       "name": "Nemotron 3 Ultra Free",
-      "params": null,
+      "params": "550B",
       "context": "1M",
       "codingIndex": 49.27,
       "inputCost": 0,
@@ -874,7 +874,7 @@
     },
     {
       "name": "Qwen3.5 Plus",
-      "params": null,
+      "params": "397B",
       "context": "1M",
       "codingIndex": null,
       "inputCost": 0.2,
@@ -885,7 +885,7 @@
     },
     {
       "name": "Qwen3.6 Plus",
-      "params": null,
+      "params": "27B",
       "context": "1M",
       "codingIndex": 54.53,
       "swePro": 56.6,
@@ -898,7 +898,7 @@
     },
     {
       "name": "Qwen3.7 Max",
-      "params": null,
+      "params": "1T",
       "context": "1M",
       "codingIndex": 65.97,
       "swePro": 60.6,
@@ -911,7 +911,7 @@
     },
     {
       "name": "Qwen3.7 Plus",
-      "params": null,
+      "params": "1T",
       "context": "1M",
       "codingIndex": 55.86,
       "swePro": 57.6,
