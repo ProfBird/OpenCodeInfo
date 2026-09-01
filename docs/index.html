@@ -184,8 +184,16 @@
     <p><strong>Identity — GLM-5.3-Flash (high likelihood):</strong> No lab officially claimed Ox Alpha as of Aug 22, but <a href="https://kie.ai/blog/what-is-ox-alpha" target="_blank" rel="noopener noreferrer">kie.ai (Daniel Okonkwo, Aug 22, 2026)</a> fingerprinting is the strongest signal: <code>modelprint</code> tokenizer probes matched GLM family 4/4 (all other labs ≤2/4), and a <code>reasoning_effort:"none"</code> request returned error <code>[1210]</code> — the same code Z.ai’s GLM-5.3 API returns. Public GLM-5.3 is text-only, so the hypothesis was an unreleased multimodal GLM-5.3 variant. On <strong>Aug 26</strong> Z.ai announced <a href="https://z.ai/blog/glm-5.3-flash" target="_blank" rel="noopener noreferrer">GLM-5.3-Flash</a> — 320B total / 18B active, hybrid sparse+linear attention, native multimodal (text/image/video/files), 1M context / 128K output, MIT, $0.15/$0.50 — which matches Ox Alpha’s 1M, video input, and price, making <strong>GLM-5.3-Flash the leading identity with high confidence</strong> (still not officially confirmed as Ox Alpha). See also <a href="https://docs.z.ai/guides/vlm/glm-5.3-flash" target="_blank" rel="noopener noreferrer">Z.ai docs</a> and earlier forensics <a href="https://www.explainx.ai/blog/openrouter-ox-alpha-stealth-model-august-2026" target="_blank" rel="noopener noreferrer">explainx.ai</a>.</p>
     <p><strong>Benchmarks (community, unofficial):</strong> DeepSWE 58.4% (66/113) — <a href="https://github.com/MatchaOnMuffins/oxalpha" target="_blank" rel="noopener noreferrer">source</a>; LiveCodeBench v6 pass@1 28.0% — <a href="https://github.com/xnasarx/ox-alpha-benchmarks" target="_blank" rel="noopener noreferrer">source</a>; 10-task community eval 80% vs Fable 5 65% / GLM-5.3 62% — <a href="https://oxalpha.com/ox-alpha-benchmarks" target="_blank" rel="noopener noreferrer">source</a>; kie.ai table shows same 80% vs 65%/62%/52% — treat as conflicting, unreplicated (<a href="https://kie.ai/blog/what-is-ox-alpha" target="_blank" rel="noopener noreferrer">kie.ai</a>).</p>
 
+    <p><strong>New users:</strong> Sign up for <a href="https://opencode.ai/go?ref=QKDZ8C7R68" target="_blank" rel="noopener noreferrer">OpenCode Go</a> and get a $5 usage credit with this referral link — the creator of this page will also receive a $5 credit.</p>
+
     <p class="footer" style="margin-top:0.9rem">Checked Sep 1, 2026. Stealth pricing, retention, and identity can change without notice; verify primary pages before relying on these notes.</p>
-  </section>
+   </section>
+
+ <footer style="margin-top:2rem; padding-top:1rem; border-top:1px solid #ccc; font-size:0.8rem; color:#666; text-align:center;">
+   <hr style="border:none; border-top:1px solid #ddd; margin:1rem 0;">
+   <p><a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer"><img src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" referrerpolicy="no-referrer" alt="Creative Commons License" style="vertical-align:middle; margin-right:0.5rem; border:0;"></a> <span>OpenCode Zen &amp; Go, OpenRouter — Model Benchmarks &amp; Cost</span> by <a href="https://profbird.dev" target="_blank" rel="noopener noreferrer">Brian Bird</a>, 2026 are licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">Creative Commons Attribution-ShareAlike 4.0 International License</a>.</p>
+   <hr style="border:none; border-top:1px solid #ddd; margin:1rem 0;">
+ </footer>
 
 <script>
 const DATA_URL = 'models.json';
