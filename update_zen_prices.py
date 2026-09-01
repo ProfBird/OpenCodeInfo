@@ -305,8 +305,11 @@ CONTEXT_OVERRIDES = {
 
 # Verified parameter count overrides (total parameters). Values are display strings (e.g. "744B", "1.6T").
 # Sources: official model cards / HF repos. MoE models list total params (active params in docs).
-# GPT family: OpenAI does not disclose; estimates from independent benchmark regression (cbowdon.github.io/posts/gpt-params)
-# and industry analysis (cometapi.com/how-many-parameters-does-gpt-5-have, ~2-5T active, 635B regression) — treated as best-effort.
+# GPT/Claude/Gemini/Grok families: vendors do not disclose; estimates from independent analyses
+# — GPT: cbowdon.github.io/posts/gpt-params (635B/18B regression) + cometapi.com 2-5T
+# — Claude: Musk leak via eu.36kr.com p376067 / unexcitedneurons throughput 1.5-2T (Sonnet 1T / Opus 5T / Fable 10T)
+# — Gemini: industry estimates (MLJourney Gemini Ultra ~100B+, Pro ~60-100B, Flash ~20-40B scaled to Gemini3)
+# — Grok: datastudios.org Grok4 1.7T, 36kr Grok4.2 0.5T, Grok5 6T — treated as best-effort.
 PARAM_OVERRIDES = {
     "deepseek-v4-flash": "284B",
     "deepseek-v4-flash-free": "284B",
@@ -363,6 +366,28 @@ PARAM_OVERRIDES = {
     "gpt-5.6-luna": "85B",
     "gpt-5.6-sol": "635B",
     "gpt-5.6-terra": "635B",
+    "claude-fable-5": "10T",
+    "claude-opus-5": "5T",
+    "claude-opus-4-8": "2T",
+    "claude-opus-4-7": "2T",
+    "claude-opus-4-6": "1.5T",
+    "claude-opus-4-5": "1.5T",
+    "claude-sonnet-5": "1T",
+    "claude-sonnet-4-6": "1T",
+    "claude-sonnet-4-5": "1T",
+    "claude-sonnet-4": "1T",
+    "claude-haiku-4-5": "100B",
+    "gemini-3-flash": "400B",
+    "gemini-3.1-pro": "1T",
+    "gemini-3.5-flash": "400B",
+    "gemini-3.5-flash-lite": "100B",
+    "gemini-3.6-flash": "500B",
+    "gemini-3.7-flash": "600B",
+    "grok-4.5": "1.7T",
+    "grok-4.6": "1.7T",
+    "grok-build-0.1": "500B",
+    "big-pickle": "357B",
+    "ox-alpha-free": "500B",
     # Below are best-effort or undisclosed; null means unknown (rendered as —)
 }
 

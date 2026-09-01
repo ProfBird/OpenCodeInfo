@@ -6,7 +6,7 @@
   "models": [
     {
       "name": "Big Pickle",
-      "params": null,
+      "params": "357B",
       "context": "200K",
       "codingIndex": null,
       "inputCost": 0,
@@ -17,7 +17,7 @@
     },
     {
       "name": "Claude Fable 5",
-      "params": null,
+      "params": "10T",
       "context": "1M",
       "codingIndex": 76.49,
       "swePro": 80,
@@ -30,7 +30,7 @@
     },
     {
       "name": "Claude Haiku 4.5",
-      "params": null,
+      "params": "100B",
       "context": "200K",
       "codingIndex": null,
       "inputCost": 1,
@@ -41,7 +41,7 @@
     },
     {
       "name": "Claude Opus 4.5",
-      "params": null,
+      "params": "1.5T",
       "context": "200K",
       "codingIndex": null,
       "swePro": 57.1,
@@ -54,7 +54,7 @@
     },
     {
       "name": "Claude Opus 4.6",
-      "params": null,
+      "params": "1.5T",
       "context": "1M",
       "codingIndex": null,
       "swePro": 53.4,
@@ -67,7 +67,7 @@
     },
     {
       "name": "Claude Opus 4.7",
-      "params": null,
+      "params": "2T",
       "context": "1M",
       "codingIndex": 73.6,
       "aaSciCode": 50.1,
@@ -79,7 +79,7 @@
     },
     {
       "name": "Claude Opus 4.8",
-      "params": null,
+      "params": "2T",
       "context": "1M",
       "codingIndex": 74.25,
       "swePro": 69.2,
@@ -92,7 +92,7 @@
     },
     {
       "name": "Claude Opus 5",
-      "params": null,
+      "params": "5T",
       "context": "1M",
       "codingIndex": 77.98,
       "swePro": 79.2,
@@ -105,7 +105,7 @@
     },
     {
       "name": "Claude Sonnet 4",
-      "params": null,
+      "params": "1T",
       "context": "1M",
       "codingIndex": null,
       "inputCost": 3,
@@ -116,7 +116,7 @@
     },
     {
       "name": "Claude Sonnet 4.5",
-      "params": null,
+      "params": "1T",
       "context": "1M",
       "codingIndex": null,
       "inputCost": 3,
@@ -127,7 +127,7 @@
     },
     {
       "name": "Claude Sonnet 4.6",
-      "params": null,
+      "params": "1T",
       "context": "1M",
       "codingIndex": null,
       "aaSciCode": 46.9,
@@ -139,7 +139,7 @@
     },
     {
       "name": "Claude Sonnet 5",
-      "params": null,
+      "params": "1T",
       "context": "1M",
       "codingIndex": 71.55,
       "swePro": 63.2,
@@ -200,7 +200,7 @@
     },
     {
       "name": "Gemini 3 Flash",
-      "params": null,
+      "params": "400B",
       "context": "1M",
       "codingIndex": null,
       "aaSciCode": 49.9,
@@ -212,7 +212,7 @@
     },
     {
       "name": "Gemini 3.1 Pro",
-      "params": null,
+      "params": "1T",
       "context": "1M",
       "codingIndex": 68.83,
       "aaSciCode": 58.9,
@@ -224,7 +224,7 @@
     },
     {
       "name": "Gemini 3.5 Flash",
-      "params": null,
+      "params": "400B",
       "context": "1M",
       "codingIndex": 70.14,
       "swePro": 55.1,
@@ -237,7 +237,7 @@
     },
     {
       "name": "Gemini 3.5 Flash Lite",
-      "params": null,
+      "params": "100B",
       "context": "1M",
       "codingIndex": 49.32,
       "swePro": 54.2,
@@ -250,7 +250,7 @@
     },
     {
       "name": "Gemini 3.6 Flash",
-      "params": null,
+      "params": "500B",
       "context": "1M",
       "codingIndex": 69.24,
       "aaSciCode": 52.7,
@@ -262,7 +262,7 @@
     },
     {
       "name": "Gemini 3.7 Flash",
-      "params": null,
+      "params": "600B",
       "context": "1M",
       "codingIndex": 76.12,
       "aaSciCode": 56.8,
@@ -565,7 +565,7 @@
     },
     {
       "name": "Grok 4.5",
-      "params": null,
+      "params": "1.7T",
       "context": "500K",
       "codingIndex": 72.45,
       "swePro": 64.7,
@@ -578,7 +578,7 @@
     },
     {
       "name": "Grok 4.6",
-      "params": null,
+      "params": "1.7T",
       "context": "500K",
       "codingIndex": 76.79,
       "aaSciCode": 53.6,
@@ -590,7 +590,7 @@
     },
     {
       "name": "Grok Build 0.1",
-      "params": null,
+      "params": "500B",
       "context": "256K",
       "codingIndex": null,
       "inputCost": 1,
@@ -863,7 +863,7 @@
     },
     {
       "name": "Ox Alpha Free",
-      "params": null,
+      "params": "500B",
       "context": "1M",
       "codingIndex": null,
       "inputCost": 0,
