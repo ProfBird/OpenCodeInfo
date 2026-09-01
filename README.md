@@ -6,9 +6,9 @@ A small static web page that displays **all OpenCode Zen models** (coding benchm
 
 ## Files
 
-- `docs/models.json` — Model data: AA Coding Index score, SWE-bench Pro score, AA SciCode score, USD-per-1M-token pricing (input, output, cached read), `params` (total parameters, e.g. "744B", "1.6T", `null` if undisclosed), `context` window (e.g. "1M", "500K"), and a `plan` field (`"go"` for models on the Go $10/mo plan, `"zen"` for Zen-only) for every model in the Zen catalog. Each model also has a link (`hfUrl`) to its model card — Hugging Face when weights are open, otherwise BenchLM model specs, or the manufacturer's site.
+- `docs/models.json` — Model data: AA Coding Index score, SWE-bench Pro score, AA SciCode score, DeepSWE score, USD-per-1M-token pricing (input, output, cached read), `params` (total parameters, e.g. "744B", "1.6T", `null` if undisclosed), `context` window (e.g. "1M", "500K"), and a `plan` field (`"go"` for models on the Go $10/mo plan, `"zen"` for Zen-only) for every model in the Zen catalog. Each model also has a link (`hfUrl`) to its model card — Hugging Face when weights are open, otherwise BenchLM model specs, or the manufacturer's site.
 - `docs/index.html` — The page itself. Loads `models.json` and renders the table. Filtering and sorting all happen in the browser. Published to GitHub Pages via the `docs/` folder.
-- `update_zen_prices.py` — Fetches the current OpenCode Zen catalog and pricing, the Go plan, model context/cost data, and SWE-bench Pro / AA SciCode scores, then updates `docs/models.json` (adds/removes models that join or leave the Zen catalog, refreshes prices, maintains the `plan` flag).
+- `update_zen_prices.py` — Fetches the current OpenCode Zen catalog and pricing, the Go plan, model context/cost data, and SWE-bench Pro / AA SciCode / DeepSWE scores, then updates `docs/models.json` (adds/removes models that join or leave the Zen catalog, refreshes prices, maintains the `plan` flag).
 - `.github/workflows/update_models.yml` — Daily GitHub Actions job (03:00 UTC) that runs the update script and commits any changes to `docs/models.json` and `docs/index.html`.
 
 ## Usage
@@ -25,7 +25,7 @@ A small static web page that displays **all OpenCode Zen models** (coding benchm
 
 - Click the sort button (⇅) next to a column name, or the column header itself, to sort (click again to reverse direction).
 - **Plan** filter: show all Zen models or just the **Go** plan subset.
-- Filter by **Max output price ($/1M)**, **Min AA index**, **Min SWE-bench Pro**, and **Min AA SciCode**.
+- Filter by **Max output price ($/1M)**, **Min AA index**, **Min SWE-bench Pro**, **Min AA SciCode**, and **Min DeepSWE**.
 - **Reset** clears all filters and restores the default (alphabetical) order.
 - Models with no benchmark score (`—`) sort to the bottom when sorting by benchmark.
 
@@ -36,6 +36,10 @@ Scale AI's contamination-resistant coding benchmark (1,865 tasks, standardized h
 ## AA SciCode
 
 Artificial Analysis SciCode (research-code generation), mirrored from BenchLM. Scores are % correct. Has the broadest coverage of any benchmark on this page.
+
+## DeepSWE
+
+Datacurve's contamination-free long-horizon repository benchmark (113 tasks across 91 repos), pass@1, mirrored from BenchLM. Only models with a published score are shown.
 
 ## Updating the data
 
@@ -56,5 +60,6 @@ Sources:
 - **Benchmark (AA)** — AA Coding Index via the BenchLM mirror: `https://benchlm.ai/benchmarks/aacodingindex` (display-only mirror of Artificial Analysis), snapshot 2026-08-21.
 - **Benchmark (SWE-bench Pro)** — `https://benchlm.ai/data/models.json` (`benchmarks.coding.swePro`), refreshed on every run.
 - **Benchmark (AA SciCode)** — `https://benchlm.ai/data/models.json` (`benchmarks.coding.aaSciCode`), refreshed on every run.
+- **Benchmark (DeepSWE)** — `https://benchlm.ai/data/models.json` (`benchmarks.coding.deepSwe`), refreshed on every run.
 
 Models that appear in the catalog but aren't priced in either docs table are shown as `Free` until a price is published.

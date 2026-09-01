@@ -9,6 +9,8 @@ Sources:
   Go pricing:  https://opencode.ai/docs/go                 (Go plan pricing table)
   Context/cost: https://models.dev/api.json                (opencode provider: context + cost)
   SWE-bench Pro: https://benchlm.ai/data/models.json       (per-model benchmarks.coding.swePro)
+  AA SciCode:    https://benchlm.ai/data/models.json       (per-model benchmarks.coding.aaSciCode)
+  DeepSWE:       https://benchlm.ai/data/models.json       (per-model benchmarks.coding.deepSwe)
 
 Every model in models.json carries a "plan" field: "go" for models on the Go
 $10/mo plan, "zen" for Zen-only models. The web page lets you filter by plan.
@@ -191,6 +193,7 @@ BENCH_SLUG_OVERRIDES = {
     "MiniMax M2.5": "minimax-m2-5",
     "GLM-5.3-Flash": "glm-5-3-flash",
     "GLM-5.3": "glm-5-3",
+    "Laguna S 2.1 Free": "laguna-s-2-1",
     "Gemini 3.5 Flash Lite": "gemini-3-5-flash-lite",
     "GPT 5.6 Sol": "gpt-5-6-sol",
     "GPT 5.6 Terra": "gpt-5-6-terra",
@@ -526,7 +529,22 @@ def bench_slug_for(name: str) -> str:
     return id_from_name(name)
 
 # BenchLM coding benchmark fields merged into each model (null if unpublished).
-BENCH_FIELDS = ("swePro", "aaSciCode")
+BENCH_FIELDS = ("swePro", "aaSciCode", "deepSwe")
+
+# DeepSWE-specific BenchLM slug overrides. Some models' published DeepSWE lives
+# under a different BenchLM slug than the one used for swePro/aaSciCode (e.g.
+# Qwen3.8 Max vs the older "Qwen3.8 Max Preview" build).
+BENCH_SLUG_OVERRIDES_DEEPSWE = {
+    "Qwen3.8 Max": "qwen3-8-max",
+}
+
+def bench_item_for(model_name, field, by_slug, by_norm):
+    """Resolve the BenchLM item for a model+field (per-field slug overrides)."""
+    if field == "deepSwe":
+        slug = BENCH_SLUG_OVERRIDES_DEEPSWE.get(model_name) or bench_slug_for(model_name)
+    else:
+        slug = bench_slug_for(model_name)
+    return by_slug.get(slug) or by_norm.get(normalize(model_name))
 
 def merge_benchmarks(models, bench_items, dry_run=False):
     """Merge coding benchmark scores (BENCH_FIELDS) from BenchLM into models."""
@@ -538,11 +556,11 @@ def merge_benchmarks(models, bench_items, dry_run=False):
 
     changed = []
     for m in models:
-        it = by_slug.get(bench_slug_for(m["name"])) or by_norm.get(normalize(m["name"]))
-        if not it:
-            continue
-        coding = it.get("benchmarks", {}).get("coding", {}) or {}
         for field in BENCH_FIELDS:
+            it = bench_item_for(m["name"], field, by_slug, by_norm)
+            if not it:
+                continue
+            coding = it.get("benchmarks", {}).get("coding", {}) or {}
             score = coding.get(field)
             if score is None:
                 continue
