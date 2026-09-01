@@ -303,6 +303,33 @@ CONTEXT_OVERRIDES = {
     "deepseek-v4-pro": "1M", "deepseek-v4-flash": "1M",
 }
 
+# Verified parameter count overrides (total parameters). Values are display strings (e.g. "744B", "1.6T").
+# Sources: official model cards / HF repos. MoE models list total params (active params in docs).
+PARAM_OVERRIDES = {
+    "deepseek-v4-flash": "284B",
+    "deepseek-v4-flash-free": "284B",
+    "deepseek-v4-flash-vision-exp": "284B",
+    "deepseek-v4-pro": "1.6T",
+    "glm-5": "744B",
+    "glm-5.1": "744B",
+    "glm-5.2": "744B",
+    "glm-5.3": "744B",
+    "kimi-k2.5": "1T",
+    "kimi-k2.6": "1T",
+    "kimi-k2.7-code": "1T",
+    "kimi-k3": "2.8T",
+    "longcat-2.0": "1.6T",
+    "mimo-v2.5": "310B",
+    "mimo-v2.5-free": "310B",
+    "mimo-v2.5-pro": "1.02T",
+    "qwen3.8-max": "2.4T",
+    "muse-spark-1.2": "405B",
+    "muse-spark-1.2-contributor": "405B",
+    "muse-spark-1.2-contributor-free": "405B",
+    "nemotron-3.5-lightning-free": "30B",
+    # Below are best-effort or undisclosed; null means unknown (rendered as —)
+}
+
 def build_desired(zen_ids, go_ids, md):
     """Return dict id -> row data for the full union of Zen + Go models."""
     go_set = set(go_ids)
@@ -326,6 +353,7 @@ def build_desired(zen_ids, go_ids, md):
             "outputCost": cost.get("output"),
             "cachedReadCost": cost.get("cache_read"),
             "context": CONTEXT_OVERRIDES.get(i) or fmt_ctx((m.get("limit") or {}).get("context")),
+            "params": PARAM_OVERRIDES.get(i) or PARAM_OVERRIDES.get(nid),
         }
     return desired
 
@@ -378,6 +406,7 @@ def reconcile(data, desired, zen_pricing, go_pricing, md, dry_run=False):
                 "outputCost": price[1] if price else d["outputCost"],
                 "cachedReadCost": price[2] if price else d["cachedReadCost"],
                 "context": d["context"],
+                "params": d.get("params"),
                 "plan": d["plan"],
             }
             if i in KNOWN_URLS:
@@ -397,6 +426,13 @@ def reconcile(data, desired, zen_pricing, go_pricing, md, dry_run=False):
             # context (only update if we have a real value)
             if d["context"] and existing.get("context") != d["context"]:
                 updates["context"] = d["context"]
+            # params (only update if we have a verified value)
+            if d.get("params") is not None and existing.get("params") != d["params"]:
+                updates["params"] = d["params"]
+            # also clear stale params if override removed (set to None -> show —)
+            elif d.get("params") is None and "params" in existing and existing.get("params") is not None:
+                # keep existing value if no override; don't auto-clear
+                pass
             # pricing
             if price:
                 for field, idx in (("inputCost", 0), ("outputCost", 1), ("cachedReadCost", 2)):

@@ -102,18 +102,18 @@
     <thead>
       <tr>
         <th data-key="name">Model</th>
+        <th data-key="params">Params</th>
+        <th data-key="context">Context</th>
         <th data-key="codingIndex"><a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener noreferrer">AA Coding Index</a></th>
         <th data-key="swePro" title="SWE-bench Pro (Scale AI) — % resolved on contamination-resistant long-horizon coding tasks"><a href="https://labs.scale.com/leaderboard/swe_bench_pro_public" target="_blank" rel="noopener noreferrer">SWE-bench Pro</a></th>
         <th data-key="aaSciCode" title="AA SciCode (Artificial Analysis) — science-code reasoning, %"><a href="https://scicode-bench.github.io/" target="_blank" rel="noopener noreferrer">AA SciCode</a></th>
-        <th data-key="inputCost">Input ($/1M)</th>
         <th data-key="outputCost">Output ($/1M)</th>
-        <th data-key="context">Context</th>
       </tr>
     </thead>
     <tbody id="tbody"></tbody>
   </table>
 
-  <p class="footer">Sorting by "Cost" uses Input + Output. Models with no benchmark score (—) sort last on benchmark. All AA Coding Index values from <a href="https://benchlm.ai/benchmarks/aacodingindex" target="_blank" rel="noopener noreferrer">BenchLM AA Coding Index</a> (display-only mirror of <a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener noreferrer">Artificial Analysis</a>, verified 2026-08-21, e.g. Kimi K3 76.24, GLM-5.3 74.76, Grok 4.5 72.45, Muse Spark 1.2 72.22, DeepSeek V4 Pro 68.83/Flash 69.06 for builds 0813/0731); Vision Exp, LongCat-2.0 etc. have no published AA Coding Index on that page and show —.</p>
+  <p class="footer">Models with no benchmark score (—) or params (—) sort last on those columns. All AA Coding Index values from <a href="https://benchlm.ai/benchmarks/aacodingindex" target="_blank" rel="noopener noreferrer">BenchLM AA Coding Index</a> (display-only mirror of <a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener noreferrer">Artificial Analysis</a>, verified 2026-08-21, e.g. Kimi K3 76.24, GLM-5.3 74.76, Grok 4.5 72.45, Muse Spark 1.2 72.22, DeepSeek V4 Pro 68.83/Flash 69.06 for builds 0813/0731); Vision Exp, LongCat-2.0 etc. have no published AA Coding Index on that page and show —.</p>
   <p class="footer"><strong>SWE-bench Pro:</strong> Scale AI's contamination-resistant coding benchmark (1,865 tasks, standardized harness), mirrored from <a href="https://benchlm.ai/benchmarks/swe-bench-pro" target="_blank" rel="noopener noreferrer">BenchLM</a>. OpenAI's July 2026 audit found ~30% of its public tasks broken, so treat scores as directional.</p>
   <p class="footer"><strong>AA SciCode:</strong> Artificial Analysis <a href="https://benchlm.ai/benchmarks/sciCode" target="_blank" rel="noopener noreferrer">SciCode</a> (research-code generation), mirrored from <a href="https://benchlm.ai" target="_blank" rel="noopener noreferrer">BenchLM</a> — the broadest benchmark coverage on this page.</p>
 
@@ -156,6 +156,10 @@ function fmtBench(v) {
 
 function fmtScore(v) {
   return v === null || v === undefined ? '<span class="na">—</span>' : v.toFixed(1);
+}
+
+function fmtParams(v) {
+  return v === null || v === undefined ? '<span class="na">—</span>' : escapeHtml(v);
 }
 
 function getFilters() {
@@ -206,7 +210,20 @@ function render() {
       return va.localeCompare(vb) * sortDir;
     }
     if (sortKey === 'context') {
+      const na = (va === null || va === undefined);
+      const nb = (vb === null || vb === undefined);
+      if (na && nb) return 0;
+      if (na) return 1;
+      if (nb) return -1;
       return (contextSize(va) - contextSize(vb)) * sortDir;
+    }
+    if (sortKey === 'params') {
+      const na = (va === null || va === undefined);
+      const nb = (vb === null || vb === undefined);
+      if (na && nb) return 0;
+      if (na) return 1;
+      if (nb) return -1;
+      return (paramSize(va) - paramSize(vb)) * sortDir;
     }
     const na = (va === null || va === undefined);
     const nb = (vb === null || vb === undefined);
@@ -229,12 +246,12 @@ function render() {
     return `
     <tr>
       <td>${nameHtml}${noteLink}</td>
+      <td>${fmtParams(m.params)}</td>
+      <td>${escapeHtml(m.context)}</td>
       <td class="num">${fmtBench(m.codingIndex)}</td>
       <td class="num">${fmtScore(m.swePro)}</td>
       <td class="num">${fmtScore(m.aaSciCode)}</td>
-      <td class="num">${fmtCost(m.inputCost)}</td>
       <td class="num">${fmtCost(m.outputCost)}</td>
-      <td>${escapeHtml(m.context)}</td>
     </tr>`;
   }).join('');
 }
@@ -244,6 +261,18 @@ function contextSize(ctx) {
   const num = parseFloat(s);
   if (s.endsWith('K')) return num * 1000;
   if (s.endsWith('M')) return num * 1000000;
+  return num;
+}
+
+function paramSize(v) {
+  if (v === null || v === undefined) return -1;
+  const s = String(v).trim();
+  const num = parseFloat(s);
+  if (isNaN(num)) return -1;
+  if (s.endsWith('T')) return num * 1e12;
+  if (s.endsWith('B')) return num * 1e9;
+  if (s.endsWith('M')) return num * 1e6;
+  if (s.endsWith('K')) return num * 1e3;
   return num;
 }
 
@@ -314,10 +343,7 @@ async function load() {
   const res = await fetch(DATA_URL);
   if (!res.ok) throw new Error('Failed to load ' + DATA_URL);
   const data = await res.json();
-  models = data.models.map(m => ({
-    ...m,
-    totalCost: m.inputCost + m.outputCost
-  }));
+  models = data.models;
   updateArrows();
   render();
 }

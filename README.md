@@ -6,10 +6,9 @@ A small static web page that displays **all OpenCode Zen models** (coding benchm
 
 ## Files
 
-- `docs/models.json` — Model data: AA Coding Index score, SWE-bench Pro score, AA SciCode score, USD-per-1M-token pricing (input, output, cached read), context window, and a `plan` field (`"go"` for models on the Go $10/mo plan, `"zen"` for Zen-only) for every model in the Zen catalog. Each model also has a link (`hfUrl`) to its model card — Hugging Face when weights are open, otherwise BenchLM model specs, or the manufacturer's site.
+- `docs/models.json` — Model data: AA Coding Index score, SWE-bench Pro score, AA SciCode score, USD-per-1M-token pricing (input, output, cached read), `params` (total parameters, e.g. "744B", "1.6T", `null` if undisclosed), `context` window (e.g. "1M", "500K"), and a `plan` field (`"go"` for models on the Go $10/mo plan, `"zen"` for Zen-only) for every model in the Zen catalog. Each model also has a link (`hfUrl`) to its model card — Hugging Face when weights are open, otherwise BenchLM model specs, or the manufacturer's site.
 - `docs/index.html` — The page itself. Loads `models.json` and renders the table. Filtering and sorting all happen in the browser. Published to GitHub Pages via the `docs/` folder.
 - `update_zen_prices.py` — Fetches the current OpenCode Zen catalog and pricing, the Go plan, model context/cost data, and SWE-bench Pro / AA SciCode scores, then updates `docs/models.json` (adds/removes models that join or leave the Zen catalog, refreshes prices, maintains the `plan` flag).
-- `opencode-go-models.md` — A Markdown snapshot of the same data.
 - `.github/workflows/update_models.yml` — Daily GitHub Actions job (03:00 UTC) that runs the update script and commits any changes to `docs/models.json` and `docs/index.html`.
 
 ## Usage
