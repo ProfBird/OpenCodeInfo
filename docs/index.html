@@ -94,7 +94,7 @@
     <label>Max output ($/1M) <input id="filterMaxOutput" type="number" min="0" step="0.01" placeholder="e.g. 2"></label>
     <label>Min AA index <input id="filterMinAA" type="number" min="0" max="100" step="0.1" placeholder="e.g. 60"></label>
     <label>Min SWE-bench Pro <input id="filterMinSWE" type="number" min="0" max="100" step="0.1" placeholder="e.g. 55"></label>
-    <label>Min AA SciCode <input id="filterMinSciCode" type="number" min="0" max="100" step="0.1" placeholder="e.g. 45"></label>
+    <label>Min Terminal-Bench <input id="filterMinTerminal" type="number" min="0" max="100" step="0.1" placeholder="e.g. 75"></label>
     <label>Min DeepSWE <input id="filterMinDeepSwe" type="number" min="0" max="100" step="0.1" placeholder="e.g. 55"></label>
     <button id="reset">Reset</button>
   </div>
@@ -107,7 +107,7 @@
         <th data-key="context">Context</th>
         <th data-key="codingIndex"><a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener noreferrer">AA Coding Index</a></th>
         <th data-key="swePro" title="SWE-bench Pro (Scale AI) — % resolved on contamination-resistant long-horizon coding tasks"><a href="https://labs.scale.com/leaderboard/swe_bench_pro_public" target="_blank" rel="noopener noreferrer">SWE-bench Pro</a></th>
-        <th data-key="aaSciCode" title="AA SciCode (Artificial Analysis) — science-code reasoning, %"><a href="https://scicode-bench.github.io/" target="_blank" rel="noopener noreferrer">AA SciCode</a></th>
+        <th data-key="terminalBench" title="Terminal-Bench (Laude Institute) — agentic terminal &amp; CLI coding tasks, %"><a href="https://www.tbench.ai/" target="_blank" rel="noopener noreferrer">Terminal-Bench</a></th>
         <th data-key="deepSwe" title="DeepSWE (Datacurve) — contamination-free long-horizon repo tasks, pass@1 %"><a href="https://deepswe.datacurve.ai/" target="_blank" rel="noopener noreferrer">DeepSWE</a></th>
         <th data-key="outputCost">Output ($/1M)</th>
       </tr>
@@ -117,7 +117,7 @@
 
   <p class="footer">Models with no benchmark score (—) or params (—) sort last on those columns. All AA Coding Index values from <a href="https://benchlm.ai/benchmarks/aacodingindex" target="_blank" rel="noopener noreferrer">BenchLM AA Coding Index</a> (display-only mirror of <a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener noreferrer">Artificial Analysis</a>, verified 2026-08-21, e.g. Kimi K3 76.24, GLM-5.3 74.76, Grok 4.5 72.45, Muse Spark 1.2 72.22, DeepSeek V4 Pro 68.83/Flash 69.06 for builds 0813/0731); Vision Exp, LongCat-2.0 etc. have no published AA Coding Index on that page and show —.</p>
   <p class="footer"><strong>SWE-bench Pro:</strong> Scale AI's contamination-resistant coding benchmark (1,865 tasks, standardized harness), mirrored from <a href="https://benchlm.ai/benchmarks/swe-bench-pro" target="_blank" rel="noopener noreferrer">BenchLM</a>. OpenAI's July 2026 audit found ~30% of its public tasks broken, so treat scores as directional.</p>
-  <p class="footer"><strong>AA SciCode:</strong> Artificial Analysis <a href="https://benchlm.ai/benchmarks/sciCode" target="_blank" rel="noopener noreferrer">SciCode</a> (research-code generation), mirrored from <a href="https://benchlm.ai" target="_blank" rel="noopener noreferrer">BenchLM</a> — the broadest benchmark coverage on this page.</p>
+  <p class="footer"><strong>Terminal-Bench:</strong> Laude Institute's agentic terminal &amp; CLI coding benchmark, mirrored from <a href="https://benchlm.ai/benchmarks/terminalbench21" target="_blank" rel="noopener noreferrer">BenchLM</a>. Shows Terminal-Bench 2.1 where published, else 2.0. — = not published.</p>
   <p class="footer"><strong>DeepSWE:</strong> Datacurve's contamination-free long-horizon repo benchmark (113 tasks, 91 repos), pass@1 %, mirrored from <a href="https://benchlm.ai/benchmarks/deepswe" target="_blank" rel="noopener noreferrer">BenchLM</a>. Only models with a published score are shown (— = not published).</p>
 
   <section class="notes" id="stealth-notes">
@@ -170,25 +170,25 @@ function getFilters() {
   const maxOutEl = document.getElementById('filterMaxOutput');
   const minAAEl = document.getElementById('filterMinAA');
   const minSWEEl = document.getElementById('filterMinSWE');
-  const minSciCodeEl = document.getElementById('filterMinSciCode');
+  const minTerminalEl = document.getElementById('filterMinTerminal');
   const minDeepSweEl = document.getElementById('filterMinDeepSwe');
   const maxOut = maxOutEl && maxOutEl.value !== '' ? parseFloat(maxOutEl.value) : null;
   const minAA = minAAEl && minAAEl.value !== '' ? parseFloat(minAAEl.value) : null;
   const minSWE = minSWEEl && minSWEEl.value !== '' ? parseFloat(minSWEEl.value) : null;
-  const minSciCode = minSciCodeEl && minSciCodeEl.value !== '' ? parseFloat(minSciCodeEl.value) : null;
+  const minTerminal = minTerminalEl && minTerminalEl.value !== '' ? parseFloat(minTerminalEl.value) : null;
   const minDeepSwe = minDeepSweEl && minDeepSweEl.value !== '' ? parseFloat(minDeepSweEl.value) : null;
   return {
     plan: planEl ? planEl.value : 'all',
     maxOut: Number.isFinite(maxOut) ? maxOut : null,
     minAA: Number.isFinite(minAA) ? minAA : null,
     minSWE: Number.isFinite(minSWE) ? minSWE : null,
-    minSciCode: Number.isFinite(minSciCode) ? minSciCode : null,
+    minTerminal: Number.isFinite(minTerminal) ? minTerminal : null,
     minDeepSwe: Number.isFinite(minDeepSwe) ? minDeepSwe : null
   };
 }
 
 function render() {
-  const { plan, maxOut, minAA, minSWE, minSciCode, minDeepSwe } = getFilters();
+  const { plan, maxOut, minAA, minSWE, minTerminal, minDeepSwe } = getFilters();
   const filtered = models.filter(m => {
     if (plan === 'go' && m.plan !== 'go') return false;
     if (maxOut !== null) {
@@ -203,9 +203,9 @@ function render() {
       if (m.swePro === null || m.swePro === undefined) return false;
       if (m.swePro < minSWE) return false;
     }
-    if (minSciCode !== null) {
-      if (m.aaSciCode === null || m.aaSciCode === undefined) return false;
-      if (m.aaSciCode < minSciCode) return false;
+    if (minTerminal !== null) {
+      if (m.terminalBench === null || m.terminalBench === undefined) return false;
+      if (m.terminalBench < minTerminal) return false;
     }
     if (minDeepSwe !== null) {
       if (m.deepSwe === null || m.deepSwe === undefined) return false;
@@ -260,7 +260,7 @@ function render() {
       <td>${escapeHtml(m.context)}</td>
       <td class="num">${fmtBench(m.codingIndex)}</td>
       <td class="num">${fmtScore(m.swePro)}</td>
-      <td class="num">${fmtScore(m.aaSciCode)}</td>
+      <td class="num">${fmtScore(m.terminalBench)}</td>
       <td class="num">${fmtScore(m.deepSwe)}</td>
       <td class="num">${fmtCost(m.outputCost)}</td>
     </tr>`;
@@ -318,14 +318,14 @@ document.getElementById('planFilter').addEventListener('change', render);
 document.getElementById('filterMaxOutput').addEventListener('input', render);
 document.getElementById('filterMinAA').addEventListener('input', render);
 document.getElementById('filterMinSWE').addEventListener('input', render);
-document.getElementById('filterMinSciCode').addEventListener('input', render);
+document.getElementById('filterMinTerminal').addEventListener('input', render);
 document.getElementById('filterMinDeepSwe').addEventListener('input', render);
 document.getElementById('reset').addEventListener('click', () => {
   document.getElementById('planFilter').value = 'all';
   document.getElementById('filterMaxOutput').value = '';
   document.getElementById('filterMinAA').value = '';
   document.getElementById('filterMinSWE').value = '';
-  document.getElementById('filterMinSciCode').value = '';
+  document.getElementById('filterMinTerminal').value = '';
   document.getElementById('filterMinDeepSwe').value = '';
   setSort('name', 1);
 });

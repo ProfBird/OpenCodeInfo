@@ -9,7 +9,7 @@ Sources:
   Go pricing:  https://opencode.ai/docs/go                 (Go plan pricing table)
   Context/cost: https://models.dev/api.json                (opencode provider: context + cost)
   SWE-bench Pro: https://benchlm.ai/data/models.json       (per-model benchmarks.coding.swePro)
-  AA SciCode:    https://benchlm.ai/data/models.json       (per-model benchmarks.coding.aaSciCode)
+  Terminal-Bench: https://benchlm.ai/data/models.json      (per-model benchmarks.coding.terminalBench21 / terminalBench2)
   DeepSWE:       https://benchlm.ai/data/models.json       (per-model benchmarks.coding.deepSwe)
 
 Every model in models.json carries a "plan" field: "go" for models on the Go
@@ -194,6 +194,8 @@ BENCH_SLUG_OVERRIDES = {
     "GLM-5.3-Flash": "glm-5-3-flash",
     "GLM-5.3": "glm-5-3",
     "Laguna S 2.1 Free": "laguna-s-2-1",
+    "Nemotron 3 Ultra Free": "nemotron-3-ultra",
+    "Nemotron 3.5 Lightning Free": "nemotron-3-5-lightning-30b-a3b-nvfp4",
     "Gemini 3.5 Flash Lite": "gemini-3-5-flash-lite",
     "GPT 5.6 Sol": "gpt-5-6-sol",
     "GPT 5.6 Terra": "gpt-5-6-terra",
@@ -529,25 +531,14 @@ def bench_slug_for(name: str) -> str:
     return id_from_name(name)
 
 # BenchLM coding benchmark fields merged into each model (null if unpublished).
-BENCH_FIELDS = ("swePro", "aaSciCode", "deepSwe")
-
-# DeepSWE-specific BenchLM slug overrides. Some models' published DeepSWE lives
-# under a different BenchLM slug than the one used for swePro/aaSciCode (e.g.
-# Qwen3.8 Max vs the older "Qwen3.8 Max Preview" build).
-BENCH_SLUG_OVERRIDES_DEEPSWE = {
-    "Qwen3.8 Max": "qwen3-8-max",
-}
-
-# Hardcoded SWE-bench Pro scores not tracked by BenchLM, sourced from Scale AI's
-# standardized SWE-bench Pro public leaderboard (labs.scale.com/leaderboard/swe_bench_pro_public).
-SWE_PRO_OVERRIDES = {
-    "Claude Haiku 4.5": 39.45,  # claude-4-5-haiku, ±3.55, Scale standardized public set
-}
+BENCH_FIELDS = ("swePro", "terminalBench", "deepSwe")
 
 def bench_item_for(model_name, field, by_slug, by_norm):
     """Resolve the BenchLM item for a model+field (per-field slug overrides)."""
     if field == "deepSwe":
         slug = BENCH_SLUG_OVERRIDES_DEEPSWE.get(model_name) or bench_slug_for(model_name)
+    elif field == "terminalBench":
+        slug = BENCH_SLUG_OVERRIDES_TERMINAL.get(model_name) or bench_slug_for(model_name)
     else:
         slug = bench_slug_for(model_name)
     return by_slug.get(slug) or by_norm.get(normalize(model_name))
@@ -567,7 +558,13 @@ def merge_benchmarks(models, bench_items, dry_run=False):
             if not it:
                 continue
             coding = it.get("benchmarks", {}).get("coding", {}) or {}
-            score = coding.get(field)
+            if field == "terminalBench":
+                # prefer the newer Terminal-Bench 2.1, fall back to 2.0
+                score = coding.get("terminalBench21")
+                if score is None:
+                    score = coding.get("terminalBench2")
+            else:
+                score = coding.get(field)
             if score is None:
                 continue
             old = m.get(field)
@@ -576,6 +573,24 @@ def merge_benchmarks(models, bench_items, dry_run=False):
                 if not dry_run:
                     m[field] = score
     return changed
+
+# DeepSWE-specific BenchLM slug overrides. Some models' published DeepSWE lives
+# under a different BenchLM slug than the one used for swePro/terminalBench (e.g.
+# Qwen3.8 Max vs the older "Qwen3.8 Max Preview" build).
+BENCH_SLUG_OVERRIDES_DEEPSWE = {
+    "Qwen3.8 Max": "qwen3-8-max",
+}
+
+# Terminal-Bench-specific BenchLM slug overrides (same rationale as DeepSWE).
+BENCH_SLUG_OVERRIDES_TERMINAL = {
+    "Qwen3.8 Max": "qwen3-8-max",
+}
+
+# Hardcoded SWE-bench Pro scores not tracked by BenchLM, sourced from Scale AI's
+# standardized SWE-bench Pro public leaderboard (labs.scale.com/leaderboard/swe_bench_pro_public).
+SWE_PRO_OVERRIDES = {
+    "Claude Haiku 4.5": 39.45,  # claude-4-5-haiku, ±3.55, Scale standardized public set
+}
 
 def apply_bench_overrides(models, dry_run=False):
     """Apply hardcoded benchmark overrides (e.g. Scale SWE-bench Pro scores BenchLM lacks)."""
@@ -676,7 +691,8 @@ def main():
         data["source"] = f"OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved {today}"
         data["goSource"] = f"OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved {today}"
         data["benchmarkPro"] = f"SWE-bench Pro (Scale AI), via {DEFAULT_BENCHLM_URL}, retrieved {today}"
-        data["benchmarkSciCode"] = f"AA SciCode (Artificial Analysis), via {DEFAULT_BENCHLM_URL}, retrieved {today}"
+        data["benchmarkTerminal"] = f"Terminal-Bench (Laude Institute), via {DEFAULT_BENCHLM_URL}, retrieved {today}"
+        data["benchmarkDeepSwe"] = f"DeepSWE (Datacurve), via {DEFAULT_BENCHLM_URL}, retrieved {today}"
         args.output.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         print(f"\nWrote {args.output}", file=sys.stderr)
     elif args.dry_run:

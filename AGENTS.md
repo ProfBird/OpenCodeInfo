@@ -1,10 +1,10 @@
 # OpenCodeInfo — OpenCode Zen & Go Model Benchmarks & Cost
 
-Static site + refresh script for OpenCode Zen model pricing, AA Coding Index, SWE-bench Pro, AA SciCode, and DeepSWE.
+Static site + refresh script for OpenCode Zen model pricing, AA Coding Index, SWE-bench Pro, Terminal-Bench, and DeepSWE.
 
 ## Commands
 - Serve the page:            `python -m http.server` → http://localhost:8000/docs/index.html
-- Update data:               `python update_zen_prices.py --output docs/models.json`   (adds/removes models, refreshes prices + SWE-bench Pro + AA SciCode + DeepSWE)
+- Update data:               `python update_zen_prices.py --output docs/models.json`   (adds/removes models, refreshes prices + SWE-bench Pro + Terminal-Bench + DeepSWE)
 - Preview changes:           `python update_zen_prices.py --dry-run --output docs/models.json`
 - Prices only, no sync:      `python update_zen_prices.py --no-sync --output docs/models.json`
 - Validate data file:        `python3 -m json.tool docs/models.json`
@@ -20,7 +20,7 @@ Static site + refresh script for OpenCode Zen model pricing, AA Coding Index, SW
 Each entry: `name`, `params` (total parameters, e.g. "744B", "1.6T", `null` if undisclosed),
 `context` (e.g. "1M", "500K"), `codingIndex` (AA Coding Index %, 0–100, `null` if unpublished),
 `swePro` (SWE-bench Pro %, 0–100, `null` if unpublished),
-`aaSciCode` (AA SciCode %, 0–100, `null` if unpublished),
+`terminalBench` (Terminal-Bench %, 0–100, `null` if unpublished; 2.1 preferred, else 2.0),
 `deepSwe` (DeepSWE %, 0–100, `null` if unpublished),
 `inputCost`/`outputCost`/`cachedReadCost` (USD per 1M tokens),
 `plan` (`"go"` = Go $10/mo plan, `"zen"` = Zen-only), `hfUrl` (HF card, else BenchLM specs, else manufacturer).
@@ -29,11 +29,11 @@ Each entry: `name`, `params` (total parameters, e.g. "744B", "1.6T", `null` if u
 - Catalog = union of https://opencode.ai/zen/v1/models + .../zen/go/v1/models; `plan` reflects Go membership.
 - Pricing from https://opencode.ai/docs/zen#pricing and https://opencode.ai/docs/go; Go price wins where both exist.
 - Context/cost fallback from https://models.dev/api.json; `CONTEXT_OVERRIDES`/`PARAM_OVERRIDES`/`KNOWN_URLS` maps hold verified values.
-- SWE-bench Pro + AA SciCode + DeepSWE from https://benchlm.ai/data/models.json (`benchmarks.coding.swePro` / `.aaSciCode` / `.deepSwe`); `BENCH_SLUG_OVERRIDES` maps display names to BenchLM slugs, `BENCH_SLUG_OVERRIDES_DEEPSWE` overrides slug for the DeepSWE field only. `SWE_PRO_OVERRIDES` hardcodes Scale SWE-bench Pro scores BenchLM lacks (e.g. Claude Haiku 4.5 39.45, from labs.scale.com/leaderboard/swe_bench_pro_public).
+- SWE-bench Pro + Terminal-Bench + DeepSWE from https://benchlm.ai/data/models.json (`benchmarks.coding.swePro` / `.terminalBench21`+`.terminalBench2` / `.deepSwe`); `BENCH_SLUG_OVERRIDES` maps display names to BenchLM slugs, `BENCH_SLUG_OVERRIDES_DEEPSWE`/`BENCH_SLUG_OVERRIDES_TERMINAL` override slug for the DeepSWE/Terminal-Bench fields only. `SWE_PRO_OVERRIDES` hardcodes Scale SWE-bench Pro scores BenchLM lacks (e.g. Claude Haiku 4.5 39.45, from labs.scale.com/leaderboard/swe_bench_pro_public).
 - Every run refreshes the "Checked <date>." footer note in docs/index.html (`update_checked_date`); dry-run never writes.
 - Do NOT hand-edit models.json — run the script.
 
 ## Web page (docs/index.html)
-- Columns: Model, Params, Context, AA Coding Index, SWE-bench Pro, AA SciCode, DeepSWE, Output ($/1M).
-- Filters: Plan (All Zen / Go only), Max output ($/1M), Min AA index, Min SWE-bench Pro, Min AA SciCode, Min DeepSWE; Reset clears all.
+- Columns: Model, Params, Context, AA Coding Index, SWE-bench Pro, Terminal-Bench, DeepSWE, Output ($/1M).
+- Filters: Plan (All Zen / Go only), Max output ($/1M), Min AA index, Min SWE-bench Pro, Min Terminal-Bench, Min DeepSWE; Reset clears all.
 - Click the sort button (⇅) or column header to sort; `null` scores/params sort last and render as "—". Benchmark header names link to the originator's page.
