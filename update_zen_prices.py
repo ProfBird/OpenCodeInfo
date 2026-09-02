@@ -24,6 +24,7 @@ Usage:
 Standard library only (urllib, re, html, json, argparse).
 """
 import argparse
+import calendar
 import html
 import json
 import re
@@ -191,6 +192,7 @@ BENCH_SLUG_OVERRIDES = {
     "Muse Spark 1.2": "muse-spark-1-2",
     "Muse Spark 1.2 Contributor": "muse-spark-1-2",
     "Muse Spark 1.2 Contributor Free": "muse-spark-1-2",
+    "Muse Spark 1.3 Contributor": "muse-spark-1-3",
     "MiMo-V2 Omni": "mimo-v2-omni",
     "MiMo-V2 Pro": "mimo-v2-pro",
     "MiMo-V2.5": "mimo-v2-5",
@@ -562,7 +564,7 @@ def or_display_name(or_id, or_name):
         base = or_name.split(": ", 1)[-1]  # strip "Vendor: " prefix
     return base
 
-def sync_openrouter(models, or_models, dry_run=False):
+def sync_openrouter(models, or_models, dry_run=False, today=None):
     """Add/update rows for OpenRouter's programming-category models (plan 'openrouter').
 
     Pricing/context come from OpenRouter's catalog and can differ from the same
@@ -571,6 +573,8 @@ def sync_openrouter(models, or_models, dry_run=False):
     retention policy). Legacy rows named '<Display> (OpenRouter)' are renamed to
     the bare display name on sync.
     """
+    if today is None:
+        today = date.today()
     by_name = {}
     for m in models:
         if m.get("plan") == "openrouter":
@@ -610,6 +614,7 @@ def sync_openrouter(models, or_models, dry_run=False):
             row = {"name": name, "codingIndex": None, "swePro": None,
                    "terminalBench": None, "deepSwe": None}
             row.update(row_data)
+            _insert_after(row, "addedOn", today.isoformat(), "hfUrl")
             added.append((name, oid))
             if not dry_run:
                 models.append(row)
@@ -659,7 +664,7 @@ def build_desired(zen_ids, go_ids, md, mdgo=None):
         }
     return desired
 
-def reconcile(data, desired, zen_pricing, go_pricing, go_usage, md, dry_run=False):
+def reconcile(data, desired, zen_pricing, go_pricing, go_usage, md, dry_run=False, today=None):
     """Add/update models to match the desired catalog.
 
     Models that leave the catalog are NEVER removed — they stay listed and
@@ -673,6 +678,8 @@ def reconcile(data, desired, zen_pricing, go_pricing, go_usage, md, dry_run=Fals
         by_id[normalize(id_from_name(m["name"]))] = m
         by_id[normalize(m["name"])] = m
 
+    if today is None:
+        today = date.today()
     added = []
     changed = []
 
@@ -714,6 +721,7 @@ def reconcile(data, desired, zen_pricing, go_pricing, go_usage, md, dry_run=Fals
             if row["inputCost"] is None: row["inputCost"] = 0
             if row["outputCost"] is None: row["outputCost"] = 0
             if row["cachedReadCost"] is None: row["cachedReadCost"] = 0
+            _insert_after(row, "addedOn", today.isoformat(), "hfUrl")
             added.append((d["name"], i))
             if not dry_run:
                 models.append(row)
@@ -872,6 +880,7 @@ BENCH_INHERIT_FROM = {
     "Ox Alpha Free": "GLM-5.3-Flash",
     "Laguna S 2.1 Free": "Laguna S 2.1",
     "Muse Spark 1.2 Contributor Free": "Muse Spark 1.2",
+    "Muse Spark 1.3 Free": "Muse Spark 1.3",
 }
 
 def inherit_benchmarks(models, bench_items, dry_run=False):
@@ -1033,6 +1042,34 @@ def _insert_after(d, new_key, value, after_key):
     d.clear()
     d.update(out)
 
+def _add_month(d):
+    """Same calendar day next month, clamped to month end."""
+    m = d.month + 1
+    y = d.year + (m - 1) // 12
+    m = (m - 1) % 12 + 1
+    return d.replace(year=y, month=m, day=min(d.day, calendar.monthrange(y, m)[1]))
+
+def _new_expired(today, iso):
+    """True if an `addedOn` date is one month old or older (New badge lapses)."""
+    try:
+        added = date.fromisoformat(iso)
+    except (TypeError, ValueError):
+        return True
+    return today >= _add_month(added)
+
+def prune_new_flags(models, today, dry_run=False):
+    """Drop `addedOn` from rows whose New badge has lapsed (one month). Returns names."""
+    expired = []
+    for m in models:
+        if "addedOn" not in m:
+            continue
+        if not _new_expired(today, m["addedOn"]):
+            continue
+        expired.append(m["name"])
+        if not dry_run:
+            m.pop("addedOn", None)
+    return expired
+
 def apply_na_flags(models, md, mdgo, catalog_ids=(), dry_run=False, today=None):
     """Set/unset the `na` field (Not Available) on every row.
 
@@ -1129,10 +1166,11 @@ def main():
         print(f"BenchLM models: {len(bench_items)}", file=sys.stderr)
 
     data = json.loads(args.output.read_text(encoding="utf-8"))
+    run_today = date.today()
 
     if not args.no_sync:
         desired = build_desired(zen_ids, go_ids, md, mdgo)
-        added, changed = reconcile(data, desired, zen_pricing, go_pricing, go_usage, md, dry_run=args.dry_run)
+        added, changed = reconcile(data, desired, zen_pricing, go_pricing, go_usage, md, dry_run=args.dry_run, today=run_today)
     else:
         added = changed = []
 
@@ -1141,7 +1179,7 @@ def main():
     except Exception as e:
         or_models = []
         print(f"Warning: could not fetch OpenRouter catalog: {e}", file=sys.stderr)
-    or_added, or_changed = sync_openrouter(data["models"], or_models, dry_run=args.dry_run)
+    or_added, or_changed = sync_openrouter(data["models"], or_models, dry_run=args.dry_run, today=run_today)
     added = list(added) + or_added
     changed = list(changed) + or_changed
 
@@ -1150,7 +1188,8 @@ def main():
     bench_changed += inherit_benchmarks(data["models"], bench_items, dry_run=args.dry_run)
     bench_changed += apply_uncertain_bench_overrides(data["models"], dry_run=args.dry_run)
     bench_changed += cross_copy_benchmarks(data["models"], dry_run=args.dry_run)
-    na_changed = apply_na_flags(data["models"], md, mdgo, catalog_ids=list(zen_ids) + list(go_ids), dry_run=args.dry_run)
+    na_changed = apply_na_flags(data["models"], md, mdgo, catalog_ids=list(zen_ids) + list(go_ids), dry_run=args.dry_run, today=run_today)
+    new_expired = prune_new_flags(data["models"], run_today, dry_run=args.dry_run)
 
     if changed:
         print(f"\n{len(changed)} price/plan update(s):" + (" (dry-run)" if args.dry_run else ""), file=sys.stderr)
@@ -1169,10 +1208,14 @@ def main():
         print(f"\n{len(added)} model(s) to add:" if args.dry_run else f"\n{len(added)} model(s) added:", file=sys.stderr)
         for name, i in added:
             print(f"  + {name:34} ({i})", file=sys.stderr)
-    if not (changed or added or bench_changed or na_changed):
+    if new_expired:
+        print(f"\n{len(new_expired)} New badge(s) expired:" + (" (dry-run)" if args.dry_run else ""), file=sys.stderr)
+        for name in new_expired:
+            print(f"  - {name:34} (addedOn dropped)", file=sys.stderr)
+    if not (changed or added or bench_changed or na_changed or new_expired):
         print("\nCatalog, prices and benchmarks in sync (no changes).", file=sys.stderr)
 
-    if not args.dry_run and (changed or added or bench_changed or na_changed):
+    if not args.dry_run and (changed or added or bench_changed or na_changed or new_expired):
         today = date.today().isoformat()
         data["source"] = f"OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved {today}"
         data["goSource"] = f"OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved {today}"

@@ -63,6 +63,7 @@
   tbody tr:hover { background: rgba(128,128,128,0.12); }
   .num { font-variant-numeric: tabular-nums; }
   .na { color: #999; }
+  .new-badge { color: green; }
   .sortbtn {
     margin-left: 0.35rem;
     padding: 0.05rem 0.3rem;
@@ -406,6 +407,24 @@ function fmtParams(v) {
   return v === null || v === undefined ? '<span class="na">—</span>' : escapeHtml(v);
 }
 
+// Human date for the New badge tooltip ("Sep 2, 2026" style).
+function fmtAdded(iso) {
+  const d = new Date(iso + 'T00:00:00');
+  if (isNaN(d)) return iso;
+  return d.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+}
+
+// True while addedOn is under one calendar month old (New badge window).
+function isNewModel(addedOn) {
+  if (!addedOn) return false;
+  const added = new Date(addedOn + 'T00:00:00');
+  if (isNaN(added)) return false;
+  const cutoff = new Date(added.getFullYear(), added.getMonth() + 1, 1);
+  const lastDay = new Date(cutoff.getFullYear(), cutoff.getMonth() + 1, 0).getDate();
+  cutoff.setDate(Math.min(added.getDate(), lastDay));
+  return new Date() < cutoff;
+}
+
 /* ── Popover helpers ── */
 const backdrop = document.getElementById('popoverBackdrop');
 function openPopover(id) {
@@ -593,9 +612,10 @@ function render() {
     const goBadge = m.plan === 'go' ? (m.alsoOnZen ? ' (Go · Zen)' : ' (Go)') : '';
     const orBadge = m.plan === 'openrouter' ? ' (OpenRouter)' : '';
     const naBadge = m.na ? ' (N.A.)' : '';
+    const newBadge = isNewModel(m.addedOn) ? ` <span class="new-badge" title="Added ${fmtAdded(m.addedOn)}">(New)</span>` : '';
     const nameHtml = (m.hfUrl
       ? `<a href="${escapeHtml(m.hfUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(m.name)}</a>`
-      : escapeHtml(m.name)) + zenBadge + goBadge + orBadge + naBadge;
+      : escapeHtml(m.name)) + zenBadge + goBadge + orBadge + naBadge + newBadge;
     const isStealthNote = /^(big pickle|ox alpha)/i.test(m.name);
     const noteLink = isStealthNote ? ` <a href="#stealth-notes" title="Stealth-model note — see below" style="font-size:0.75em;opacity:0.65;text-decoration:none">ⓘ</a>` : '';
     const cells = [];
