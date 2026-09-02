@@ -125,6 +125,8 @@ KNOWN_URLS = {
     "gpt-5.1-codex-mini": "https://developers.openai.com/api/docs/models",
     "muse-spark-1.2-contributor": "https://developer.meta.com/ai/models/muse-spark/",
     "muse-spark-1.2-contributor-free": "https://developer.meta.com/ai/models/muse-spark/",
+    "muse-spark-1.3-contributor": "https://developer.meta.com/ai/models/muse-spark/",
+    "muse-spark-1.3-contributor-free": "https://developer.meta.com/ai/models/muse-spark/",
     "qwen3.7-max": "https://qwen.ai/blog?id=qwen3.7",
     "qwen3.7-plus": "https://qwen.ai/blog?id=qwen3.7-plus",
     "qwen3.5-plus": "https://qwen.ai/blog?id=qwen3.5-plus",
@@ -135,6 +137,7 @@ KNOWN_URLS = {
     "big-pickle": "https://opencode.ai/docs/zen",
     # closed models -> BenchLM specs
     "claude-fable-5": "https://benchlm.ai/models/claude-fable-5",
+    "claude-fable-5-1": "https://benchlm.ai/models/claude-fable-5-1",
     "claude-opus-5": "https://benchlm.ai/models/claude-opus-5",
     "claude-opus-4-8": "https://benchlm.ai/models/claude-opus-4-8",
     "claude-opus-4-7": "https://benchlm.ai/models/claude-opus-4-7",
@@ -145,6 +148,7 @@ KNOWN_URLS = {
     "claude-sonnet-4-5": "https://benchlm.ai/models/claude-sonnet-4-5",
     "claude-haiku-4-5": "https://benchlm.ai/models/claude-haiku-4-5",
     "gemini-3.7-flash": "https://benchlm.ai/models/gemini-3.7-flash",
+    "gemini-3.8-flash": "https://benchlm.ai/models/gemini-3-8-flash",
     "gemini-3.6-flash": "https://benchlm.ai/models/gemini-3-6-flash",
     "gemini-3.5-flash": "https://benchlm.ai/models/gemini-3-5-flash",
     "gemini-3.5-flash-lite": "https://benchlm.ai/models/gemini-3.5-flash-lite",
@@ -174,6 +178,8 @@ KNOWN_URLS = {
     # Ling 3.0 Flash Fin: finance fine-tune; weights not on HF yet (API-only launch
     # 2026-08-27) -> BenchLM spec profile per the fallback chain.
     "ling-3.0-flash-fin-free": "https://benchlm.ai/models/ling-3-0-flash-fin",
+    # Hy4 Preview: no public HF card (tencent/Hy4 401s; cf. HY3 200) -> BenchLM specs.
+    "hy4-preview": "https://benchlm.ai/models/hy4-preview",
 }
 
 # OpenCode model name -> BenchLM slug for SWE-bench Pro lookups where the
@@ -291,6 +297,28 @@ def extract_pricing_table(html_text: str, is_go: bool = False):
         pricing[normalize(base)] = (parse_price(row[1]), parse_price(row[2]), parse_price(row[3]))
     return pricing
 
+def extract_go_usage(html_text: str):
+    """Parse Go pricing table Usage column (dollars included). Returns dict normalize -> dollars."""
+    m = re.search(
+        r'<table><thead><tr><th>Model</th><th>Input</th><th>Output</th><th>Cached Read</th><th>Cached Write</th><th>Usage</th></tr></thead><tbody>(.*?)</tbody></table>',
+        html_text, re.DOTALL)
+    if not m:
+        m = re.search(r'<th>Model</th>.*?<th>Usage</th>.*?<tbody>(.*?)</tbody>', html_text, re.DOTALL)
+        if not m:
+            return {}
+    tbody = m.group(1)
+    rows = re.findall(r'<tr><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td></tr>', tbody, re.DOTALL)
+    usage = {}
+    for row in rows:
+        model = strip_tags(row[0])
+        base = model.split("(")[0].strip()
+        if not model:
+            continue
+        if ("Peak" in model and "Off-Peak" not in model) or "> 2" in model:
+            continue
+        usage[normalize(base)] = parse_price(row[5])
+    return usage
+
 def fmt_ctx(n):
     if not n:
         return "1M"
@@ -349,6 +377,7 @@ PARAM_OVERRIDES = {
     "hy3": "295B",
     "hy3-preview": "295B",
     "hy3-free": "295B",
+    "hy4-preview": "770B",
     "laguna-s-2.1-free": "118B",
     "minimax-m2.5": "230B",
     "minimax-m2.7": "230B",
@@ -480,6 +509,7 @@ OPENROUTER_PARAMS = {
     "qwen/qwen3.8-flash": "125B",
     "qwen/qwen3.8-max": "2.4T",
     "tencent/hy3": "295B",
+    "tencent/hy4-preview": "770B",
     "xiaomi/mimo-v2.5": "310B",
     "x-ai/grok-4.5": "1.7T",
     "x-ai/grok-4.6": "1.7T",
@@ -629,7 +659,7 @@ def build_desired(zen_ids, go_ids, md, mdgo=None):
         }
     return desired
 
-def reconcile(data, desired, zen_pricing, go_pricing, md, dry_run=False):
+def reconcile(data, desired, zen_pricing, go_pricing, go_usage, md, dry_run=False):
     """Add/update models to match the desired catalog.
 
     Models that leave the catalog are NEVER removed — they stay listed and
@@ -675,6 +705,11 @@ def reconcile(data, desired, zen_pricing, go_pricing, md, dry_run=False):
                 row["alsoOnZen"] = True
             if i in KNOWN_URLS:
                 row["hfUrl"] = KNOWN_URLS[i]
+            # Go usage limit (dollars) — only for Go plan models
+            if d["plan"] == "go":
+                go_u = go_usage.get(nid) or go_usage.get(disp_norm)
+                if go_u is not None:
+                    row["goUsage"] = go_u
             # null price -> treat as Free
             if row["inputCost"] is None: row["inputCost"] = 0
             if row["outputCost"] is None: row["outputCost"] = 0
@@ -714,12 +749,26 @@ def reconcile(data, desired, zen_pricing, go_pricing, md, dry_run=False):
                     old = existing.get(field)
                     if old is None or abs(old - newv) > 1e-9:
                         updates[field] = newv
+            # Go usage limit (dollars included)
+            if d["plan"] == "go":
+                new_go = go_usage.get(nid) or go_usage.get(disp_norm)
+                old_go = existing.get("goUsage")
+                # normalize None vs missing
+                if new_go is not None and (old_go is None or abs(old_go - new_go) > 1e-9):
+                    updates["goUsage"] = new_go
+                elif new_go is None and old_go is not None:
+                    updates["goUsage"] = None
+            else:
+                if "goUsage" in existing:
+                    updates["goUsage"] = None
             if updates:
                 changed.append((existing.get("name"), updates))
                 if not dry_run:
                     for k, v in updates.items():
                         if k == "alsoOnZen" and v is False:
                             existing.pop("alsoOnZen", None)
+                        elif k == "goUsage" and v is None:
+                            existing.pop("goUsage", None)
                         else:
                             existing[k] = v
 
@@ -806,6 +855,11 @@ BENCH_SLUG_OVERRIDES_TERMINAL = {
 # standardized SWE-bench Pro public leaderboard (labs.scale.com/leaderboard/swe_bench_pro_public).
 SWE_PRO_OVERRIDES = {
     "Claude Haiku 4.5": 39.45,  # claude-4-5-haiku, ±3.55, Scale standardized public set
+    # Tencent self-reported in the official Hy3 repo (github.com/Tencent-Hunyuan/Hy3),
+    # corroborated by ayautomate + codingfleet comparisons. No Scale standardized
+    # entry exists for any Hy model, so this is a vendor-scaffold number — comparable
+    # to Hy4 Preview's 65.7 (same vendor family), not to Scale-board scores.
+    "Hy3": 57.9,
 }
 
 # Free-tier variants publish no benchmark runs of their own; they serve the same
@@ -1051,8 +1105,11 @@ def main():
     except Exception as e:
         print(f"Error fetching model catalogs: {e}", file=sys.stderr); sys.exit(1)
 
-    zen_pricing = extract_pricing_table(fetch_html(args.zen_url), is_go=False)
-    go_pricing = extract_pricing_table(fetch_html(args.go_url), is_go=True)
+    zen_html = fetch_html(args.zen_url)
+    go_html = fetch_html(args.go_url)
+    zen_pricing = extract_pricing_table(zen_html, is_go=False)
+    go_pricing = extract_pricing_table(go_html, is_go=True)
+    go_usage = extract_go_usage(go_html)
     try:
         mdev = fetch_json(args.modelsdev_url)
         md = mdev.get("opencode", {}).get("models", {})
@@ -1075,7 +1132,7 @@ def main():
 
     if not args.no_sync:
         desired = build_desired(zen_ids, go_ids, md, mdgo)
-        added, changed = reconcile(data, desired, zen_pricing, go_pricing, md, dry_run=args.dry_run)
+        added, changed = reconcile(data, desired, zen_pricing, go_pricing, go_usage, md, dry_run=args.dry_run)
     else:
         added = changed = []
 

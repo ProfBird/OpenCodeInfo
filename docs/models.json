@@ -54,7 +54,8 @@
       "params": null,
       "plan": "zen",
       "swePro": 81.2,
-      "deepSwe": 67.4
+      "deepSwe": 67.4,
+      "hfUrl": "https://benchlm.ai/models/claude-fable-5-1"
     },
     {
       "name": "Claude Haiku 4.5",
@@ -216,7 +217,8 @@
       "cachedReadCost": 0.007,
       "plan": "go",
       "alsoOnZen": true,
-      "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash"
+      "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash",
+      "goUsage": 30.0
     },
     {
       "name": "DeepSeek V4 Flash",
@@ -226,9 +228,9 @@
       "swePro": 52.6,
       "terminalBench": 82.7,
       "deepSwe": 54.4,
-      "inputCost": 0.088606,
-      "outputCost": 0.177212,
-      "cachedReadCost": 0.017721,
+      "inputCost": 0.07938,
+      "outputCost": 0.15876,
+      "cachedReadCost": 0.015876,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash"
     },
@@ -271,7 +273,8 @@
       "outputCost": 0.66,
       "cachedReadCost": 0.007,
       "plan": "go",
-      "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash"
+      "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash",
+      "goUsage": 15.0
     },
     {
       "name": "DeepSeek V4 Flash Vision Exp",
@@ -281,9 +284,9 @@
       "swePro": null,
       "terminalBench": null,
       "deepSwe": null,
-      "inputCost": 0.44,
-      "outputCost": 1.32,
-      "cachedReadCost": 0.014,
+      "inputCost": 0.22,
+      "outputCost": 0.66,
+      "cachedReadCost": 0.007,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-Vision-Exp"
     },
@@ -300,7 +303,8 @@
       "cachedReadCost": 0.022,
       "plan": "go",
       "alsoOnZen": true,
-      "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro"
+      "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro",
+      "goUsage": 15.0
     },
     {
       "name": "DeepSeek V4 Pro",
@@ -310,9 +314,9 @@
       "swePro": 55.4,
       "terminalBench": 87.9,
       "deepSwe": 62.7,
-      "inputCost": 1.04226,
-      "outputCost": 2.08452,
-      "cachedReadCost": 0.086855,
+      "inputCost": 0.87,
+      "outputCost": 1.74,
+      "cachedReadCost": 0.0725,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro"
     },
@@ -324,9 +328,9 @@
       "swePro": 55.4,
       "terminalBench": 87.9,
       "deepSwe": 62.7,
-      "inputCost": 1.1154,
-      "outputCost": 3.3462,
-      "cachedReadCost": 0.03718,
+      "inputCost": 0.66,
+      "outputCost": 1.98,
+      "cachedReadCost": 0.022,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813"
     },
@@ -413,7 +417,9 @@
       "outputCost": 7.5,
       "cachedReadCost": 0.15,
       "plan": "zen",
-      "hfUrl": "https://benchlm.ai/models/gemini-3.7-flash"
+      "hfUrl": "https://benchlm.ai/models/gemini-3.7-flash",
+      "terminalBench": 85.8,
+      "deepSwe": 65.3
     },
     {
       "name": "Gemini 3.7 Flash",
@@ -421,13 +427,26 @@
       "context": "1M",
       "codingIndex": 76.1,
       "swePro": null,
-      "terminalBench": null,
-      "deepSwe": null,
+      "terminalBench": 85.8,
+      "deepSwe": 65.3,
       "inputCost": 0.75,
       "outputCost": 3.75,
       "cachedReadCost": 0.075,
       "plan": "openrouter",
       "hfUrl": "https://openrouter.ai/google/gemini-3.7-flash"
+    },
+    {
+      "name": "Gemini 3.8 Flash",
+      "codingIndex": null,
+      "inputCost": 1.5,
+      "outputCost": 7.5,
+      "cachedReadCost": 0.15,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "terminalBench": 89.4,
+      "deepSwe": 73.8,
+      "hfUrl": "https://benchlm.ai/models/gemini-3-8-flash"
     },
     {
       "name": "GLM-5",
@@ -453,7 +472,8 @@
       "cachedReadCost": 0.26,
       "plan": "go",
       "alsoOnZen": true,
-      "hfUrl": "https://huggingface.co/zai-org/GLM-5.1"
+      "hfUrl": "https://huggingface.co/zai-org/GLM-5.1",
+      "goUsage": 60.0
     },
     {
       "name": "GLM-5.2",
@@ -467,7 +487,8 @@
       "cachedReadCost": 0.26,
       "plan": "go",
       "alsoOnZen": true,
-      "hfUrl": "https://huggingface.co/zai-org/GLM-5.2"
+      "hfUrl": "https://huggingface.co/zai-org/GLM-5.2",
+      "goUsage": 60.0
     },
     {
       "name": "GLM-5.2",
@@ -494,7 +515,8 @@
       "outputCost": 4.4,
       "cachedReadCost": 0.26,
       "plan": "go",
-      "hfUrl": "https://docs.z.ai/guides/llm/glm-5.3"
+      "hfUrl": "https://docs.z.ai/guides/llm/glm-5.3",
+      "goUsage": 15.0
     },
     {
       "name": "GLM-5.3",
@@ -522,7 +544,8 @@
       "outputCost": 0.5,
       "cachedReadCost": 0.03,
       "plan": "go",
-      "hfUrl": "https://huggingface.co/zai-org/GLM-5.3-Flash"
+      "hfUrl": "https://huggingface.co/zai-org/GLM-5.3-Flash",
+      "goUsage": 15.0
     },
     {
       "name": "GLM-5.3-Flash",
@@ -743,7 +766,8 @@
       "cachedReadCost": 0.02,
       "plan": "go",
       "alsoOnZen": true,
-      "hfUrl": "https://developers.openai.com/api/docs/models/gpt-5.6-luna"
+      "hfUrl": "https://developers.openai.com/api/docs/models/gpt-5.6-luna",
+      "goUsage": 15.0
     },
     {
       "name": "GPT 5.6 Luna",
@@ -868,7 +892,8 @@
       "cachedReadCost": 0.5,
       "plan": "go",
       "alsoOnZen": true,
-      "hfUrl": "https://benchlm.ai/models/grok-4.6"
+      "hfUrl": "https://benchlm.ai/models/grok-4.6",
+      "goUsage": 15.0
     },
     {
       "name": "Grok 4.6",
@@ -904,19 +929,21 @@
       "outputCost": 0.58,
       "cachedReadCost": 0.035,
       "plan": "go",
-      "hfUrl": "https://huggingface.co/tencent/HY3"
+      "hfUrl": "https://huggingface.co/tencent/HY3",
+      "goUsage": 60.0,
+      "swePro": 57.9
     },
     {
       "name": "Hy3",
       "params": "295B",
       "context": "262K",
       "codingIndex": 58.8,
-      "swePro": null,
+      "swePro": 57.9,
       "terminalBench": null,
       "deepSwe": null,
-      "inputCost": 0.132,
-      "outputCost": 0.528,
-      "cachedReadCost": 0.033,
+      "inputCost": 0.0825,
+      "outputCost": 0.33,
+      "cachedReadCost": 0.020625,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/tencent/Hy3"
     },
@@ -949,7 +976,7 @@
     },
     {
       "name": "Hy4 Preview",
-      "params": null,
+      "params": "770B",
       "context": "1M",
       "codingIndex": null,
       "swePro": 65.7,
@@ -958,11 +985,13 @@
       "inputCost": 0.834,
       "outputCost": 2.501,
       "cachedReadCost": 0.042,
-      "plan": "go"
+      "plan": "go",
+      "goUsage": 30.0,
+      "hfUrl": "https://benchlm.ai/models/hy4-preview"
     },
     {
       "name": "Hy4 Preview",
-      "params": null,
+      "params": "770B",
       "context": "1M",
       "codingIndex": null,
       "swePro": 65.7,
@@ -1013,7 +1042,8 @@
       "cachedReadCost": 0.16,
       "plan": "go",
       "alsoOnZen": true,
-      "hfUrl": "https://huggingface.co/moonshotai/Kimi-K2.6"
+      "hfUrl": "https://huggingface.co/moonshotai/Kimi-K2.6",
+      "goUsage": 60.0
     },
     {
       "name": "Kimi K2.7 Code",
@@ -1025,7 +1055,8 @@
       "cachedReadCost": 0.19,
       "plan": "go",
       "alsoOnZen": true,
-      "hfUrl": "https://huggingface.co/moonshotai/Kimi-K2.7-Code"
+      "hfUrl": "https://huggingface.co/moonshotai/Kimi-K2.7-Code",
+      "goUsage": 60.0
     },
     {
       "name": "Kimi K2.7 Code",
@@ -1052,7 +1083,8 @@
       "cachedReadCost": 0.3,
       "plan": "go",
       "alsoOnZen": true,
-      "hfUrl": "https://huggingface.co/moonshotai/Kimi-K3"
+      "hfUrl": "https://huggingface.co/moonshotai/Kimi-K3",
+      "goUsage": 15.0
     },
     {
       "name": "Kimi K3",
@@ -1118,7 +1150,8 @@
       "outputCost": 1.2,
       "cachedReadCost": 0.006,
       "plan": "go",
-      "hfUrl": "https://huggingface.co/meituan-longcat/LongCat-2.0"
+      "hfUrl": "https://huggingface.co/meituan-longcat/LongCat-2.0",
+      "goUsage": 60.0
     },
     {
       "name": "MiMo-V2 Omni",
@@ -1157,7 +1190,8 @@
       "outputCost": 0.28,
       "cachedReadCost": 0.0028,
       "plan": "go",
-      "hfUrl": "https://huggingface.co/XiaomiMiMo/MiMo-V2.5"
+      "hfUrl": "https://huggingface.co/XiaomiMiMo/MiMo-V2.5",
+      "goUsage": 60.0
     },
     {
       "name": "MiMo-V2.5",
@@ -1197,7 +1231,8 @@
       "outputCost": 0.87,
       "cachedReadCost": 0.003625,
       "plan": "go",
-      "hfUrl": "https://huggingface.co/XiaomiMiMo/MiMo-V2.5-Pro"
+      "hfUrl": "https://huggingface.co/XiaomiMiMo/MiMo-V2.5-Pro",
+      "goUsage": 15.0
     },
     {
       "name": "MiniMax M2.5",
@@ -1209,7 +1244,8 @@
       "cachedReadCost": 0.06,
       "plan": "go",
       "alsoOnZen": true,
-      "hfUrl": "https://huggingface.co/MiniMaxAI/MiniMax-M2.5"
+      "hfUrl": "https://huggingface.co/MiniMaxAI/MiniMax-M2.5",
+      "goUsage": 60.0
     },
     {
       "name": "MiniMax M2.7",
@@ -1222,7 +1258,8 @@
       "cachedReadCost": 0.06,
       "plan": "go",
       "alsoOnZen": true,
-      "hfUrl": "https://huggingface.co/MiniMaxAI/MiniMax-M2.7"
+      "hfUrl": "https://huggingface.co/MiniMaxAI/MiniMax-M2.7",
+      "goUsage": 60.0
     },
     {
       "name": "MiniMax M3",
@@ -1236,7 +1273,8 @@
       "cachedReadCost": 0.06,
       "plan": "go",
       "alsoOnZen": true,
-      "hfUrl": "https://huggingface.co/MiniMaxAI/MiniMax-M3"
+      "hfUrl": "https://huggingface.co/MiniMaxAI/MiniMax-M3",
+      "goUsage": 60.0
     },
     {
       "name": "MiniMax M3",
@@ -1290,7 +1328,8 @@
       "outputCost": 0.2,
       "cachedReadCost": 0.002,
       "plan": "go",
-      "hfUrl": "https://developer.meta.com/ai/models/muse-spark/"
+      "hfUrl": "https://developer.meta.com/ai/models/muse-spark/",
+      "goUsage": 60.0
     },
     {
       "name": "Muse Spark 1.2 Contributor",
@@ -1317,6 +1356,31 @@
       "outputCost": 0,
       "cachedReadCost": 0,
       "plan": "zen",
+      "hfUrl": "https://developer.meta.com/ai/models/muse-spark/"
+    },
+    {
+      "name": "Muse Spark 1.3 Contributor",
+      "codingIndex": null,
+      "inputCost": 0.1,
+      "outputCost": 0.2,
+      "cachedReadCost": 0.002,
+      "context": "1M",
+      "params": null,
+      "plan": "go",
+      "goUsage": 60.0,
+      "hfUrl": "https://developer.meta.com/ai/models/muse-spark/"
+    },
+    {
+      "name": "Muse Spark 1.3 Free",
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "na": true,
+      "naSince": "2026-09-02",
       "hfUrl": "https://developer.meta.com/ai/models/muse-spark/"
     },
     {
@@ -1410,7 +1474,8 @@
       "cachedReadCost": 0.05,
       "plan": "go",
       "alsoOnZen": true,
-      "hfUrl": "https://huggingface.co/Qwen/Qwen3.6-27B"
+      "hfUrl": "https://huggingface.co/Qwen/Qwen3.6-27B",
+      "goUsage": 60.0
     },
     {
       "name": "Qwen3.7 Flash",
@@ -1437,7 +1502,8 @@
       "outputCost": 7.5,
       "cachedReadCost": 0.5,
       "plan": "go",
-      "hfUrl": "https://qwen.ai/blog?id=qwen3.7"
+      "hfUrl": "https://qwen.ai/blog?id=qwen3.7",
+      "goUsage": 30.0
     },
     {
       "name": "Qwen3.7 Plus",
@@ -1450,7 +1516,8 @@
       "outputCost": 1.6,
       "cachedReadCost": 0.04,
       "plan": "go",
-      "hfUrl": "https://qwen.ai/blog?id=qwen3.7-plus"
+      "hfUrl": "https://qwen.ai/blog?id=qwen3.7-plus",
+      "goUsage": 60.0
     },
     {
       "name": "Qwen3.8 27B",
@@ -1477,7 +1544,8 @@
       "outputCost": 0.47,
       "cachedReadCost": 0.016,
       "plan": "go",
-      "hfUrl": "https://huggingface.co/Qwen/Qwen3.8-Flash-Next"
+      "hfUrl": "https://huggingface.co/Qwen/Qwen3.8-Flash-Next",
+      "goUsage": 30.0
     },
     {
       "name": "Qwen3.8 Flash",
@@ -1504,7 +1572,8 @@
       "outputCost": 6.0,
       "cachedReadCost": 0.25,
       "plan": "go",
-      "hfUrl": "https://huggingface.co/Qwen/Qwen3.8-2.4T-A95B"
+      "hfUrl": "https://huggingface.co/Qwen/Qwen3.8-2.4T-A95B",
+      "goUsage": 15.0
     },
     {
       "name": "Qwen3.8 Max",

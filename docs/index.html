@@ -225,7 +225,7 @@
               <p class="filter-section-title">Plan &amp; Availability</p>
               <div style="display:flex; flex-direction:column; gap:0.65rem;">
                 <label style="flex-direction:row; justify-content:space-between;">Plan <select id="planFilter"><option value="all">All Models</option><option value="zen">Zen Models</option><option value="go">Go Plan Models</option><option value="openrouter">OpenRouter Models</option></select></label>
-                <label class="avail-check" title="Hide models marked (N.A.) — no longer selectable in OpenCode's model picker" style="flex-direction:row !important; align-items:center !important;"><input type="checkbox" id="availFilter"> Only available models</label>
+                <label class="avail-check" title="Show models marked (N.A.) — no longer selectable in OpenCode's model picker" style="flex-direction:row !important; align-items:center !important;"><input type="checkbox" id="deprecatedFilter"> Show deprecated models</label>
               </div>
             </div>
             <div class="filter-section">
@@ -257,7 +257,7 @@
         <button type="button" class="popover-btn" id="colsBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="colsPopover" title="choose columns">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>
           choose columns
-          <span class="count-badge" id="colsBadge">7/9</span>
+          <span class="count-badge" id="colsBadge">8/10</span>
         </button>
         <div class="popover" id="colsPopover" role="dialog" aria-label="Columns" aria-modal="true">
           <div class="popover-header">
@@ -268,7 +268,7 @@
             <div class="columns-list" id="columnsList">
               <!-- populated by JS from COLUMNS -->
             </div>
-            <p style="font-size:0.72rem; color:#94a3b8; margin:0.6rem 0 0; line-height:1.3;">Tip: Input &amp; Cached token costs are hidden by default. Toggle any column — all columns are configurable.</p>
+            <p style="font-size:0.72rem; color:#94a3b8; margin:0.6rem 0 0; line-height:1.3;">Tip: Input &amp; Cached Read token costs are hidden by default. Toggle any column — all columns are configurable.</p>
           </div>
           <div class="popover-footer">
             <button type="button" class="btn-ghost" id="colsShowAll">Show all</button>
@@ -288,8 +288,9 @@
           <option value="terminalBench">Terminal-Bench</option>
           <option value="deepSwe">DeepSWE</option>
           <option value="inputCost">Input price</option>
-          <option value="cachedReadCost">Cached price</option>
+          <option value="cachedReadCost">Cached Read price</option>
           <option value="outputCost">Output price</option>
+          <option value="goUsage">Go Usage</option>
         </select>
       </label>
       <button id="reset">Reset</button>
@@ -308,8 +309,9 @@
         <th data-key="terminalBench" title="Terminal-Bench (Laude Institute) — agentic terminal &amp; CLI coding tasks, %"><a href="https://www.tbench.ai/" target="_blank" rel="noopener noreferrer">Terminal-<br>Bench</a></th>
         <th data-key="deepSwe" title="DeepSWE (Datacurve) — contamination-free long-horizon repo tasks, pass@1 %"><a href="https://deepswe.datacurve.ai/" target="_blank" rel="noopener noreferrer">DeepSWE</a></th>
         <th data-key="inputCost" title="Input tokens — USD per 1M tokens" style="display:none;">Input<br>($/1M)</th>
-        <th data-key="cachedReadCost" title="Cached input tokens — USD per 1M tokens (cache read)" style="display:none;">Cached<br>($/1M)</th>
+        <th data-key="cachedReadCost" title="Cached input tokens — USD per 1M tokens (cache read)" style="display:none;">Cached Read<br>($/1M)</th>
         <th data-key="outputCost">Output<br>($/1M)</th>
+        <th data-key="goUsage" title="Go plan usage limit — USD included per period" style="display:none;"><a href="https://opencode.ai/docs/go/#usage-limits" target="_blank" rel="noopener noreferrer">Go Usage<br>($)</a></th>
       </tr>
     </thead>
     <tbody id="tbody"></tbody>
@@ -365,8 +367,9 @@ const COLUMNS = [
   { key: 'terminalBench',   label: 'Terminal-Bench',    shortLabel: 'Terminal-Bench', defaultVisible: true },
   { key: 'deepSwe',         label: 'DeepSWE',           shortLabel: 'DeepSWE',        defaultVisible: true },
   { key: 'inputCost',       label: 'Input ($/1M)',      shortLabel: 'Input',          defaultVisible: false },
-  { key: 'cachedReadCost',  label: 'Cached ($/1M)',     shortLabel: 'Cached',         defaultVisible: false },
+  { key: 'cachedReadCost',  label: 'Cached Read ($/1M)', shortLabel: 'Cached Read',   defaultVisible: false },
   { key: 'outputCost',      label: 'Output ($/1M)',     shortLabel: 'Output',         defaultVisible: true },
+  { key: 'goUsage',         label: 'Go Usage ($)',      shortLabel: 'Go Usage',       defaultVisible: false },
 ];
 const colVisibility = {};
 COLUMNS.forEach(c => colVisibility[c.key] = c.defaultVisible);
@@ -435,7 +438,7 @@ function renderColumnsList() {
       <input type="checkbox" data-col="${c.key}" ${colVisibility[c.key] ? 'checked' : ''}>
       <span style="flex:1; display:flex; align-items:center; justify-content:space-between; gap:0.5rem;">
         <span>${c.label}</span>
-        <small>${c.key === 'inputCost' ? 'input tokens' : c.key === 'cachedReadCost' ? 'cached read' : c.key === 'outputCost' ? 'output tokens' : c.key}</small>
+        <small>${c.key === 'inputCost' ? 'input tokens' : c.key === 'cachedReadCost' ? 'cached read' : c.key === 'outputCost' ? 'output tokens' : c.key === 'goUsage' ? 'Go usage' : c.key}</small>
       </span>
     </label>
   `).join('');
@@ -462,10 +465,10 @@ function updateColsBadge() {
   if (badge) badge.textContent = `${visible}/${selectable.length}`;
 }
 function updateFilterBadge() {
-  const { plan, availOnly, maxOut, maxIn, maxCached, minAA, minSWE, minTerminal, minDeepSwe } = getFilters();
+  const { plan, showDeprecated, maxOut, maxIn, maxCached, minAA, minSWE, minTerminal, minDeepSwe } = getFilters();
   let n = 0;
   if (plan !== 'all') n++;
-  if (availOnly) n++;
+  if (showDeprecated) n++;
   if (minAA !== null) n++;
   if (minSWE !== null) n++;
   if (minTerminal !== null) n++;
@@ -479,7 +482,7 @@ function updateFilterBadge() {
 
 function getFilters() {
   const planEl = document.getElementById('planFilter');
-  const availEl = document.getElementById('availFilter');
+  const deprEl = document.getElementById('deprecatedFilter');
   const maxOutEl = document.getElementById('filterMaxOutput');
   const maxInEl = document.getElementById('filterMaxInput');
   const maxCachedEl = document.getElementById('filterMaxCached');
@@ -496,7 +499,7 @@ function getFilters() {
   const minDeepSwe = minDeepSweEl && minDeepSweEl.value !== '' ? parseFloat(minDeepSweEl.value) : null;
   return {
     plan: planEl ? planEl.value : 'all',
-    availOnly: availEl ? availEl.checked : false,
+    showDeprecated: deprEl ? deprEl.checked : false,
     maxOut: Number.isFinite(maxOut) ? maxOut : null,
     maxIn: Number.isFinite(maxIn) ? maxIn : null,
     maxCached: Number.isFinite(maxCached) ? maxCached : null,
@@ -510,12 +513,12 @@ function getFilters() {
 function render() {
   updateFilterBadge();
   applyColumnVisibility();
-  const { plan, availOnly, maxOut, maxIn, maxCached, minAA, minSWE, minTerminal, minDeepSwe } = getFilters();
+  const { plan, showDeprecated, maxOut, maxIn, maxCached, minAA, minSWE, minTerminal, minDeepSwe } = getFilters();
   const filtered = models.filter(m => {
     if (plan === 'go' && m.plan !== 'go') return false;
     if (plan === 'zen' && !(m.plan === 'zen' || m.alsoOnZen)) return false;
     if (plan === 'openrouter' && m.plan !== 'openrouter') return false;
-    if (availOnly && m.na) return false;
+    if (!showDeprecated && m.na) return false;  // deprecated (N.A.) hidden unless opted in
     if (maxOut !== null) {
       if (m.outputCost === null || m.outputCost === undefined) return false;
       if (m.outputCost > maxOut) return false;
@@ -604,8 +607,9 @@ function render() {
     if (colVisibility.terminalBench)   cells.push(`<td class="num" data-label="Terminal-Bench">${fmtScore(m.terminalBench)}</td>`);
     if (colVisibility.deepSwe)         cells.push(`<td class="num" data-label="DeepSWE">${fmtScore(m.deepSwe)}</td>`);
     if (colVisibility.inputCost)       cells.push(`<td class="num" data-label="Input ($/1M)">${fmtCost(m.inputCost)}</td>`);
-    if (colVisibility.cachedReadCost)  cells.push(`<td class="num" data-label="Cached ($/1M)">${fmtCost(m.cachedReadCost)}</td>`);
+    if (colVisibility.cachedReadCost)  cells.push(`<td class="num" data-label="Cached Read ($/1M)">${fmtCost(m.cachedReadCost)}</td>`);
     if (colVisibility.outputCost)      cells.push(`<td class="num" data-label="Output ($/1M)">${fmtCost(m.outputCost)}</td>`);
+    if (colVisibility.goUsage)         cells.push(`<td class="num" data-label="Go Usage ($)">${fmtCost(m.goUsage)}</td>`);
     return `<tr>${cells.join('')}</tr>`;
   }).join('');
 }
@@ -670,7 +674,7 @@ document.getElementById('filterDone')?.addEventListener('click', closePopovers);
 document.getElementById('colsDone')?.addEventListener('click', closePopovers);
 document.getElementById('filterClear')?.addEventListener('click', () => {
   document.getElementById('planFilter').value = 'all';
-  document.getElementById('availFilter').checked = false;
+  document.getElementById('deprecatedFilter').checked = false;  // restore default
   ['filterMinAA','filterMinSWE','filterMinTerminal','filterMinDeepSwe','filterMaxInput','filterMaxCached','filterMaxOutput'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
@@ -695,19 +699,19 @@ document.addEventListener('click', e => {
 });
 
 document.getElementById('planFilter').addEventListener('change', render);
-document.getElementById('availFilter').addEventListener('change', render);
+document.getElementById('deprecatedFilter').addEventListener('change', render);
 ['filterMinAA','filterMinSWE','filterMinTerminal','filterMinDeepSwe','filterMaxInput','filterMaxCached','filterMaxOutput'].forEach(id => {
   document.getElementById(id)?.addEventListener('input', render);
 });
 document.getElementById('sortSelect').addEventListener('change', e => setSort(e.target.value, 1));
 document.getElementById('reset').addEventListener('click', () => {
   document.getElementById('planFilter').value = 'all';
-  document.getElementById('availFilter').checked = false;
+  document.getElementById('deprecatedFilter').checked = false;  // restore default
   ['filterMinAA','filterMinSWE','filterMinTerminal','filterMinDeepSwe','filterMaxInput','filterMaxCached','filterMaxOutput'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
-  // reset columns to defaults (Input & Cached hidden)
+  // reset columns to defaults (Input, Cached Read, Go Usage hidden)
   COLUMNS.forEach(c => colVisibility[c.key] = c.defaultVisible);
   document.querySelectorAll('#columnsList input[data-col]').forEach(cb => cb.checked = colVisibility[cb.dataset.col]);
   applyColumnVisibility(); updateColsBadge();
