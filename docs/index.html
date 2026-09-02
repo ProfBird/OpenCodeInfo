@@ -89,6 +89,94 @@
   .notes ul { margin: 0.35rem 0 0.5rem 1.25rem; }
   .notes li { margin: 0.2rem 0; }
   .notes code { font-size: 0.82rem; }
+
+  /* Popover toolbar */
+  .toolbar-actions { gap: 0.6rem; }
+  .popover-wrap { position: relative; }
+  .popover-btn {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    padding: 0.5rem 0.9rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 999px;
+    background: #fff;
+    color: #1e293b;
+    font-size: 0.85rem; font-weight: 500;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    transition: all 0.15s ease;
+  }
+  .popover-btn:hover { border-color:#94a3b8; box-shadow:0 2px 8px rgba(0,0,0,0.08); transform: translateY(-1px); }
+  .popover-btn[aria-expanded="true"] { background:#1e293b; color:#fff; border-color:#1e293b; box-shadow:0 4px 12px rgba(30,41,59,0.25); }
+  @media (prefers-color-scheme: dark) {
+    .popover-btn { background:#1e293b; color:#e2e8f0; border-color:#334155; }
+    .popover-btn:hover { border-color:#475569; background:#0f172a; }
+    .popover-btn[aria-expanded="true"] { background:#f8fafc; color:#0f172a; border-color:#f8fafc; }
+  }
+  .popover-btn svg { width:14px; height:14px; flex-shrink:0; opacity:0.8; }
+  .popover-btn[aria-expanded="true"] svg { opacity:1; }
+  .count-badge {
+    display:inline-flex; align-items:center; justify-content:center;
+    min-width:1.15rem; height:1.15rem; padding:0 0.3rem;
+    border-radius:999px; font-size:0.68rem; font-weight:700;
+    background:#2563eb; color:#fff; line-height:1;
+  }
+  .count-badge:empty, .count-badge[hidden] { display:none !important; }
+  .popover-backdrop {
+    position:fixed; inset:0; background:rgba(15,23,42,0.18); backdrop-filter:blur(2px);
+    z-index:20; display:none;
+  }
+  .popover-backdrop.open { display:block; }
+  .popover {
+    position:absolute; top:calc(100% + 10px); left:0;
+    min-width:340px; max-width:min(420px, 92vw);
+    background: Canvas; background-color:#fff;
+    border:1px solid #e2e8f0; border-radius:16px;
+    box-shadow:0 16px 40px -12px rgba(0,0,0,0.18), 0 4px 16px rgba(0,0,0,0.08);
+    padding:0; z-index:21; display:none;
+    overflow:hidden;
+    animation: popIn 0.18s cubic-bezier(0.16,1,0.3,1);
+  }
+  @media (prefers-color-scheme: dark) {
+    .popover { background:#0f172a; border-color:#1e293b; box-shadow:0 16px 40px -12px rgba(0,0,0,0.5), 0 4px 16px rgba(0,0,0,0.3); }
+  }
+  .popover.open { display:block; }
+  @keyframes popIn { from { opacity:0; transform:translateY(6px) scale(0.98); } to { opacity:1; transform:translateY(0) scale(1); } }
+  .popover-header { display:flex; align-items:center; justify-content:space-between; padding:0.9rem 1rem 0.7rem; border-bottom:1px solid #f1f5f9; }
+  @media (prefers-color-scheme: dark) { .popover-header { border-color:#1e293b; } }
+  .popover-title { font-size:0.9rem; font-weight:600; letter-spacing:-0.01em; display:flex; align-items:center; gap:0.45rem; }
+  .popover-title svg { width:16px; height:16px; opacity:0.7; }
+  .popover-close { width:28px; height:28px; display:grid; place-items:center; border:none; background:#f1f5f9; border-radius:999px; font-size:1rem; cursor:pointer; color:#475569; line-height:1; }
+  .popover-close:hover { background:#e2e8f0; color:#1e293b; }
+  @media (prefers-color-scheme: dark) { .popover-close { background:#1e293b; color:#94a3b8; } .popover-close:hover { background:#334155; color:#f1f5f9; } }
+  .popover-body { padding:1rem; max-height:min(62vh, 520px); overflow:auto; }
+  .filter-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.85rem; }
+  .filter-grid label { flex-direction:column; align-items:stretch !important; gap:0.3rem !important; font-size:0.78rem !important; font-weight:500; color:#475569; }
+  @media (prefers-color-scheme: dark) { .filter-grid label { color:#94a3b8; } }
+  .filter-grid label span { font-size:0.73rem; line-height:1.1; }
+  .filter-grid input, .filter-grid select { width:48% !important; max-width:7rem; }
+  .filter-section { margin-bottom:1rem; }
+  .filter-section:last-child { margin-bottom:0; }
+  .filter-section-title { font-size:0.72rem; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:#94a3b8; margin:0 0 0.6rem 0; }
+  .popover-footer { display:flex; justify-content:space-between; align-items:center; gap:0.6rem; padding:0.75rem 1rem; background:#f8fafc; border-top:1px solid #f1f5f9; }
+  @media (prefers-color-scheme: dark) { .popover-footer { background:#0b1220; border-color:#1e293b; } }
+  .popover-footer button { font-size:0.82rem; padding:0.45rem 0.75rem; }
+  .btn-ghost { background:transparent; border-color:transparent; color:#475569; }
+  .btn-ghost:hover { background:#f1f5f9; border-color:#e2e8f0; }
+  @media (prefers-color-scheme: dark) { .btn-ghost { color:#94a3b8; } .btn-ghost:hover { background:#1e293b; border-color:#334155; color:#e2e8f0; } }
+  .btn-primary { background:#2563eb; color:#fff; border-color:#2563eb; }
+  .btn-primary:hover { background:#1d4ed8; border-color:#1d4ed8; }
+  .columns-list { display:flex; flex-direction:column; gap:0.45rem; }
+  .col-item { display:flex; align-items:center; gap:0.7rem; padding:0.55rem 0.65rem; border:1px solid #f1f5f9; border-radius:10px; background:#f8fafc; transition:all 0.12s; cursor:pointer; user-select:none; }
+  .col-item:hover { border-color:#cbd5e1; background:#fff; box-shadow:0 1px 4px rgba(0,0,0,0.06); }
+  .col-item:has(input:checked) { background:#eff6ff; border-color:#bfdbfe; }
+  @media (prefers-color-scheme: dark) {
+    .col-item { background:#0f172a; border-color:#1e293b; }
+    .col-item:hover { background:#1e293b; border-color:#334155; }
+    .col-item:has(input:checked) { background:#1e3a5f; border-color:#1d4ed8; }
+  }
+  .col-item input[type="checkbox"] { width:16px !important; height:16px; accent-color:#2563eb; cursor:pointer; }
+  .col-item label { flex:1; cursor:pointer; font-size:0.84rem !important; font-weight:500; color:#334155; display:flex; align-items:center; justify-content:space-between; }
+  @media (prefers-color-scheme: dark) { .col-item label { color:#e2e8f0; } }
+  .col-item small { font-size:0.7rem; color:#94a3b8; font-weight:400; }
   @media (max-width: 900px) {
     body { padding: 1.25rem 1rem; }
     th, td { padding: 0.35rem 0.3rem; }
@@ -120,9 +208,76 @@
   <p class="subtitle"><strong>OpenCode</strong> provides the Zen pay-as-you-go catalog and the $10/mo <strong>Go</strong> plan; <strong>OpenRouter</strong> is a third-party model provider — its rows carry OpenRouter's own pricing and context, which can differ from the same model's Zen/Go twins, and OpenRouter adds a 5.5% charge on top of the listed price. Use the <strong>Plan</strong> filter to show all models, models available on Zen pay-as-you-go, the Go plan subset, or OpenRouter programming-category models. Every model is badged: <strong>(Zen)</strong> = Zen pay-as-you-go only, <strong>(Go)</strong> = on the Go plan, <strong>(Go · Zen)</strong> = also on Zen pay-as-you-go, <strong>(OpenRouter)</strong> = OpenRouter row. Costs are USD per 1M tokens. Benchmark is the <a href="https://benchlm.ai/benchmarks/aacodingindex" target="_blank" rel="noopener noreferrer">Artificial Analysis Coding Index</a> (%), snapshot 2026-08-21 (via <a href="https://benchlm.ai/benchmarks/aacodingindex" target="_blank" rel="noopener noreferrer">BenchLM</a> mirror of <a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener noreferrer">Artificial Analysis</a>). Click a column to sort.</p>
 
   <div class="toolbar">
-    <div class="toolbar-row">
-      <label>Plan <select id="planFilter"><option value="all">All Models</option><option value="zen">Zen Models</option><option value="go">Go Plan Models</option><option value="openrouter">OpenRouter Models</option></select></label>
-      <label class="avail-check" title="Hide models marked (N.A.) — no longer selectable in OpenCode's model picker"><input type="checkbox" id="availFilter"> Available only</label>
+    <div class="toolbar-row toolbar-actions">
+      <div class="popover-wrap" id="filterWrap">
+        <button type="button" class="popover-btn" id="filterBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="filterPopover">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+          Filters
+          <span class="count-badge" id="filterBadge" hidden>0</span>
+        </button>
+        <div class="popover" id="filterPopover" role="dialog" aria-label="Filters" aria-modal="true">
+          <div class="popover-header">
+            <span class="popover-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg> Filters</span>
+            <button type="button" class="popover-close" id="filterClose" aria-label="Close filters">&times;</button>
+          </div>
+          <div class="popover-body">
+            <div class="filter-section">
+              <p class="filter-section-title">Plan &amp; Availability</p>
+              <div style="display:flex; flex-direction:column; gap:0.65rem;">
+                <label style="flex-direction:row; justify-content:space-between;">Plan <select id="planFilter"><option value="all">All Models</option><option value="zen">Zen Models</option><option value="go">Go Plan Models</option><option value="openrouter">OpenRouter Models</option></select></label>
+                <label class="avail-check" title="Hide models marked (N.A.) — no longer selectable in OpenCode's model picker" style="flex-direction:row !important; align-items:center !important;"><input type="checkbox" id="availFilter"> Only available models</label>
+              </div>
+            </div>
+            <div class="filter-section">
+              <p class="filter-section-title">Benchmarks</p>
+              <div class="filter-grid">
+                <label><span>Min AA<br>index</span> <input id="filterMinAA" type="number" min="0" max="100" step="0.1" placeholder="e.g. 60"></label>
+                <label><span>Min SWE-bench<br>Pro</span> <input id="filterMinSWE" type="number" min="0" max="100" step="0.1" placeholder="e.g. 55"></label>
+                <label><span>Min Terminal-<br>Bench</span> <input id="filterMinTerminal" type="number" min="0" max="100" step="0.1" placeholder="e.g. 75"></label>
+                <label><span>Min DeepSWE</span> <input id="filterMinDeepSwe" type="number" min="0" max="100" step="0.1" placeholder="e.g. 55"></label>
+              </div>
+            </div>
+            <div class="filter-section">
+              <p class="filter-section-title">Cost (USD per 1M tokens)</p>
+              <div class="filter-grid">
+                <label><span>Max input<br>($/1M)</span> <input id="filterMaxInput" type="number" min="0" step="0.01" placeholder="e.g. 2"></label>
+                <label><span>Max cached<br>($/1M)</span> <input id="filterMaxCached" type="number" min="0" step="0.01" placeholder="e.g. 0.5"></label>
+                <label><span>Max output<br>($/1M)</span> <input id="filterMaxOutput" type="number" min="0" step="0.01" placeholder="e.g. 2"></label>
+              </div>
+            </div>
+          </div>
+          <div class="popover-footer">
+            <button type="button" class="btn-ghost" id="filterClear">Clear filters</button>
+            <button type="button" class="btn-primary" id="filterDone">Done</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="popover-wrap" id="colsWrap">
+        <button type="button" class="popover-btn" id="colsBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="colsPopover" title="choose columns">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>
+          choose columns
+          <span class="count-badge" id="colsBadge">7/9</span>
+        </button>
+        <div class="popover" id="colsPopover" role="dialog" aria-label="Columns" aria-modal="true">
+          <div class="popover-header">
+            <span class="popover-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg> Columns</span>
+            <button type="button" class="popover-close" id="colsClose" aria-label="Close columns">&times;</button>
+          </div>
+          <div class="popover-body">
+            <div class="columns-list" id="columnsList">
+              <!-- populated by JS from COLUMNS -->
+            </div>
+            <p style="font-size:0.72rem; color:#94a3b8; margin:0.6rem 0 0; line-height:1.3;">Tip: Input &amp; Cached token costs are hidden by default. Toggle any column — all columns are configurable.</p>
+          </div>
+          <div class="popover-footer">
+            <button type="button" class="btn-ghost" id="colsShowAll">Show all</button>
+            <button type="button" class="btn-ghost" id="colsHideAll">Hide all</button>
+            <button type="button" class="btn-primary" id="colsDone">Done</button>
+          </div>
+        </div>
+      </div>
+
       <label id="mobileSort">Sort
         <select id="sortSelect">
           <option value="name">Model</option>
@@ -132,23 +287,19 @@
           <option value="swePro">SWE-bench Pro</option>
           <option value="terminalBench">Terminal-Bench</option>
           <option value="deepSwe">DeepSWE</option>
+          <option value="inputCost">Input price</option>
+          <option value="cachedReadCost">Cached price</option>
           <option value="outputCost">Output price</option>
         </select>
       </label>
       <button id="reset">Reset</button>
     </div>
-    <div class="toolbar-row toolbar-filters">
-      <label><span>Min AA<br>index</span> <input id="filterMinAA" type="number" min="0" max="100" step="0.1" placeholder="e.g. 60"></label>
-      <label><span>Min SWE-bench<br>Pro</span> <input id="filterMinSWE" type="number" min="0" max="100" step="0.1" placeholder="e.g. 55"></label>
-      <label><span>Min Terminal-<br>Bench</span> <input id="filterMinTerminal" type="number" min="0" max="100" step="0.1" placeholder="e.g. 75"></label>
-      <label><span>Min DeepSWE</span> <input id="filterMinDeepSwe" type="number" min="0" max="100" step="0.1" placeholder="e.g. 55"></label>
-      <label><span>Max output<br>($/1M)</span> <input id="filterMaxOutput" type="number" min="0" step="0.01" placeholder="e.g. 2"></label>
-    </div>
   </div>
+  <div class="popover-backdrop" id="popoverBackdrop" hidden></div>
 
   <table>
     <thead>
-      <tr>
+      <tr id="theadRow">
         <th data-key="name">Model</th>
         <th data-key="params">Params</th>
         <th data-key="context">Context</th>
@@ -156,6 +307,8 @@
         <th data-key="swePro" title="SWE-bench Pro (Scale AI) — % resolved on contamination-resistant long-horizon coding tasks"><a href="https://labs.scale.com/leaderboard/swe_bench_pro_public" target="_blank" rel="noopener noreferrer">SWE-bench<br>Pro</a></th>
         <th data-key="terminalBench" title="Terminal-Bench (Laude Institute) — agentic terminal &amp; CLI coding tasks, %"><a href="https://www.tbench.ai/" target="_blank" rel="noopener noreferrer">Terminal-<br>Bench</a></th>
         <th data-key="deepSwe" title="DeepSWE (Datacurve) — contamination-free long-horizon repo tasks, pass@1 %"><a href="https://deepswe.datacurve.ai/" target="_blank" rel="noopener noreferrer">DeepSWE</a></th>
+        <th data-key="inputCost" title="Input tokens — USD per 1M tokens" style="display:none;">Input<br>($/1M)</th>
+        <th data-key="cachedReadCost" title="Cached input tokens — USD per 1M tokens (cache read)" style="display:none;">Cached<br>($/1M)</th>
         <th data-key="outputCost">Output<br>($/1M)</th>
       </tr>
     </thead>
@@ -202,6 +355,22 @@ let models = [];
 let sortKey = 'name';
 let sortDir = 1;
 
+/* ── Column definitions (all selectable) ── */
+const COLUMNS = [
+  { key: 'name',            label: 'Model',             shortLabel: 'Model',          defaultVisible: true },
+  { key: 'params',          label: 'Params',            shortLabel: 'Params',         defaultVisible: true },
+  { key: 'context',         label: 'Context',           shortLabel: 'Context',        defaultVisible: true },
+  { key: 'codingIndex',     label: 'AA Coding Index',   shortLabel: 'AA index',       defaultVisible: true },
+  { key: 'swePro',          label: 'SWE-bench Pro',     shortLabel: 'SWE-bench Pro',  defaultVisible: true },
+  { key: 'terminalBench',   label: 'Terminal-Bench',    shortLabel: 'Terminal-Bench', defaultVisible: true },
+  { key: 'deepSwe',         label: 'DeepSWE',           shortLabel: 'DeepSWE',        defaultVisible: true },
+  { key: 'inputCost',       label: 'Input ($/1M)',      shortLabel: 'Input',          defaultVisible: false },
+  { key: 'cachedReadCost',  label: 'Cached ($/1M)',     shortLabel: 'Cached',         defaultVisible: false },
+  { key: 'outputCost',      label: 'Output ($/1M)',     shortLabel: 'Output',         defaultVisible: true },
+];
+const colVisibility = {};
+COLUMNS.forEach(c => colVisibility[c.key] = c.defaultVisible);
+
 const tbody = document.getElementById('tbody');
 
 function fmtCost(v) {
@@ -230,25 +399,97 @@ function benchNum(v) {
   return isNaN(n) ? null : n;
 }
 
-function fmtScore(v) {
-  if (v === null || v === undefined) return '<span class="na">—</span>';
-  if (typeof v === 'number') return v.toFixed(1);
-  return escapeHtml(String(v));
-}
-
 function fmtParams(v) {
   return v === null || v === undefined ? '<span class="na">—</span>' : escapeHtml(v);
+}
+
+/* ── Popover helpers ── */
+const backdrop = document.getElementById('popoverBackdrop');
+function openPopover(id) {
+  document.querySelectorAll('.popover.open').forEach(p => p.classList.remove('open'));
+  document.querySelectorAll('.popover-btn[aria-expanded="true"]').forEach(b => b.setAttribute('aria-expanded','false'));
+  const pop = document.getElementById(id);
+  const btn = document.querySelector(`[aria-controls="${id}"]`) || document.getElementById(id === 'filterPopover' ? 'filterBtn' : 'colsBtn');
+  if (pop) pop.classList.add('open');
+  if (btn) btn.setAttribute('aria-expanded','true');
+  if (backdrop) { backdrop.hidden = false; requestAnimationFrame(()=> backdrop.classList.add('open')); }
+}
+function closePopovers() {
+  document.querySelectorAll('.popover.open').forEach(p => p.classList.remove('open'));
+  document.querySelectorAll('.popover-btn[aria-expanded="true"]').forEach(b => b.setAttribute('aria-expanded','false'));
+  if (backdrop) { backdrop.classList.remove('open'); setTimeout(()=> { if(!document.querySelector('.popover.open')) backdrop.hidden = true; }, 180); }
+}
+function togglePopover(id) {
+  const pop = document.getElementById(id);
+  if (pop && pop.classList.contains('open')) closePopovers();
+  else openPopover(id);
+}
+
+/* ── Column visibility ── */
+function renderColumnsList() {
+  const list = document.getElementById('columnsList');
+  if (!list) return;
+  const selectable = COLUMNS.filter(c => c.key !== 'name');
+  list.innerHTML = selectable.map(c => `
+    <label class="col-item" data-col="${c.key}">
+      <input type="checkbox" data-col="${c.key}" ${colVisibility[c.key] ? 'checked' : ''}>
+      <span style="flex:1; display:flex; align-items:center; justify-content:space-between; gap:0.5rem;">
+        <span>${c.label}</span>
+        <small>${c.key === 'inputCost' ? 'input tokens' : c.key === 'cachedReadCost' ? 'cached read' : c.key === 'outputCost' ? 'output tokens' : c.key}</small>
+      </span>
+    </label>
+  `).join('');
+  list.querySelectorAll('input[data-col]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      colVisibility[cb.dataset.col] = cb.checked;
+      applyColumnVisibility();
+      updateColsBadge();
+      render();
+    });
+  });
+}
+function applyColumnVisibility() {
+  COLUMNS.forEach(c => {
+    const th = document.querySelector(`th[data-key="${c.key}"]`);
+    if (th) th.style.display = colVisibility[c.key] ? '' : 'none';
+  });
+  // also hide sort buttons for hidden cols (they are inside th, so hidden with th)
+}
+function updateColsBadge() {
+  const selectable = COLUMNS.filter(c => c.key !== 'name');
+  const visible = selectable.filter(c => colVisibility[c.key]).length;
+  const badge = document.getElementById('colsBadge');
+  if (badge) badge.textContent = `${visible}/${selectable.length}`;
+}
+function updateFilterBadge() {
+  const { plan, availOnly, maxOut, maxIn, maxCached, minAA, minSWE, minTerminal, minDeepSwe } = getFilters();
+  let n = 0;
+  if (plan !== 'all') n++;
+  if (availOnly) n++;
+  if (minAA !== null) n++;
+  if (minSWE !== null) n++;
+  if (minTerminal !== null) n++;
+  if (minDeepSwe !== null) n++;
+  if (maxOut !== null) n++;
+  if (maxIn !== null) n++;
+  if (maxCached !== null) n++;
+  const badge = document.getElementById('filterBadge');
+  if (badge) { badge.textContent = n; badge.hidden = n === 0; }
 }
 
 function getFilters() {
   const planEl = document.getElementById('planFilter');
   const availEl = document.getElementById('availFilter');
   const maxOutEl = document.getElementById('filterMaxOutput');
+  const maxInEl = document.getElementById('filterMaxInput');
+  const maxCachedEl = document.getElementById('filterMaxCached');
   const minAAEl = document.getElementById('filterMinAA');
   const minSWEEl = document.getElementById('filterMinSWE');
   const minTerminalEl = document.getElementById('filterMinTerminal');
   const minDeepSweEl = document.getElementById('filterMinDeepSwe');
   const maxOut = maxOutEl && maxOutEl.value !== '' ? parseFloat(maxOutEl.value) : null;
+  const maxIn = maxInEl && maxInEl.value !== '' ? parseFloat(maxInEl.value) : null;
+  const maxCached = maxCachedEl && maxCachedEl.value !== '' ? parseFloat(maxCachedEl.value) : null;
   const minAA = minAAEl && minAAEl.value !== '' ? parseFloat(minAAEl.value) : null;
   const minSWE = minSWEEl && minSWEEl.value !== '' ? parseFloat(minSWEEl.value) : null;
   const minTerminal = minTerminalEl && minTerminalEl.value !== '' ? parseFloat(minTerminalEl.value) : null;
@@ -257,6 +498,8 @@ function getFilters() {
     plan: planEl ? planEl.value : 'all',
     availOnly: availEl ? availEl.checked : false,
     maxOut: Number.isFinite(maxOut) ? maxOut : null,
+    maxIn: Number.isFinite(maxIn) ? maxIn : null,
+    maxCached: Number.isFinite(maxCached) ? maxCached : null,
     minAA: Number.isFinite(minAA) ? minAA : null,
     minSWE: Number.isFinite(minSWE) ? minSWE : null,
     minTerminal: Number.isFinite(minTerminal) ? minTerminal : null,
@@ -265,7 +508,9 @@ function getFilters() {
 }
 
 function render() {
-  const { plan, availOnly, maxOut, minAA, minSWE, minTerminal, minDeepSwe } = getFilters();
+  updateFilterBadge();
+  applyColumnVisibility();
+  const { plan, availOnly, maxOut, maxIn, maxCached, minAA, minSWE, minTerminal, minDeepSwe } = getFilters();
   const filtered = models.filter(m => {
     if (plan === 'go' && m.plan !== 'go') return false;
     if (plan === 'zen' && !(m.plan === 'zen' || m.alsoOnZen)) return false;
@@ -274,6 +519,14 @@ function render() {
     if (maxOut !== null) {
       if (m.outputCost === null || m.outputCost === undefined) return false;
       if (m.outputCost > maxOut) return false;
+    }
+    if (maxIn !== null) {
+      if (m.inputCost === null || m.inputCost === undefined) return false;
+      if (m.inputCost > maxIn) return false;
+    }
+    if (maxCached !== null) {
+      if (m.cachedReadCost === null || m.cachedReadCost === undefined) return false;
+      if (m.cachedReadCost > maxCached) return false;
     }
     if (minAA !== null) {
       const v = benchNum(m.codingIndex);
@@ -327,8 +580,9 @@ function render() {
     if (fb === null) return -1;
     return (fa - fb) * sortDir;
   });
+  const visibleCount = COLUMNS.filter(c => colVisibility[c.key]).length;
   if (!sorted.length) {
-    tbody.innerHTML = '<tr><td colspan="8" class="na">No models match filters.</td></tr>';
+    tbody.innerHTML = `<tr><td colspan="${visibleCount}" class="na">No models match filters.</td></tr>`;
     return;
   }
   tbody.innerHTML = sorted.map(m => {
@@ -341,17 +595,18 @@ function render() {
       : escapeHtml(m.name)) + zenBadge + goBadge + orBadge + naBadge;
     const isStealthNote = /^(big pickle|ox alpha)/i.test(m.name);
     const noteLink = isStealthNote ? ` <a href="#stealth-notes" title="Stealth-model note — see below" style="font-size:0.75em;opacity:0.65;text-decoration:none">ⓘ</a>` : '';
-    return `
-    <tr>
-      <td>${nameHtml}${noteLink}</td>
-      <td data-label="Params">${fmtParams(m.params)}</td>
-      <td data-label="Context">${escapeHtml(m.context)}</td>
-      <td class="num" data-label="AA Coding Index">${fmtBench(m.codingIndex)}</td>
-      <td class="num" data-label="SWE-bench Pro">${fmtScore(m.swePro)}</td>
-      <td class="num" data-label="Terminal-Bench">${fmtScore(m.terminalBench)}</td>
-      <td class="num" data-label="DeepSWE">${fmtScore(m.deepSwe)}</td>
-      <td class="num" data-label="Output ($/1M)">${fmtCost(m.outputCost)}</td>
-    </tr>`;
+    const cells = [];
+    if (colVisibility.name)            cells.push(`<td data-label="Model">${nameHtml}${noteLink}</td>`);
+    if (colVisibility.params)          cells.push(`<td data-label="Params">${fmtParams(m.params)}</td>`);
+    if (colVisibility.context)         cells.push(`<td data-label="Context">${escapeHtml(m.context)}</td>`);
+    if (colVisibility.codingIndex)     cells.push(`<td class="num" data-label="AA Coding Index">${fmtBench(m.codingIndex)}</td>`);
+    if (colVisibility.swePro)          cells.push(`<td class="num" data-label="SWE-bench Pro">${fmtScore(m.swePro)}</td>`);
+    if (colVisibility.terminalBench)   cells.push(`<td class="num" data-label="Terminal-Bench">${fmtScore(m.terminalBench)}</td>`);
+    if (colVisibility.deepSwe)         cells.push(`<td class="num" data-label="DeepSWE">${fmtScore(m.deepSwe)}</td>`);
+    if (colVisibility.inputCost)       cells.push(`<td class="num" data-label="Input ($/1M)">${fmtCost(m.inputCost)}</td>`);
+    if (colVisibility.cachedReadCost)  cells.push(`<td class="num" data-label="Cached ($/1M)">${fmtCost(m.cachedReadCost)}</td>`);
+    if (colVisibility.outputCost)      cells.push(`<td class="num" data-label="Output ($/1M)">${fmtCost(m.outputCost)}</td>`);
+    return `<tr>${cells.join('')}</tr>`;
   }).join('');
 }
 
@@ -396,30 +651,66 @@ function setSort(key, dir) {
 
 function updateArrows() {
   document.querySelectorAll('th[data-key]').forEach(th => {
+    if (th.style.display === 'none') return;
     const key = th.getAttribute('data-key');
     const active = key === sortKey;
-    const arrow = active ? (sortDir > 0 ? '▲' : '▼') : '⇅';
-    th.querySelector('.arrow').textContent = arrow;
-    th.querySelector('.sortbtn').classList.toggle('active', active);
+    const btn = th.querySelector('.arrow');
+    if (!btn) return;
+    btn.textContent = active ? (sortDir > 0 ? '▲' : '▼') : '⇅';
+    th.querySelector('.sortbtn')?.classList.toggle('active', active);
   });
 }
 
+// ── Popover wiring ──
+document.getElementById('filterBtn')?.addEventListener('click', (e) => { e.stopPropagation(); togglePopover('filterPopover'); });
+document.getElementById('colsBtn')?.addEventListener('click', (e) => { e.stopPropagation(); togglePopover('colsPopover'); });
+document.getElementById('filterClose')?.addEventListener('click', closePopovers);
+document.getElementById('colsClose')?.addEventListener('click', closePopovers);
+document.getElementById('filterDone')?.addEventListener('click', closePopovers);
+document.getElementById('colsDone')?.addEventListener('click', closePopovers);
+document.getElementById('filterClear')?.addEventListener('click', () => {
+  document.getElementById('planFilter').value = 'all';
+  document.getElementById('availFilter').checked = false;
+  ['filterMinAA','filterMinSWE','filterMinTerminal','filterMinDeepSwe','filterMaxInput','filterMaxCached','filterMaxOutput'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  render();
+});
+document.getElementById('colsShowAll')?.addEventListener('click', () => {
+  COLUMNS.forEach(c => colVisibility[c.key] = true);
+  document.querySelectorAll('#columnsList input[data-col]').forEach(cb => cb.checked = true);
+  applyColumnVisibility(); updateColsBadge(); render();
+});
+document.getElementById('colsHideAll')?.addEventListener('click', () => {
+  // keep at least Model visible for usability
+  COLUMNS.forEach(c => colVisibility[c.key] = c.key === 'name');
+  document.querySelectorAll('#columnsList input[data-col]').forEach(cb => cb.checked = colVisibility[cb.dataset.col]);
+  applyColumnVisibility(); updateColsBadge(); render();
+});
+backdrop?.addEventListener('click', closePopovers);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopovers(); });
+document.addEventListener('click', e => {
+  if (!e.target.closest('.popover-wrap') && !e.target.closest('.popover')) closePopovers();
+});
+
 document.getElementById('planFilter').addEventListener('change', render);
 document.getElementById('availFilter').addEventListener('change', render);
-document.getElementById('filterMaxOutput').addEventListener('input', render);
-document.getElementById('filterMinAA').addEventListener('input', render);
-document.getElementById('filterMinSWE').addEventListener('input', render);
-document.getElementById('filterMinTerminal').addEventListener('input', render);
-document.getElementById('filterMinDeepSwe').addEventListener('input', render);
+['filterMinAA','filterMinSWE','filterMinTerminal','filterMinDeepSwe','filterMaxInput','filterMaxCached','filterMaxOutput'].forEach(id => {
+  document.getElementById(id)?.addEventListener('input', render);
+});
 document.getElementById('sortSelect').addEventListener('change', e => setSort(e.target.value, 1));
 document.getElementById('reset').addEventListener('click', () => {
   document.getElementById('planFilter').value = 'all';
   document.getElementById('availFilter').checked = false;
-  document.getElementById('filterMaxOutput').value = '';
-  document.getElementById('filterMinAA').value = '';
-  document.getElementById('filterMinSWE').value = '';
-  document.getElementById('filterMinTerminal').value = '';
-  document.getElementById('filterMinDeepSwe').value = '';
+  ['filterMinAA','filterMinSWE','filterMinTerminal','filterMinDeepSwe','filterMaxInput','filterMaxCached','filterMaxOutput'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  // reset columns to defaults (Input & Cached hidden)
+  COLUMNS.forEach(c => colVisibility[c.key] = c.defaultVisible);
+  document.querySelectorAll('#columnsList input[data-col]').forEach(cb => cb.checked = colVisibility[cb.dataset.col]);
+  applyColumnVisibility(); updateColsBadge();
   setSort('name', 1);
 });
 
@@ -445,6 +736,11 @@ document.querySelectorAll('th[data-key]').forEach(th => {
   });
 });
 
+// init columns UI
+renderColumnsList();
+applyColumnVisibility();
+updateColsBadge();
+
 async function load() {
   const res = await fetch(DATA_URL);
   if (!res.ok) throw new Error('Failed to load ' + DATA_URL);
@@ -455,7 +751,8 @@ async function load() {
 }
 
 load().catch(err => {
-  tbody.innerHTML = '<tr><td colspan="8">Error loading models.json: ' +
+  const visibleCount = COLUMNS.filter(c => colVisibility[c.key]).length;
+  tbody.innerHTML = `<tr><td colspan="${visibleCount}">Error loading models.json: ` +
     escapeHtml(err.message) +
     ' — serve this folder over HTTP (e.g. `python -m http.server`) so fetch can read the file.</td></tr>';
 });
