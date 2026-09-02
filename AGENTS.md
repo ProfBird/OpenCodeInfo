@@ -43,4 +43,4 @@ Each entry: `name`, `params` (total parameters, e.g. "744B", "1.6T", `null` if u
 ## Web page (docs/index.html)
 - Columns: Model, Params, Context, AA Coding Index, SWE-bench Pro, Terminal-Bench, DeepSWE, Output ($/1M).
 - Filters: Plan (All Models / Zen Models = on Zen pay-as-you-go, incl. Go-plan models marked `alsoOnZen` / Go Plan Models / OpenRouter Models) + "Available only" checkbox (hides `na` models), Min AA index, Min SWE-bench Pro, Min Terminal-Bench, Min DeepSWE, Max output ($/1M) — same order as the columns; Reset clears all.
-- Click the sort button (⇅) or column header to sort; `null` scores/params sort last and render as "—". Benchmark header names link to the originator's page.
+- Click the sort button (⇅) or column header to sort; `null` scores/params sort last and render as "—". Selecting a new sort column keeps the previous sort as the secondary (tiebreaker) sort; Reset clears it. Benchmark header names link to the originator's page.

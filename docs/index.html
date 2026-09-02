@@ -79,6 +79,7 @@
   .sortbtn:hover { background: rgba(128,128,128,0.12); }
   .sortbtn .arrow { opacity: 0.45; }
   .sortbtn.active .arrow { opacity: 1; }
+  .sortbtn.secondary .arrow { opacity: 0.8; }
   .footer { color: #666; font-size: 0.75rem; margin-top: 1rem; }
   td a { color: #60a5fa; text-decoration: none; }
   td a:hover { text-decoration: underline; }
@@ -206,7 +207,7 @@
 <body>
   <h1>OpenCode Zen &amp; Go, OpenRouter — Model Benchmarks &amp; Cost</h1>
   <p class="toplinks"><a href="https://opencode.ai/zen" target="_blank" rel="noopener noreferrer">OpenCode Zen</a> · <a href="https://opencode.ai/docs/go" target="_blank" rel="noopener noreferrer">OpenCode Go</a> · <a href="https://openrouter.ai/models?categories=programming" target="_blank" rel="noopener noreferrer">OpenRouter</a></p>
-  <p class="subtitle"><strong>OpenCode</strong> provides the Zen pay-as-you-go catalog and the $10/mo <strong>Go</strong> plan; <strong>OpenRouter</strong> is a third-party model provider — its rows carry OpenRouter's own pricing and context, which can differ from the same model's Zen/Go twins, and OpenRouter adds a 5.5% charge on top of the listed price. Use the <strong>Plan</strong> filter to show all models, models available on Zen pay-as-you-go, the Go plan subset, or OpenRouter programming-category models. Every model is badged: <strong>(Zen)</strong> = Zen pay-as-you-go only, <strong>(Go)</strong> = on the Go plan, <strong>(Go · Zen)</strong> = also on Zen pay-as-you-go, <strong>(OpenRouter)</strong> = OpenRouter row. Costs are USD per 1M tokens. Benchmark is the <a href="https://benchlm.ai/benchmarks/aacodingindex" target="_blank" rel="noopener noreferrer">Artificial Analysis Coding Index</a> (%), snapshot 2026-08-21 (via <a href="https://benchlm.ai/benchmarks/aacodingindex" target="_blank" rel="noopener noreferrer">BenchLM</a> mirror of <a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener noreferrer">Artificial Analysis</a>). Click a column to sort.</p>
+  <p class="subtitle"><strong>OpenCode</strong> provides the Zen pay-as-you-go catalog and the $10/mo <strong>Go</strong> plan; <strong>OpenRouter</strong> is a third-party model provider — its rows carry OpenRouter's own pricing and context, which can differ from the same model's Zen/Go twins, and OpenRouter adds a 5.5% charge on top of the listed price. Use the <strong>Plan</strong> filter to show all models, models available on Zen pay-as-you-go, the Go plan subset, or OpenRouter programming-category models. Every model is badged: <strong>(Zen)</strong> = Zen pay-as-you-go only, <strong>(Go)</strong> = on the Go plan, <strong>(Go · Zen)</strong> = also on Zen pay-as-you-go, <strong>(OpenRouter)</strong> = OpenRouter row. Costs are USD per 1M tokens. Benchmark is the <a href="https://benchlm.ai/benchmarks/aacodingindex" target="_blank" rel="noopener noreferrer">Artificial Analysis Coding Index</a> (%), snapshot 2026-08-21 (via <a href="https://benchlm.ai/benchmarks/aacodingindex" target="_blank" rel="noopener noreferrer">BenchLM</a> mirror of <a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener noreferrer">Artificial Analysis</a>). Click a column to sort; selecting another column keeps the previous sort as the tiebreaker for equal values.</p>
 
   <div class="toolbar">
     <div class="toolbar-row toolbar-actions">
@@ -244,6 +245,7 @@
                 <label><span>Max input<br>($/1M)</span> <input id="filterMaxInput" type="number" min="0" step="0.01" placeholder="e.g. 2"></label>
                 <label><span>Max cached<br>($/1M)</span> <input id="filterMaxCached" type="number" min="0" step="0.01" placeholder="e.g. 0.5"></label>
                 <label><span>Max output<br>($/1M)</span> <input id="filterMaxOutput" type="number" min="0" step="0.01" placeholder="e.g. 2"></label>
+                <label><span>Min Go usage<br>($)</span> <input id="filterMinGoUsage" type="number" min="0" step="1" placeholder="e.g. 30"></label>
               </div>
             </div>
           </div>
@@ -357,6 +359,7 @@ const DATA_URL = 'models.json';
 let models = [];
 let sortKey = 'name';
 let sortDir = 1;
+let secondarySort = null; // { key, dir } — previous primary, used as tiebreaker
 
 /* ── Column definitions (all selectable) ── */
 const COLUMNS = [
@@ -484,7 +487,7 @@ function updateColsBadge() {
   if (badge) badge.textContent = `${visible}/${selectable.length}`;
 }
 function updateFilterBadge() {
-  const { plan, showDeprecated, maxOut, maxIn, maxCached, minAA, minSWE, minTerminal, minDeepSwe } = getFilters();
+  const { plan, showDeprecated, maxOut, maxIn, maxCached, minGoUsage, minAA, minSWE, minTerminal, minDeepSwe } = getFilters();
   let n = 0;
   if (plan !== 'all') n++;
   if (showDeprecated) n++;
@@ -495,6 +498,7 @@ function updateFilterBadge() {
   if (maxOut !== null) n++;
   if (maxIn !== null) n++;
   if (maxCached !== null) n++;
+  if (minGoUsage !== null) n++;
   const badge = document.getElementById('filterBadge');
   if (badge) { badge.textContent = n; badge.hidden = n === 0; }
 }
@@ -505,6 +509,7 @@ function getFilters() {
   const maxOutEl = document.getElementById('filterMaxOutput');
   const maxInEl = document.getElementById('filterMaxInput');
   const maxCachedEl = document.getElementById('filterMaxCached');
+  const minGoUsageEl = document.getElementById('filterMinGoUsage');
   const minAAEl = document.getElementById('filterMinAA');
   const minSWEEl = document.getElementById('filterMinSWE');
   const minTerminalEl = document.getElementById('filterMinTerminal');
@@ -512,6 +517,7 @@ function getFilters() {
   const maxOut = maxOutEl && maxOutEl.value !== '' ? parseFloat(maxOutEl.value) : null;
   const maxIn = maxInEl && maxInEl.value !== '' ? parseFloat(maxInEl.value) : null;
   const maxCached = maxCachedEl && maxCachedEl.value !== '' ? parseFloat(maxCachedEl.value) : null;
+  const minGoUsage = minGoUsageEl && minGoUsageEl.value !== '' ? parseFloat(minGoUsageEl.value) : null;
   const minAA = minAAEl && minAAEl.value !== '' ? parseFloat(minAAEl.value) : null;
   const minSWE = minSWEEl && minSWEEl.value !== '' ? parseFloat(minSWEEl.value) : null;
   const minTerminal = minTerminalEl && minTerminalEl.value !== '' ? parseFloat(minTerminalEl.value) : null;
@@ -522,6 +528,7 @@ function getFilters() {
     maxOut: Number.isFinite(maxOut) ? maxOut : null,
     maxIn: Number.isFinite(maxIn) ? maxIn : null,
     maxCached: Number.isFinite(maxCached) ? maxCached : null,
+    minGoUsage: Number.isFinite(minGoUsage) ? minGoUsage : null,
     minAA: Number.isFinite(minAA) ? minAA : null,
     minSWE: Number.isFinite(minSWE) ? minSWE : null,
     minTerminal: Number.isFinite(minTerminal) ? minTerminal : null,
@@ -532,7 +539,7 @@ function getFilters() {
 function render() {
   updateFilterBadge();
   applyColumnVisibility();
-  const { plan, showDeprecated, maxOut, maxIn, maxCached, minAA, minSWE, minTerminal, minDeepSwe } = getFilters();
+  const { plan, showDeprecated, maxOut, maxIn, maxCached, minGoUsage, minAA, minSWE, minTerminal, minDeepSwe } = getFilters();
   const filtered = models.filter(m => {
     if (plan === 'go' && m.plan !== 'go') return false;
     if (plan === 'zen' && !(m.plan === 'zen' || m.alsoOnZen)) return false;
@@ -549,6 +556,10 @@ function render() {
     if (maxCached !== null) {
       if (m.cachedReadCost === null || m.cachedReadCost === undefined) return false;
       if (m.cachedReadCost > maxCached) return false;
+    }
+    if (minGoUsage !== null) {
+      if (m.goUsage === null || m.goUsage === undefined) return false;
+      if (m.goUsage < minGoUsage) return false;
     }
     if (minAA !== null) {
       const v = benchNum(m.codingIndex);
@@ -569,38 +580,19 @@ function render() {
     return true;
   });
   const sorted = [...filtered].sort((a, b) => {
-    let va = a[sortKey];
-    let vb = b[sortKey];
-    if (sortKey === 'name') {
-      return va.localeCompare(vb) * sortDir;
+    const r = cmpKey(sortKey, a, b);
+    if (r !== 0) {
+      if (sortMissing(sortKey, a) || sortMissing(sortKey, b)) return r; // missing always last
+      return r * sortDir;
     }
-    if (sortKey === 'context') {
-      const na = (va === null || va === undefined);
-      const nb = (vb === null || vb === undefined);
-      if (na && nb) return 0;
-      if (na) return 1;
-      if (nb) return -1;
-      return (contextSize(va) - contextSize(vb)) * sortDir;
+    if (secondarySort) {
+      const r2 = cmpKey(secondarySort.key, a, b);
+      if (r2 !== 0) {
+        if (sortMissing(secondarySort.key, a) || sortMissing(secondarySort.key, b)) return r2;
+        return r2 * secondarySort.dir;
+      }
     }
-    if (sortKey === 'params') {
-      const na = (va === null || va === undefined);
-      const nb = (vb === null || vb === undefined);
-      if (na && nb) return 0;
-      if (na) return 1;
-      if (nb) return -1;
-      return (paramSize(va) - paramSize(vb)) * sortDir;
-    }
-    const na = (va === null || va === undefined);
-    const nb = (vb === null || vb === undefined);
-    if (na && nb) return 0;
-    if (na) return 1;
-    if (nb) return -1;
-    const fa = benchNum(va);
-    const fb = benchNum(vb);
-    if (fa === null && fb === null) return 0;
-    if (fa === null) return 1;
-    if (fb === null) return -1;
-    return (fa - fb) * sortDir;
+    return 0;
   });
   const visibleCount = COLUMNS.filter(c => colVisibility[c.key]).length;
   if (!sorted.length) {
@@ -660,10 +652,46 @@ function escapeHtml(str) {
   }[c]));
 }
 
+// Direction-neutral comparison for a sort key (-1/0/1, missing values sort last).
+function cmpKey(key, a, b) {
+  const va = a[key], vb = b[key];
+  if (key === 'name') {
+    const r = String(va).localeCompare(String(vb));
+    return r === 0 ? 0 : (r < 0 ? -1 : 1);
+  }
+  let fa, fb;
+  if (key === 'context') {
+    fa = contextSize(va); fb = contextSize(vb);
+    if (!Number.isFinite(fa)) fa = null;
+    if (!Number.isFinite(fb)) fb = null;
+  } else if (key === 'params') {
+    // legacy: nulls handled by sortMissing; unparseable values compare as -1
+    fa = (va === null || va === undefined) ? null : paramSize(va);
+    fb = (vb === null || vb === undefined) ? null : paramSize(vb);
+  } else {
+    fa = benchNum(va); fb = benchNum(vb);
+  }
+  if (fa === null && fb === null) return 0;
+  if (fa === null) return 1;
+  if (fb === null) return -1;
+  return fa < fb ? -1 : fa > fb ? 1 : 0;
+}
+
+// True when a row's value counts as missing for sort direction purposes
+// (missing values always stay last, regardless of sort direction).
+function sortMissing(key, row) {
+  const v = row[key];
+  if (v === null || v === undefined) return true;
+  if (key === 'name' || key === 'params') return false; // params: legacy -1 comparison
+  if (key === 'context') return !Number.isFinite(contextSize(v));
+  return benchNum(v) === null;
+}
+
 function setSort(key, dir) {
   if (sortKey === key) {
     sortDir = dir === undefined ? -sortDir : dir;
   } else {
+    secondarySort = { key: sortKey, dir: sortDir }; // previous primary becomes tiebreaker
     sortKey = key;
     sortDir = dir === undefined ? 1 : dir;
   }
@@ -678,10 +706,14 @@ function updateArrows() {
     if (th.style.display === 'none') return;
     const key = th.getAttribute('data-key');
     const active = key === sortKey;
+    const secondary = !active && secondarySort && key === secondarySort.key;
     const btn = th.querySelector('.arrow');
     if (!btn) return;
-    btn.textContent = active ? (sortDir > 0 ? '▲' : '▼') : '⇅';
-    th.querySelector('.sortbtn')?.classList.toggle('active', active);
+    btn.textContent = active ? (sortDir > 0 ? '▲' : '▼') : secondary ? (secondarySort.dir > 0 ? '▲' : '▼') : '⇅';
+    const sortbtn = th.querySelector('.sortbtn');
+    sortbtn?.classList.toggle('active', active);
+    sortbtn?.classList.toggle('secondary', !!secondary);
+    sortbtn?.setAttribute('title', active ? 'Sort by ' + key : secondary ? 'Secondary sort by ' + key : 'Sort by ' + key);
   });
 }
 
@@ -695,7 +727,7 @@ document.getElementById('colsDone')?.addEventListener('click', closePopovers);
 document.getElementById('filterClear')?.addEventListener('click', () => {
   document.getElementById('planFilter').value = 'all';
   document.getElementById('deprecatedFilter').checked = false;  // restore default
-  ['filterMinAA','filterMinSWE','filterMinTerminal','filterMinDeepSwe','filterMaxInput','filterMaxCached','filterMaxOutput'].forEach(id => {
+  ['filterMinAA','filterMinSWE','filterMinTerminal','filterMinDeepSwe','filterMaxInput','filterMaxCached','filterMaxOutput','filterMinGoUsage'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
@@ -720,14 +752,14 @@ document.addEventListener('click', e => {
 
 document.getElementById('planFilter').addEventListener('change', render);
 document.getElementById('deprecatedFilter').addEventListener('change', render);
-['filterMinAA','filterMinSWE','filterMinTerminal','filterMinDeepSwe','filterMaxInput','filterMaxCached','filterMaxOutput'].forEach(id => {
+['filterMinAA','filterMinSWE','filterMinTerminal','filterMinDeepSwe','filterMaxInput','filterMaxCached','filterMaxOutput','filterMinGoUsage'].forEach(id => {
   document.getElementById(id)?.addEventListener('input', render);
 });
 document.getElementById('sortSelect').addEventListener('change', e => setSort(e.target.value, 1));
 document.getElementById('reset').addEventListener('click', () => {
   document.getElementById('planFilter').value = 'all';
   document.getElementById('deprecatedFilter').checked = false;  // restore default
-  ['filterMinAA','filterMinSWE','filterMinTerminal','filterMinDeepSwe','filterMaxInput','filterMaxCached','filterMaxOutput'].forEach(id => {
+  ['filterMinAA','filterMinSWE','filterMinTerminal','filterMinDeepSwe','filterMaxInput','filterMaxCached','filterMaxOutput','filterMinGoUsage'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
@@ -736,6 +768,9 @@ document.getElementById('reset').addEventListener('click', () => {
   document.querySelectorAll('#columnsList input[data-col]').forEach(cb => cb.checked = colVisibility[cb.dataset.col]);
   applyColumnVisibility(); updateColsBadge();
   setSort('name', 1);
+  secondarySort = null; // reset clears the tiebreaker too (after setSort re-chains)
+  render();
+  updateArrows();
 });
 
 document.querySelectorAll('th[data-key]').forEach(th => {
