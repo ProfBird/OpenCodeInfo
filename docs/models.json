@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-09-01",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-09-02",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-09-01",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-09-02",
   "models": [
     {
       "name": "Big Pickle",
@@ -43,6 +43,18 @@
       "cachedReadCost": 1.0,
       "plan": "openrouter",
       "hfUrl": "https://openrouter.ai/anthropic/claude-fable-5"
+    },
+    {
+      "name": "Claude Fable 5.1",
+      "codingIndex": null,
+      "inputCost": 10.0,
+      "outputCost": 50.0,
+      "cachedReadCost": 0.25,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "swePro": 81.2,
+      "deepSwe": 67.4
     },
     {
       "name": "Claude Haiku 4.5",
@@ -214,9 +226,9 @@
       "swePro": 52.6,
       "terminalBench": 82.7,
       "deepSwe": 54.4,
-      "inputCost": 0.07014,
-      "outputCost": 0.14028,
-      "cachedReadCost": 0.014028,
+      "inputCost": 0.088606,
+      "outputCost": 0.177212,
+      "cachedReadCost": 0.017721,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash"
     },
@@ -269,9 +281,9 @@
       "swePro": null,
       "terminalBench": null,
       "deepSwe": null,
-      "inputCost": 0.22,
-      "outputCost": 0.66,
-      "cachedReadCost": 0.007,
+      "inputCost": 0.44,
+      "outputCost": 1.32,
+      "cachedReadCost": 0.014,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-Vision-Exp"
     },
@@ -298,9 +310,9 @@
       "swePro": 55.4,
       "terminalBench": 87.9,
       "deepSwe": 62.7,
-      "inputCost": 1.024164,
-      "outputCost": 2.048328,
-      "cachedReadCost": 0.085347,
+      "inputCost": 1.04226,
+      "outputCost": 2.08452,
+      "cachedReadCost": 0.086855,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro"
     },
@@ -312,9 +324,9 @@
       "swePro": 55.4,
       "terminalBench": 87.9,
       "deepSwe": 62.7,
-      "inputCost": 0.66,
-      "outputCost": 1.98,
-      "cachedReadCost": 0.022,
+      "inputCost": 1.1154,
+      "outputCost": 3.3462,
+      "cachedReadCost": 0.03718,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813"
     },
@@ -465,9 +477,9 @@
       "swePro": 62.1,
       "terminalBench": 81,
       "deepSwe": null,
-      "inputCost": 1.19,
-      "outputCost": 3.74,
-      "cachedReadCost": 0.221,
+      "inputCost": 0.966,
+      "outputCost": 3.036,
+      "cachedReadCost": 0.1932,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.2"
     },
@@ -902,9 +914,9 @@
       "swePro": null,
       "terminalBench": null,
       "deepSwe": null,
-      "inputCost": 0.0825,
-      "outputCost": 0.33,
-      "cachedReadCost": 0.020625,
+      "inputCost": 0.132,
+      "outputCost": 0.528,
+      "cachedReadCost": 0.033,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/tencent/Hy3"
     },
@@ -1523,7 +1535,7 @@
       "hfUrl": "https://openrouter.ai/upstage/solar-pro4"
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-09-01",
-  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-09-01",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-09-01"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-09-02",
+  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-09-02",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-09-02"
 }
