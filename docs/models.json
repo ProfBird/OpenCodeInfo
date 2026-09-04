@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-09-03",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-09-04",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-09-03",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-09-04",
   "models": [
     {
       "name": "Big Pickle",
@@ -530,7 +530,7 @@
       "deepSwe": 66.9,
       "inputCost": 1.4,
       "outputCost": 4.4,
-      "cachedReadCost": 0.26,
+      "cachedReadCost": 0.14,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.3"
     },
@@ -1380,7 +1380,7 @@
     },
     {
       "name": "Muse Spark 1.3 Free",
-      "codingIndex": null,
+      "codingIndex": 76.28,
       "inputCost": 0,
       "outputCost": 0,
       "cachedReadCost": 0,
@@ -1445,6 +1445,18 @@
       "cachedReadCost": 0,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16"
+    },
+    {
+      "name": "Omen Alpha",
+      "codingIndex": null,
+      "inputCost": 0.2,
+      "outputCost": 0.66,
+      "cachedReadCost": 0.04,
+      "context": "1M",
+      "params": null,
+      "plan": "go",
+      "goUsage": 100.0,
+      "addedOn": "2026-09-04"
     },
     {
       "name": "Ox Alpha Free",
@@ -1538,8 +1550,8 @@
       "swePro": 61.7,
       "terminalBench": 73,
       "deepSwe": 42.2,
-      "inputCost": 0.425,
-      "outputCost": 2.55,
+      "inputCost": 0.42,
+      "outputCost": 3.0,
       "cachedReadCost": 0.085,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/Qwen/Qwen3.8-27B"
@@ -1616,7 +1628,7 @@
       "hfUrl": "https://openrouter.ai/upstage/solar-pro4"
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-09-03",
-  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-09-03",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-09-03"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-09-04",
+  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-09-04",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-09-04"
 }
