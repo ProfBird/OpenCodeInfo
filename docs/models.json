@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-09-04",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-09-05",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-09-04",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-09-05",
   "models": [
     {
       "name": "Big Pickle",
@@ -229,9 +229,9 @@
       "swePro": 52.6,
       "terminalBench": 82.7,
       "deepSwe": 54.4,
-      "inputCost": 0.088606,
-      "outputCost": 0.177212,
-      "cachedReadCost": 0.017721,
+      "inputCost": 0.08582,
+      "outputCost": 0.17164,
+      "cachedReadCost": 0.017164,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash"
     },
@@ -275,7 +275,8 @@
       "cachedReadCost": 0.007,
       "plan": "go",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash",
-      "goUsage": 15.0
+      "goUsage": 15.0,
+      "alsoOnZen": true
     },
     {
       "name": "DeepSeek V4 Flash Vision Exp",
@@ -285,9 +286,9 @@
       "swePro": null,
       "terminalBench": null,
       "deepSwe": null,
-      "inputCost": 0.44,
-      "outputCost": 1.32,
-      "cachedReadCost": 0.014,
+      "inputCost": 0.22,
+      "outputCost": 0.66,
+      "cachedReadCost": 0.007,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-Vision-Exp"
     },
@@ -315,9 +316,9 @@
       "swePro": 55.4,
       "terminalBench": 87.9,
       "deepSwe": 62.7,
-      "inputCost": 1.04226,
-      "outputCost": 2.08452,
-      "cachedReadCost": 0.086855,
+      "inputCost": 0.9309,
+      "outputCost": 1.8618,
+      "cachedReadCost": 0.077575,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro"
     },
@@ -329,9 +330,9 @@
       "swePro": 55.4,
       "terminalBench": 87.9,
       "deepSwe": 62.7,
-      "inputCost": 1.1154,
-      "outputCost": 3.3462,
-      "cachedReadCost": 0.03718,
+      "inputCost": 1.12068,
+      "outputCost": 3.36204,
+      "cachedReadCost": 0.037356,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813"
     },
@@ -518,7 +519,8 @@
       "cachedReadCost": 0.26,
       "plan": "go",
       "hfUrl": "https://docs.z.ai/guides/llm/glm-5.3",
-      "goUsage": 15.0
+      "goUsage": 15.0,
+      "alsoOnZen": true
     },
     {
       "name": "GLM-5.3",
@@ -548,7 +550,8 @@
       "plan": "go",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.3-Flash",
       "addedOn": "2026-08-31",
-      "goUsage": 15.0
+      "goUsage": 15.0,
+      "alsoOnZen": true
     },
     {
       "name": "GLM-5.3-Flash",
@@ -855,6 +858,18 @@
       "cachedReadCost": 0.2,
       "plan": "openrouter",
       "hfUrl": "https://openrouter.ai/openai/gpt-5.6-terra"
+    },
+    {
+      "name": "GPT-6 Astra",
+      "codingIndex": null,
+      "inputCost": 10.0,
+      "outputCost": 50.0,
+      "cachedReadCost": 1.0,
+      "context": "1.05M",
+      "params": null,
+      "plan": "zen",
+      "addedOn": "2026-09-05",
+      "deepSwe": 74.1
     },
     {
       "name": "Grok 4.5",
@@ -1364,6 +1379,19 @@
       "hfUrl": "https://developer.meta.com/ai/models/muse-spark/"
     },
     {
+      "name": "Muse Spark 1.3",
+      "codingIndex": null,
+      "inputCost": 1.25,
+      "outputCost": 4.25,
+      "cachedReadCost": 0.15,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "addedOn": "2026-09-05",
+      "terminalBench": 88.8,
+      "deepSwe": 75.4
+    },
+    {
       "name": "Muse Spark 1.3 Contributor",
       "codingIndex": null,
       "inputCost": 0.1,
@@ -1628,7 +1656,7 @@
       "hfUrl": "https://openrouter.ai/upstage/solar-pro4"
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-09-04",
-  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-09-04",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-09-04"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-09-05",
+  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-09-05",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-09-05"
 }
