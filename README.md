@@ -25,7 +25,7 @@ A small static web page that displays **all OpenCode Zen models** (coding benchm
 ## Sorting & filtering
 
 - Click the sort button (⇅) next to a column name, or the column header itself, to sort (click again to reverse direction).
-- **Plan** filter: show all models, models available on Zen pay-as-you-go (including Go-plan models also on Zen), **Go Plan** models only, or **OpenRouter** programming-category models (36 verified of OpenRouter's 47; separate rows with OpenRouter's own pricing, badged (OpenRouter)).
+- **Plan** filter: show all models, recently added (**New**) models, models available on Zen pay-as-you-go (including Go-plan models also on Zen), **Go Plan** models only, or **OpenRouter** programming-category models (36 verified of OpenRouter's 47; separate rows with OpenRouter's own pricing, badged (OpenRouter)).
 - **Available only** checkbox: hide models marked (N.A.) — those no longer selectable in OpenCode's model picker.
 - Filter by **Min AA index**, **Min SWE-bench Pro**, **Min Terminal-Bench**, **Min DeepSWE**, and **Max output price ($/1M)** — same order as the columns.
 - **Reset** clears all filters and restores the default (alphabetical) order.

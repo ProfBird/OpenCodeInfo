@@ -211,7 +211,7 @@
 <body>
   <h1>OpenCode Zen &amp; Go, OpenRouter — Model Benchmarks &amp; Cost</h1>
   <p class="toplinks"><a href="https://opencode.ai/zen" target="_blank" rel="noopener noreferrer">OpenCode Zen</a> · <a href="https://opencode.ai/docs/go" target="_blank" rel="noopener noreferrer">OpenCode Go</a> · <a href="https://openrouter.ai/models?categories=programming" target="_blank" rel="noopener noreferrer">OpenRouter</a></p>
-  <p class="subtitle"><strong>OpenCode</strong> provides the Zen pay-as-you-go catalog and the $10/mo <strong>Go</strong> plan; <strong>OpenRouter</strong> is a third-party model provider — its rows carry OpenRouter's own pricing and context, which can differ from the same model's Zen/Go twins, and OpenRouter adds a 5.5% charge on top of the listed price. Use the <strong>Plan</strong> filter to show all models, models available on Zen pay-as-you-go, the Go plan subset, or OpenRouter programming-category models. Every model is badged: <strong>(Zen)</strong> = Zen pay-as-you-go only, <strong>(Go)</strong> = on the Go plan, <strong>(Go · Zen)</strong> = also on Zen pay-as-you-go, <strong>(OpenRouter)</strong> = OpenRouter row. Costs are USD per 1M tokens. Benchmark is the <a href="https://benchlm.ai/benchmarks/aacodingindex" target="_blank" rel="noopener noreferrer">Artificial Analysis Coding Index</a> (%), snapshot 2026-08-21 (via <a href="https://benchlm.ai/benchmarks/aacodingindex" target="_blank" rel="noopener noreferrer">BenchLM</a> mirror of <a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener noreferrer">Artificial Analysis</a>). Click a column to sort; selecting another column keeps the previous sort as the tiebreaker for equal values.</p>
+  <p class="subtitle"><strong>OpenCode</strong> provides the Zen pay-as-you-go catalog and the $10/mo <strong>Go</strong> plan; <strong>OpenRouter</strong> is a third-party model provider — its rows carry OpenRouter's own pricing and context, which can differ from the same model's Zen/Go twins, and OpenRouter adds a 5.5% charge on top of the listed price. Use the <strong>Plan</strong> filter to show all models, recently added (<strong>New</strong>) models, models available on Zen pay-as-you-go, the Go plan subset, or OpenRouter programming-category models. Every model is badged: <strong>(Zen)</strong> = Zen pay-as-you-go only, <strong>(Go)</strong> = on the Go plan, <strong>(Go · Zen)</strong> = also on Zen pay-as-you-go, <strong>(OpenRouter)</strong> = OpenRouter row. Costs are USD per 1M tokens. Benchmark is the <a href="https://benchlm.ai/benchmarks/aacodingindex" target="_blank" rel="noopener noreferrer">Artificial Analysis Coding Index</a> (%), snapshot 2026-08-21 (via <a href="https://benchlm.ai/benchmarks/aacodingindex" target="_blank" rel="noopener noreferrer">BenchLM</a> mirror of <a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener noreferrer">Artificial Analysis</a>). Click a column to sort; selecting another column keeps the previous sort as the tiebreaker for equal values.</p>
 
   <div class="toolbar">
     <div class="toolbar-row toolbar-actions">
@@ -230,7 +230,7 @@
             <div class="filter-section">
               <p class="filter-section-title">Plan &amp; Availability</p>
               <div style="display:flex; flex-direction:column; gap:0.65rem;">
-                <label style="flex-direction:row; justify-content:space-between;">Plan <select id="planFilter"><option value="all">All Models</option><option value="zen">Zen Models</option><option value="go">Go Plan Models</option><option value="openrouter">OpenRouter Models</option></select></label>
+                <label style="flex-direction:row; justify-content:space-between;">Plan <select id="planFilter"><option value="all">All Models</option><option value="new">New Models</option><option value="zen">Zen Models</option><option value="go">Go Plan Models</option><option value="openrouter">OpenRouter Models</option></select></label>
                 <label class="avail-check" title="Show models marked (N.A.) — no longer selectable in OpenCode's model picker" style="flex-direction:row !important; align-items:center !important;"><input type="checkbox" id="deprecatedFilter"> Show deprecated models</label>
               </div>
             </div>
@@ -548,6 +548,7 @@ function render() {
     if (plan === 'go' && m.plan !== 'go') return false;
     if (plan === 'zen' && !(m.plan === 'zen' || m.alsoOnZen)) return false;
     if (plan === 'openrouter' && m.plan !== 'openrouter') return false;
+    if (plan === 'new' && !isNewModel(m.addedOn)) return false;  // same window as the green (New) badge
     if (!showDeprecated && m.na) return false;  // deprecated (N.A.) hidden unless opted in
     if (maxOut !== null) {
       if (m.outputCost === null || m.outputCost === undefined) return false;
