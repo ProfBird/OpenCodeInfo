@@ -85,6 +85,7 @@ DISPLAY_NAME = {
     "muse-spark-1.2-contributor": "Muse Spark 1.2 Contributor",
     "ox-alpha-free": "Ox Alpha Free", "x-preview-f-free": "Ox Alpha Free",
     "longcat-2.0": "LongCat-2.0",
+    "gpt-6-astra": "GPT 6 Astra", "muse-spark-1.3": "Muse Spark 1.3", "omen-alpha": "Omen Alpha",
 }
 
 # Known model-card links (HF if a card exists, else BenchLM specs, else manufacturer).
@@ -136,7 +137,12 @@ KNOWN_URLS = {
     "ox-alpha-free": "https://openrouter.ai/stealth/ox-alpha",
     "claude-sonnet-4": "https://www.anthropic.com/claude",
     "big-pickle": "https://opencode.ai/docs/zen",
+    # stealth with unconfirmed vendor -> plan docs page (cf. big-pickle);
+    # Omen Alpha (Go-only, Sep 2026) has no HF card / BenchLM page / mfg page.
+    "omen-alpha": "https://opencode.ai/docs/go",
     # closed models -> BenchLM specs
+    "gpt-6-astra": "https://benchlm.ai/models/gpt-6-astra",
+    "muse-spark-1.3": "https://benchlm.ai/models/muse-spark-1-3",
     "claude-fable-5": "https://benchlm.ai/models/claude-fable-5",
     "claude-fable-5-1": "https://benchlm.ai/models/claude-fable-5-1",
     "claude-opus-5": "https://benchlm.ai/models/claude-opus-5",
@@ -192,6 +198,8 @@ BENCH_SLUG_OVERRIDES = {
     "Muse Spark 1.2": "muse-spark-1-2",
     "Muse Spark 1.2 Contributor": "muse-spark-1-2",
     "Muse Spark 1.2 Contributor Free": "muse-spark-1-2",
+    "Muse Spark 1.3": "muse-spark-1-3",
+    "GPT 6 Astra": "gpt-6-astra",
     "Muse Spark 1.3 Contributor": "muse-spark-1-3",
     "MiMo-V2 Omni": "mimo-v2-omni",
     "MiMo-V2 Pro": "mimo-v2-pro",

@@ -229,9 +229,9 @@
       "swePro": 52.6,
       "terminalBench": 82.7,
       "deepSwe": 54.4,
-      "inputCost": 0.08134,
-      "outputCost": 0.16268,
-      "cachedReadCost": 0.016268,
+      "inputCost": 0.07966,
+      "outputCost": 0.15932,
+      "cachedReadCost": 0.015932,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash"
     },
@@ -243,9 +243,9 @@
       "swePro": 52.6,
       "terminalBench": 82.7,
       "deepSwe": 54.4,
-      "inputCost": 0.065,
-      "outputCost": 0.18,
-      "cachedReadCost": 0.016,
+      "inputCost": 0.04998,
+      "outputCost": 0.09996,
+      "cachedReadCost": 0.009996,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731"
     },
@@ -316,9 +316,9 @@
       "swePro": 55.4,
       "terminalBench": 87.9,
       "deepSwe": 62.7,
-      "inputCost": 0.72819,
-      "outputCost": 1.45638,
-      "cachedReadCost": 0.060683,
+      "inputCost": 0.63684,
+      "outputCost": 1.27368,
+      "cachedReadCost": 0.05307,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro"
     },
@@ -330,9 +330,9 @@
       "swePro": 55.4,
       "terminalBench": 87.9,
       "deepSwe": 62.7,
-      "inputCost": 1.12068,
-      "outputCost": 3.36204,
-      "cachedReadCost": 0.037356,
+      "inputCost": 0.57948,
+      "outputCost": 1.73844,
+      "cachedReadCost": 0.019316,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813"
     },
@@ -860,7 +860,7 @@
       "hfUrl": "https://openrouter.ai/openai/gpt-5.6-terra"
     },
     {
-      "name": "GPT-6 Astra",
+      "name": "GPT 6 Astra",
       "codingIndex": null,
       "inputCost": 10.0,
       "outputCost": 50.0,
@@ -869,7 +869,8 @@
       "params": null,
       "plan": "zen",
       "addedOn": "2026-09-05",
-      "deepSwe": 74.1
+      "deepSwe": 74.1,
+      "hfUrl": "https://benchlm.ai/models/gpt-6-astra"
     },
     {
       "name": "Grok 4.5",
@@ -959,9 +960,9 @@
       "swePro": 57.9,
       "terminalBench": null,
       "deepSwe": null,
-      "inputCost": 0.132,
-      "outputCost": 0.528,
-      "cachedReadCost": 0.033,
+      "inputCost": 0.0825,
+      "outputCost": 0.33,
+      "cachedReadCost": 0.020625,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/tencent/Hy3"
     },
@@ -1389,7 +1390,8 @@
       "plan": "zen",
       "addedOn": "2026-09-05",
       "terminalBench": 88.8,
-      "deepSwe": 75.4
+      "deepSwe": 75.4,
+      "hfUrl": "https://benchlm.ai/models/muse-spark-1-3"
     },
     {
       "name": "Muse Spark 1.3 Contributor",
@@ -1484,7 +1486,8 @@
       "params": null,
       "plan": "go",
       "goUsage": 100.0,
-      "addedOn": "2026-09-04"
+      "addedOn": "2026-09-04",
+      "hfUrl": "https://opencode.ai/docs/go"
     },
     {
       "name": "Ox Alpha Free",
