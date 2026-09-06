@@ -88,7 +88,8 @@ DISPLAY_NAME = {
     "gpt-6-astra": "GPT 6 Astra", "muse-spark-1.3": "Muse Spark 1.3", "omen-alpha": "Omen Alpha",
 }
 
-# Known model-card links (HF if a card exists, else BenchLM specs, else manufacturer).
+# Known model-card links (HF if a card exists, else BenchLM specs, else manufacturer;
+# stealth models with no real model-info page link to their notes anchor in docs/index.html).
 KNOWN_URLS = {
     # open weights -> Hugging Face
     "deepseek-v4-flash": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash",
@@ -136,10 +137,10 @@ KNOWN_URLS = {
     "mimo-v2-omni": "https://mimo.xiaomi.com/mimo-v2-omni",
     "ox-alpha-free": "https://openrouter.ai/stealth/ox-alpha",
     "claude-sonnet-4": "https://www.anthropic.com/claude",
-    "big-pickle": "https://opencode.ai/docs/zen",
-    # stealth with unconfirmed vendor -> plan docs page (cf. big-pickle);
-    # Omen Alpha (Go-only, Sep 2026) has no HF card / BenchLM page / mfg page.
-    "omen-alpha": "https://opencode.ai/docs/go",
+    "big-pickle": "#big-pickle-note",
+    # Omen Alpha (Go-only stealth, Sep 2026, vendor unconfirmed) has no HF card /
+    # BenchLM page / mfg page, so it links to its stealth-notes entry like Big Pickle.
+    "omen-alpha": "#omen-alpha-note",
     # closed models -> BenchLM specs
     "gpt-6-astra": "https://benchlm.ai/models/gpt-6-astra",
     "muse-spark-1.3": "https://benchlm.ai/models/muse-spark-1-3",
@@ -353,6 +354,7 @@ CONTEXT_OVERRIDES = {
     "deepseek-v4-flash-vision-exp": "1M",
     "ling-3.0-flash-fin-free": "262K",
     "gpt-5.6-luna": "1.05M", "grok-4.5": "500K",
+    "omen-alpha": "500K",  # models.dev opencode-go entry: limit.context 500000 (third-party dirs agree; some testers report coherent answers past 850K — see stealth notes)
     "deepseek-v4-pro": "1M", "deepseek-v4-flash": "1M",
 }
 

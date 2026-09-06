@@ -15,7 +15,7 @@
       "outputCost": 0,
       "cachedReadCost": 0,
       "plan": "zen",
-      "hfUrl": "https://opencode.ai/docs/zen"
+      "hfUrl": "#big-pickle-note"
     },
     {
       "name": "Claude Fable 5",
@@ -1482,12 +1482,12 @@
       "inputCost": 0.2,
       "outputCost": 0.66,
       "cachedReadCost": 0.04,
-      "context": "1M",
+      "context": "500K",
       "params": null,
       "plan": "go",
       "goUsage": 100.0,
       "addedOn": "2026-09-04",
-      "hfUrl": "https://opencode.ai/docs/go"
+      "hfUrl": "#omen-alpha-note"
     },
     {
       "name": "Ox Alpha Free",

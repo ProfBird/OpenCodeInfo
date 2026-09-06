@@ -26,7 +26,7 @@ Each entry: `name`, `params` (total parameters, e.g. "744B", "1.6T", `null` if u
 `deepSwe` (DeepSWE %, 0–100, `null` if unpublished),
 `inputCost`/`outputCost`/`cachedReadCost` (USD per 1M tokens),
 `plan` (`"go"` = Go $10/mo plan, `"zen"` = Zen-only, `"openrouter"` = OpenRouter programming-category row with OpenRouter's own pricing/context, which can differ from its Zen/Go twins; the page badges rows (Zen)/(Go)/(Go · Zen)/(OpenRouter) after the model link), `alsoOnZen` (`true` when a Go-plan model is also on Zen pay-as-you-go; omitted otherwise), `na` (`true` = N.A. — no longer selectable in OpenCode's model picker; only applied to zen/go rows; omitted otherwise), `naSince` (ISO date the model was first flagged N.A.; only present with `na`),
-`hfUrl` (HF card, else BenchLM specs, else manufacturer), `addedOn` (ISO date the model was added to the page; only present within its first month — the page badges it green "(New)" with the added date as tooltip).
+`hfUrl` (HF card, else BenchLM specs, else manufacturer; stealth models with no real model-info page use their `#...-note` anchor in the page's stealth-model notes, rendered as a same-tab link), `addedOn` (ISO date the model was added to the page; only present within its first month — the page badges it green "(New)" with the added date as tooltip).
 
 ## Update rules (update_zen_prices.py)
 - Catalog = union of https://opencode.ai/zen/v1/models + .../zen/go/v1/models; `plan` reflects Go membership, `alsoOnZen` marks Go-plan models present in the Zen catalog (Go price wins for those). Models that leave the catalogs are NEVER removed from models.json — they stay listed and keep their last-known data, flagged `na: true` by the availability check.
