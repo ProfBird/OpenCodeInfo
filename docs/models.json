@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-09-08",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-09-09",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-09-08",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-09-09",
   "models": [
     {
       "name": "Big Pickle",
@@ -286,9 +286,9 @@
       "swePro": null,
       "terminalBench": null,
       "deepSwe": null,
-      "inputCost": 0.44,
-      "outputCost": 1.32,
-      "cachedReadCost": 0.014,
+      "inputCost": 0.22,
+      "outputCost": 0.66,
+      "cachedReadCost": 0.007,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-Vision-Exp"
     },
@@ -330,9 +330,9 @@
       "swePro": 55.4,
       "terminalBench": 87.9,
       "deepSwe": 62.7,
-      "inputCost": 1.0494,
-      "outputCost": 3.1482,
-      "cachedReadCost": 0.03498,
+      "inputCost": 0.57948,
+      "outputCost": 1.73844,
+      "cachedReadCost": 0.018438,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813"
     },
@@ -1410,7 +1410,7 @@
     },
     {
       "name": "Muse Spark 1.3 Free",
-      "codingIndex": 76.28,
+      "codingIndex": 75.78,
       "inputCost": 0,
       "outputCost": 0,
       "cachedReadCost": 0,
@@ -1659,7 +1659,7 @@
       "hfUrl": "https://openrouter.ai/upstage/solar-pro4"
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-09-08",
-  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-09-08",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-09-08"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-09-09",
+  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-09-09",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-09-09"
 }
