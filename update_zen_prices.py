@@ -275,13 +275,13 @@ def strip_tags(s):
     return html.unescape(re.sub(r'<[^>]+>', '', s)).strip()
 
 def extract_pricing_table(html_text: str, is_go: bool = False):
-    """Parse pricing table. Zen: 5 cols, Go: 6 cols (with Usage)."""
+    """Parse pricing table. Zen: 5 cols, Go: 6 cols (sixth = Usage / Monthly limit)."""
     if is_go:
         m = re.search(
-            r'<table><thead><tr><th>Model</th><th>Input</th><th>Output</th><th>Cached Read</th><th>Cached Write</th><th>Usage</th></tr></thead><tbody>(.*?)</tbody></table>',
+            r'<table><thead><tr><th>Model</th><th>Input</th><th>Output</th><th>Cached Read</th><th>Cached Write</th><th>[^<]*</th></tr></thead><tbody>(.*?)</tbody></table>',
             html_text, re.DOTALL)
         if not m:
-            m = re.search(r'<th>Model</th>.*?<th>Usage</th>.*?<tbody>(.*?)</tbody>', html_text, re.DOTALL)
+            m = re.search(r'<th>Model</th>.*?<th>Cached Write</th><th>[^<]*</th>.*?<tbody>(.*?)</tbody>', html_text, re.DOTALL)
             if not m:
                 raise ValueError("Go pricing table not found")
         tbody = m.group(1)
@@ -305,16 +305,16 @@ def extract_pricing_table(html_text: str, is_go: bool = False):
             continue
         if ("Peak" in model and "Off-Peak" not in model) or "> 2" in model:
             continue
-        pricing[normalize(base)] = (parse_price(row[1]), parse_price(row[2]), parse_price(row[3]))
+        pricing[normalize(base)] = (parse_price(strip_tags(row[1])), parse_price(strip_tags(row[2])), parse_price(strip_tags(row[3])))
     return pricing
 
 def extract_go_usage(html_text: str):
-    """Parse Go pricing table Usage column (dollars included). Returns dict normalize -> dollars."""
+    """Parse Go pricing table Usage / Monthly limit column (dollars included). Returns dict normalize -> dollars."""
     m = re.search(
-        r'<table><thead><tr><th>Model</th><th>Input</th><th>Output</th><th>Cached Read</th><th>Cached Write</th><th>Usage</th></tr></thead><tbody>(.*?)</tbody></table>',
+        r'<table><thead><tr><th>Model</th><th>Input</th><th>Output</th><th>Cached Read</th><th>Cached Write</th><th>[^<]*</th></tr></thead><tbody>(.*?)</tbody></table>',
         html_text, re.DOTALL)
     if not m:
-        m = re.search(r'<th>Model</th>.*?<th>Usage</th>.*?<tbody>(.*?)</tbody>', html_text, re.DOTALL)
+        m = re.search(r'<th>Model</th>.*?<th>Cached Write</th><th>[^<]*</th>.*?<tbody>(.*?)</tbody>', html_text, re.DOTALL)
         if not m:
             return {}
     tbody = m.group(1)
@@ -327,7 +327,7 @@ def extract_go_usage(html_text: str):
             continue
         if ("Peak" in model and "Off-Peak" not in model) or "> 2" in model:
             continue
-        usage[normalize(base)] = parse_price(row[5])
+        usage[normalize(base)] = parse_price(strip_tags(row[5]))
     return usage
 
 def fmt_ctx(n):
