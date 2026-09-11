@@ -2,7 +2,7 @@
 
 A small static web page that displays **all OpenCode Zen models** (coding benchmark scores, pricing, context) with sortable columns, a SWE-bench Pro score column, filters, and a Go-plan toggle.
 
-**Live page:** <https://ProfBird.github.io/AiModelinfo/>
+**Live page:** <a href="https://profbird.github.io/OpenCodeInfo/" target="_blank">https://profbird.github.io/OpenCodeInfo/</a>
 
 ## Files
 
