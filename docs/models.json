@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-09-11",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-09-12",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-09-11",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-09-12",
   "models": [
     {
       "name": "Big Pickle",
@@ -242,9 +242,9 @@
       "swePro": 52.6,
       "terminalBench": 82.7,
       "deepSwe": 54.4,
-      "inputCost": 0.08596,
-      "outputCost": 0.17192,
-      "cachedReadCost": 0.017192,
+      "inputCost": 0.06678,
+      "outputCost": 0.13356,
+      "cachedReadCost": 0.013356,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash"
     },
@@ -256,9 +256,9 @@
       "swePro": 52.6,
       "terminalBench": 82.7,
       "deepSwe": 54.4,
-      "inputCost": 0.065,
-      "outputCost": 0.18,
-      "cachedReadCost": 0.016,
+      "inputCost": 0.04,
+      "outputCost": 0.08,
+      "cachedReadCost": 0.008,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731"
     },
@@ -329,9 +329,9 @@
       "swePro": 55.4,
       "terminalBench": 87.9,
       "deepSwe": 62.7,
-      "inputCost": 0.859908,
-      "outputCost": 1.719816,
-      "cachedReadCost": 0.071659,
+      "inputCost": 0.809274,
+      "outputCost": 1.618548,
+      "cachedReadCost": 0.067439,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro"
     },
@@ -343,9 +343,9 @@
       "swePro": 55.4,
       "terminalBench": 87.9,
       "deepSwe": 62.7,
-      "inputCost": 0.57948,
-      "outputCost": 1.73844,
-      "cachedReadCost": 0.019316,
+      "inputCost": 0.57816,
+      "outputCost": 1.73448,
+      "cachedReadCost": 0.018396,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813"
     },
@@ -987,9 +987,9 @@
       "swePro": 57.9,
       "terminalBench": null,
       "deepSwe": null,
-      "inputCost": 0.0825,
-      "outputCost": 0.33,
-      "cachedReadCost": 0.020625,
+      "inputCost": 0.132,
+      "outputCost": 0.528,
+      "cachedReadCost": 0.033,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/tencent/Hy3"
     },
@@ -1141,9 +1141,9 @@
       "swePro": null,
       "terminalBench": null,
       "deepSwe": 67.5,
-      "inputCost": 2.34,
-      "outputCost": 11.7,
-      "cachedReadCost": 0.261,
+      "inputCost": 2.302729,
+      "outputCost": 11.550195,
+      "cachedReadCost": 0.263169,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/moonshotai/Kimi-K3"
     },
@@ -1609,9 +1609,9 @@
       "swePro": 61.7,
       "terminalBench": 73,
       "deepSwe": 42.2,
-      "inputCost": 0.42,
-      "outputCost": 3.0,
-      "cachedReadCost": 0.085,
+      "inputCost": 0.214,
+      "outputCost": 2.55,
+      "cachedReadCost": 0.15,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/Qwen/Qwen3.8-27B"
     },
@@ -1687,7 +1687,7 @@
       "hfUrl": "https://openrouter.ai/upstage/solar-pro4"
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-09-11",
-  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-09-11",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-09-11"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-09-12",
+  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-09-12",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-09-12"
 }
