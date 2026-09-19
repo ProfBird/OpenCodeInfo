@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-09-18",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-09-19",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-09-18",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-09-19",
   "models": [
     {
       "name": "Big Pickle",
@@ -242,9 +242,9 @@
       "swePro": 52.6,
       "terminalBench": 82.7,
       "deepSwe": 54.4,
-      "inputCost": 0.088606,
-      "outputCost": 0.177212,
-      "cachedReadCost": 0.017721,
+      "inputCost": 0.04676,
+      "outputCost": 0.09352,
+      "cachedReadCost": 0.009352,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash"
     },
@@ -256,9 +256,9 @@
       "swePro": 52.6,
       "terminalBench": 82.7,
       "deepSwe": 54.4,
-      "inputCost": 0.06,
-      "outputCost": 0.12,
-      "cachedReadCost": 0.012,
+      "inputCost": 0.04,
+      "outputCost": 0.08,
+      "cachedReadCost": 0.008,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731"
     },
@@ -329,9 +329,9 @@
       "swePro": 55.4,
       "terminalBench": 87.9,
       "deepSwe": 62.7,
-      "inputCost": 1.6,
-      "outputCost": 3.2,
-      "cachedReadCost": 0.135,
+      "inputCost": 0.554016,
+      "outputCost": 1.108032,
+      "cachedReadCost": 0.046168,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro"
     },
@@ -343,9 +343,9 @@
       "swePro": 55.4,
       "terminalBench": 87.9,
       "deepSwe": 62.7,
-      "inputCost": 1.32,
-      "outputCost": 3.96,
-      "cachedReadCost": 0.044,
+      "inputCost": 0.57816,
+      "outputCost": 1.73448,
+      "cachedReadCost": 0.018396,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813"
     },
@@ -360,7 +360,8 @@
       "plan": "go",
       "addedOn": "2026-09-11",
       "terminalBench": 90.6,
-      "deepSwe": 74.2
+      "deepSwe": 74.2,
+      "alsoOnZen": true
     },
     {
       "name": "Gemini 3 Flash",
@@ -527,9 +528,9 @@
       "swePro": 62.1,
       "terminalBench": 81,
       "deepSwe": null,
-      "inputCost": 0.4875,
-      "outputCost": 1.56,
-      "cachedReadCost": 0.091,
+      "inputCost": 0.5544,
+      "outputCost": 1.7424,
+      "cachedReadCost": 0.10296,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.2"
     },
@@ -556,9 +557,9 @@
       "swePro": null,
       "terminalBench": 88.2,
       "deepSwe": 66.9,
-      "inputCost": 1.4,
-      "outputCost": 4.4,
-      "cachedReadCost": 0.26,
+      "inputCost": 0.91,
+      "outputCost": 2.86,
+      "cachedReadCost": 0.169,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.3"
     },
@@ -837,9 +838,9 @@
       "swePro": 64.6,
       "terminalBench": 91.9,
       "deepSwe": 72.7,
-      "inputCost": 2,
-      "outputCost": 10,
-      "cachedReadCost": 0.2,
+      "inputCost": 4.0,
+      "outputCost": 20.0,
+      "cachedReadCost": 0.4,
       "plan": "zen",
       "hfUrl": "https://benchlm.ai/models/gpt-5.6-sol"
     },
@@ -1064,6 +1065,32 @@
       "hfUrl": "https://huggingface.co/thinkingmachines/Inkling"
     },
     {
+      "name": "Jev 1.13",
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "na": true,
+      "naSince": "2026-09-19",
+      "addedOn": "2026-09-19"
+    },
+    {
+      "name": "Jev 1.13 Free",
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "na": true,
+      "naSince": "2026-09-19",
+      "addedOn": "2026-09-19"
+    },
+    {
       "name": "Kimi K2.5",
       "params": "1T",
       "context": "256K",
@@ -1140,9 +1167,9 @@
       "swePro": null,
       "terminalBench": null,
       "deepSwe": 67.5,
-      "inputCost": 2.1,
-      "outputCost": 10.95,
-      "cachedReadCost": 0.23,
+      "inputCost": 1.7,
+      "outputCost": 8.5,
+      "cachedReadCost": 0.17,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/moonshotai/Kimi-K3"
     },
@@ -1627,7 +1654,8 @@
       "plan": "go",
       "hfUrl": "https://huggingface.co/Qwen/Qwen3.8-Flash-Next",
       "addedOn": "2026-08-31",
-      "goUsage": 30.0
+      "goUsage": 30.0,
+      "alsoOnZen": true
     },
     {
       "name": "Qwen3.8 Flash",
@@ -1714,7 +1742,7 @@
       "addedOn": "2026-09-17"
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-09-18",
-  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-09-18",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-09-18"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-09-19",
+  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-09-19",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-09-19"
 }
