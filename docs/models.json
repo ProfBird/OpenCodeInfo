@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-09-19",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-09-20",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-09-19",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-09-20",
   "models": [
     {
       "name": "Big Pickle",
@@ -242,9 +242,9 @@
       "swePro": 52.6,
       "terminalBench": 82.7,
       "deepSwe": 54.4,
-      "inputCost": 0.04676,
-      "outputCost": 0.09352,
-      "cachedReadCost": 0.009352,
+      "inputCost": 0.03668,
+      "outputCost": 0.07336,
+      "cachedReadCost": 0.007336,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash"
     },
@@ -258,7 +258,7 @@
       "deepSwe": 54.4,
       "inputCost": 0.04,
       "outputCost": 0.08,
-      "cachedReadCost": 0.008,
+      "cachedReadCost": 0.016,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731"
     },
@@ -329,9 +329,9 @@
       "swePro": 55.4,
       "terminalBench": 87.9,
       "deepSwe": 62.7,
-      "inputCost": 0.554016,
-      "outputCost": 1.108032,
-      "cachedReadCost": 0.046168,
+      "inputCost": 0.422298,
+      "outputCost": 0.844596,
+      "cachedReadCost": 0.035192,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro"
     },
@@ -343,9 +343,9 @@
       "swePro": 55.4,
       "terminalBench": 87.9,
       "deepSwe": 62.7,
-      "inputCost": 0.57816,
-      "outputCost": 1.73448,
-      "cachedReadCost": 0.018396,
+      "inputCost": 0.66,
+      "outputCost": 1.98,
+      "cachedReadCost": 0.022,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813"
     },
@@ -528,9 +528,9 @@
       "swePro": 62.1,
       "terminalBench": 81,
       "deepSwe": null,
-      "inputCost": 0.5544,
-      "outputCost": 1.7424,
-      "cachedReadCost": 0.10296,
+      "inputCost": 0.6496,
+      "outputCost": 2.0416,
+      "cachedReadCost": 0.12064,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.2"
     },
@@ -557,9 +557,9 @@
       "swePro": null,
       "terminalBench": 88.2,
       "deepSwe": 66.9,
-      "inputCost": 0.91,
-      "outputCost": 2.86,
-      "cachedReadCost": 0.169,
+      "inputCost": 0.896,
+      "outputCost": 2.816,
+      "cachedReadCost": 0.1664,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.3"
     },
@@ -1067,14 +1067,12 @@
     {
       "name": "Jev 1.13",
       "codingIndex": null,
-      "inputCost": 0,
+      "inputCost": 0.042,
       "outputCost": 0,
       "cachedReadCost": 0,
-      "context": "1M",
+      "context": "64K",
       "params": null,
       "plan": "zen",
-      "na": true,
-      "naSince": "2026-09-19",
       "addedOn": "2026-09-19"
     },
     {
@@ -1083,11 +1081,9 @@
       "inputCost": 0,
       "outputCost": 0,
       "cachedReadCost": 0,
-      "context": "1M",
+      "context": "64K",
       "params": null,
       "plan": "zen",
-      "na": true,
-      "naSince": "2026-09-19",
       "addedOn": "2026-09-19"
     },
     {
@@ -1635,9 +1631,9 @@
       "swePro": 61.7,
       "terminalBench": 73,
       "deepSwe": 42.2,
-      "inputCost": 0.214,
-      "outputCost": 2.55,
-      "cachedReadCost": 0.15,
+      "inputCost": 0.42,
+      "outputCost": 3.0,
+      "cachedReadCost": 0.085,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/Qwen/Qwen3.8-27B"
     },
@@ -1742,7 +1738,7 @@
       "addedOn": "2026-09-17"
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-09-19",
-  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-09-19",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-09-19"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-09-20",
+  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-09-20",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-09-20"
 }
