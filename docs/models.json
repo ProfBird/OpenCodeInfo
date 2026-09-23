@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-09-22",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-09-23",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-09-22",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-09-23",
   "models": [
     {
       "name": "Big Pickle",
@@ -144,6 +144,19 @@
       "cachedReadCost": 0.5,
       "plan": "openrouter",
       "hfUrl": "https://openrouter.ai/anthropic/claude-opus-5"
+    },
+    {
+      "name": "Claude Opus 5.5",
+      "codingIndex": null,
+      "inputCost": 4.0,
+      "outputCost": 20.0,
+      "cachedReadCost": 0.2,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "addedOn": "2026-09-23",
+      "swePro": 89.9,
+      "deepSwe": 74.2
     },
     {
       "name": "Claude Sonnet 4",
@@ -343,9 +356,9 @@
       "swePro": 55.4,
       "terminalBench": 87.9,
       "deepSwe": 62.7,
-      "inputCost": 0.624,
-      "outputCost": 2.88,
-      "cachedReadCost": 0.088,
+      "inputCost": 1.32,
+      "outputCost": 3.96,
+      "cachedReadCost": 0.044,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813"
     },
@@ -900,6 +913,30 @@
       "hfUrl": "https://benchlm.ai/models/gpt-6-astra"
     },
     {
+      "name": "GPT-6 Luna",
+      "codingIndex": null,
+      "inputCost": 0.1,
+      "outputCost": 0.5,
+      "cachedReadCost": 0.01,
+      "context": "1.05M",
+      "params": null,
+      "plan": "zen",
+      "addedOn": "2026-09-23",
+      "deepSwe": 66.6
+    },
+    {
+      "name": "GPT-6 Sol",
+      "codingIndex": null,
+      "inputCost": 2.0,
+      "outputCost": 10.0,
+      "cachedReadCost": 0.2,
+      "context": "1.05M",
+      "params": null,
+      "plan": "zen",
+      "addedOn": "2026-09-23",
+      "deepSwe": 68.8
+    },
+    {
       "name": "Grok 4.5",
       "params": "1.7T",
       "context": "500K",
@@ -961,7 +998,7 @@
       "inputCost": 2.0,
       "outputCost": 6.0,
       "cachedReadCost": 0.5,
-      "context": "1M",
+      "context": "500K",
       "params": null,
       "plan": "go",
       "alsoOnZen": true,
@@ -1154,7 +1191,7 @@
       "terminalBench": null,
       "deepSwe": null,
       "inputCost": 0.7062,
-      "outputCost": 3.21,
+      "outputCost": 3.3,
       "cachedReadCost": 0.18,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/moonshotai/Kimi-K2.7-Code"
@@ -1797,7 +1834,7 @@
       "addedOn": "2026-09-17"
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-09-22",
-  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-09-22",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-09-22"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-09-23",
+  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-09-23",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-09-23"
 }
