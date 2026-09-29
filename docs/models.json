@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-09-28",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-09-29",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-09-28",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-09-29",
   "models": [
     {
       "name": "Big Pickle",
@@ -219,6 +219,19 @@
       "hfUrl": "https://openrouter.ai/anthropic/claude-sonnet-5"
     },
     {
+      "name": "Claude Sonnet 5.5",
+      "codingIndex": null,
+      "inputCost": 2,
+      "outputCost": 10,
+      "cachedReadCost": 0.2,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "addedOn": "2026-09-29",
+      "swePro": 81.3,
+      "deepSwe": 71
+    },
+    {
       "name": "Deepseek Flash",
       "codingIndex": null,
       "inputCost": 0,
@@ -269,9 +282,9 @@
       "swePro": 52.6,
       "terminalBench": 82.7,
       "deepSwe": 54.4,
-      "inputCost": 0.021,
+      "inputCost": 0.018,
       "outputCost": 0.32,
-      "cachedReadCost": 0.016,
+      "cachedReadCost": 0.018,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731"
     },
@@ -312,9 +325,9 @@
       "swePro": null,
       "terminalBench": null,
       "deepSwe": null,
-      "inputCost": 0.44,
-      "outputCost": 1.32,
-      "cachedReadCost": 0.014,
+      "inputCost": 0.2156,
+      "outputCost": 0.6468,
+      "cachedReadCost": 0.00686,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-Vision-Exp"
     },
@@ -356,9 +369,9 @@
       "swePro": 55.4,
       "terminalBench": 87.9,
       "deepSwe": 62.7,
-      "inputCost": 0.3995,
+      "inputCost": 0.48,
       "outputCost": 4.2,
-      "cachedReadCost": 0.399,
+      "cachedReadCost": 0.384,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813"
     },
@@ -516,8 +529,7 @@
       "cachedReadCost": 0.26,
       "plan": "go",
       "alsoOnZen": true,
-      "hfUrl": "https://huggingface.co/zai-org/GLM-5.1",
-      "goUsage": 60.0
+      "hfUrl": "https://huggingface.co/zai-org/GLM-5.1"
     },
     {
       "name": "GLM-5.2",
@@ -542,9 +554,9 @@
       "swePro": 62.1,
       "terminalBench": 81,
       "deepSwe": null,
-      "inputCost": 0.6496,
-      "outputCost": 2.0416,
-      "cachedReadCost": 0.12064,
+      "inputCost": 0.39,
+      "outputCost": 4.4,
+      "cachedReadCost": 0.2599,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.2"
     },
@@ -571,9 +583,9 @@
       "swePro": null,
       "terminalBench": 88.2,
       "deepSwe": 66.9,
-      "inputCost": 0.1785,
-      "outputCost": 2.805,
-      "cachedReadCost": 0.146625,
+      "inputCost": 1.4,
+      "outputCost": 4.4,
+      "cachedReadCost": 0.26,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.3"
     },
@@ -1425,8 +1437,7 @@
       "cachedReadCost": 0.06,
       "plan": "go",
       "alsoOnZen": true,
-      "hfUrl": "https://huggingface.co/MiniMaxAI/MiniMax-M2.5",
-      "goUsage": 60.0
+      "hfUrl": "https://huggingface.co/MiniMaxAI/MiniMax-M2.5"
     },
     {
       "name": "MiniMax M2.7",
@@ -1691,8 +1702,7 @@
       "cachedReadCost": 0.05,
       "plan": "go",
       "alsoOnZen": true,
-      "hfUrl": "https://huggingface.co/Qwen/Qwen3.6-27B",
-      "goUsage": 60.0
+      "hfUrl": "https://huggingface.co/Qwen/Qwen3.6-27B"
     },
     {
       "name": "Qwen3.7 Flash",
@@ -1721,8 +1731,7 @@
       "plan": "go",
       "na": true,
       "naSince": "2026-09-28",
-      "hfUrl": "https://qwen.ai/blog?id=qwen3.7",
-      "goUsage": 30.0
+      "hfUrl": "https://qwen.ai/blog?id=qwen3.7"
     },
     {
       "name": "Qwen3.7 Plus",
@@ -1746,9 +1755,9 @@
       "swePro": 61.7,
       "terminalBench": 73,
       "deepSwe": 42.2,
-      "inputCost": 0.42,
-      "outputCost": 3.0,
-      "cachedReadCost": 0.085,
+      "inputCost": 0.0605,
+      "outputCost": 4.4,
+      "cachedReadCost": 0.0484,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/Qwen/Qwen3.8-27B"
     },
@@ -1866,7 +1875,7 @@
       "addedOn": "2026-09-17"
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-09-28",
-  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-09-28",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-09-28"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-09-29",
+  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-09-29",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-09-29"
 }
