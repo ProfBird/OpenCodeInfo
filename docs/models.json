@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-10-01",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-10-02",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-10-01",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-10-02",
   "models": [
     {
       "name": "Big Pickle",
@@ -55,8 +55,7 @@
       "plan": "zen",
       "swePro": 81.2,
       "deepSwe": 67.4,
-      "hfUrl": "https://benchlm.ai/models/claude-fable-5-1",
-      "addedOn": "2026-09-02"
+      "hfUrl": "https://benchlm.ai/models/claude-fable-5-1"
     },
     {
       "name": "Claude Haiku 4.5",
@@ -282,9 +281,9 @@
       "swePro": 52.6,
       "terminalBench": 82.7,
       "deepSwe": 54.4,
-      "inputCost": 0.0108,
+      "inputCost": 0.0051,
       "outputCost": 1.28,
-      "cachedReadCost": 0.0108,
+      "cachedReadCost": 0.0051,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731"
     },
@@ -389,6 +388,17 @@
       "deepSwe": 74.2,
       "alsoOnZen": true,
       "goUsage": 60.0
+    },
+    {
+      "name": "Fledge Alpha Free",
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "addedOn": "2026-10-02"
     },
     {
       "name": "Gemini 3 Flash",
@@ -502,8 +512,7 @@
       "plan": "zen",
       "terminalBench": 89.4,
       "deepSwe": 73.8,
-      "hfUrl": "https://benchlm.ai/models/gemini-3-8-flash",
-      "addedOn": "2026-09-02"
+      "hfUrl": "https://benchlm.ai/models/gemini-3-8-flash"
     },
     {
       "name": "GLM-5",
@@ -554,8 +563,8 @@
       "swePro": 62.1,
       "terminalBench": 81,
       "deepSwe": null,
-      "inputCost": 1.4,
-      "outputCost": 4.4,
+      "inputCost": 0.41,
+      "outputCost": 3.99,
       "cachedReadCost": 0.26,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.2"
@@ -583,9 +592,9 @@
       "swePro": null,
       "terminalBench": 88.2,
       "deepSwe": 66.9,
-      "inputCost": 0.2219,
+      "inputCost": 1.4,
       "outputCost": 4.4,
-      "cachedReadCost": 0.1775,
+      "cachedReadCost": 0.14,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.3"
     },
@@ -1243,9 +1252,9 @@
       "swePro": null,
       "terminalBench": null,
       "deepSwe": 67.5,
-      "inputCost": 0.6913,
-      "outputCost": 10.0,
-      "cachedReadCost": 0.6913,
+      "inputCost": 2.7,
+      "outputCost": 13.5,
+      "cachedReadCost": 0.27,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/moonshotai/Kimi-K3"
     },
@@ -1586,7 +1595,6 @@
       "plan": "go",
       "goUsage": 60.0,
       "hfUrl": "https://developer.meta.com/ai/models/muse-spark/",
-      "addedOn": "2026-09-02",
       "terminalBench": 88.8,
       "deepSwe": 75.4
     },
@@ -1602,7 +1610,6 @@
       "na": true,
       "naSince": "2026-09-02",
       "hfUrl": "https://developer.meta.com/ai/models/muse-spark/",
-      "addedOn": "2026-09-02",
       "deepSwe": 75.4,
       "terminalBench": 88.8
     },
@@ -1883,7 +1890,7 @@
       "addedOn": "2026-09-17"
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-10-01",
-  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-10-01",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-10-01"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-10-02",
+  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-10-02",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-10-02"
 }
