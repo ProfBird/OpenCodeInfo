@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-10-06",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-10-07",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-10-06",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-10-07",
   "models": [
     {
       "name": "Big Pickle",
@@ -267,9 +267,9 @@
       "swePro": 52.6,
       "terminalBench": 82.7,
       "deepSwe": 54.4,
-      "inputCost": 0.0009,
+      "inputCost": 0.03,
       "outputCost": 1.28,
-      "cachedReadCost": 0.0009,
+      "cachedReadCost": 0.03,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash"
     },
@@ -281,9 +281,9 @@
       "swePro": 52.6,
       "terminalBench": 82.7,
       "deepSwe": 54.4,
-      "inputCost": 0.0069,
+      "inputCost": 0.018,
       "outputCost": 1.28,
-      "cachedReadCost": 0.0069,
+      "cachedReadCost": 0.018,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731"
     },
@@ -388,6 +388,17 @@
       "deepSwe": 74.2,
       "alsoOnZen": true,
       "goUsage": 60.0
+    },
+    {
+      "name": "Exo Free",
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "addedOn": "2026-10-07"
     },
     {
       "name": "Fledge Alpha Free",
@@ -563,9 +574,9 @@
       "swePro": 62.1,
       "terminalBench": 81,
       "deepSwe": null,
-      "inputCost": 0.1856,
-      "outputCost": 12.0,
-      "cachedReadCost": 0.19,
+      "inputCost": 0.171,
+      "outputCost": 7.2,
+      "cachedReadCost": 0.162,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.2"
     },
@@ -1251,9 +1262,9 @@
       "swePro": null,
       "terminalBench": null,
       "deepSwe": 67.5,
-      "inputCost": 0.83,
-      "outputCost": 14.0,
-      "cachedReadCost": 0.27,
+      "inputCost": 0.62,
+      "outputCost": 15.0,
+      "cachedReadCost": 0.43,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/moonshotai/Kimi-K3"
     },
@@ -1523,6 +1534,17 @@
       "cachedReadCost": 0,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/MiniMaxAI/Minimax-M3"
+    },
+    {
+      "name": "Mistral Large 4",
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "524K",
+      "params": null,
+      "plan": "zen",
+      "addedOn": "2026-10-07"
     },
     {
       "name": "Muse Spark 1.2",
@@ -1909,7 +1931,7 @@
       "addedOn": "2026-09-17"
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-10-06",
-  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-10-06",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-10-06"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-10-07",
+  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-10-07",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-10-07"
 }
