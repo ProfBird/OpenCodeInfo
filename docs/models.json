@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-10-08",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-10-09",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-10-08",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-10-09",
   "models": [
     {
       "name": "Big Pickle",
@@ -77,8 +77,10 @@
       "cachedReadCost": 0.05,
       "context": "1M",
       "params": null,
-      "plan": "zen",
-      "addedOn": "2026-10-08"
+      "plan": "go",
+      "addedOn": "2026-10-08",
+      "alsoOnZen": true,
+      "goUsage": 15.0
     },
     {
       "name": "Claude Opus 4.5",
@@ -420,6 +422,8 @@
       "context": "1M",
       "params": null,
       "plan": "zen",
+      "na": true,
+      "naSince": "2026-10-09",
       "addedOn": "2026-10-02"
     },
     {
@@ -585,9 +589,9 @@
       "swePro": 62.1,
       "terminalBench": 81,
       "deepSwe": null,
-      "inputCost": 0.03,
-      "outputCost": 10.0,
-      "cachedReadCost": 0.03,
+      "inputCost": 0.06,
+      "outputCost": 4.2,
+      "cachedReadCost": 0.059,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.2"
     },
@@ -614,9 +618,9 @@
       "swePro": null,
       "terminalBench": 88.2,
       "deepSwe": 66.9,
-      "inputCost": 0.049,
-      "outputCost": 3.39,
-      "cachedReadCost": 0.048,
+      "inputCost": 0.039,
+      "outputCost": 4.8,
+      "cachedReadCost": 0.038,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.3"
     },
@@ -1273,9 +1277,9 @@
       "swePro": null,
       "terminalBench": null,
       "deepSwe": 67.5,
-      "inputCost": 0.62,
-      "outputCost": 12.3,
-      "cachedReadCost": 0.43,
+      "inputCost": 0.5,
+      "outputCost": 12.0,
+      "cachedReadCost": 0.33,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/moonshotai/Kimi-K3"
     },
@@ -1914,6 +1918,18 @@
       "addedOn": "2026-09-24"
     },
     {
+      "name": "Step 5 Preview Free",
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "go",
+      "alsoOnZen": true,
+      "addedOn": "2026-10-09"
+    },
+    {
       "name": "Union Alpha",
       "codingIndex": null,
       "inputCost": 0,
@@ -1942,7 +1958,7 @@
       "addedOn": "2026-09-17"
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-10-08",
-  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-10-08",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-10-08"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-10-09",
+  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-10-09",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-10-09"
 }
