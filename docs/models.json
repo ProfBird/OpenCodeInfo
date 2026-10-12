@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-10-11",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-10-12",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-10-11",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-10-12",
   "models": [
     {
       "name": "Big Pickle",
@@ -160,6 +160,19 @@
       "hfUrl": "https://openrouter.ai/anthropic/claude-opus-5"
     },
     {
+      "name": "Claude Opus 5 5 Backup",
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "na": true,
+      "naSince": "2026-10-12",
+      "addedOn": "2026-10-12"
+    },
+    {
       "name": "Claude Opus 5.5",
       "codingIndex": null,
       "inputCost": 4.0,
@@ -181,6 +194,8 @@
       "outputCost": 15,
       "cachedReadCost": 0.3,
       "plan": "zen",
+      "na": true,
+      "naSince": "2026-10-12",
       "hfUrl": "https://www.anthropic.com/claude"
     },
     {
@@ -297,9 +312,9 @@
       "swePro": 52.6,
       "terminalBench": 82.7,
       "deepSwe": 54.4,
-      "inputCost": 0.0143,
+      "inputCost": 0.016,
       "outputCost": 0.64,
-      "cachedReadCost": 0.0143,
+      "cachedReadCost": 0.016,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731"
     },
@@ -329,8 +344,7 @@
       "cachedReadCost": 0.003,
       "plan": "go",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash",
-      "goUsage": 15.0,
-      "alsoOnZen": true
+      "goUsage": 15.0
     },
     {
       "name": "DeepSeek V4 Flash Vision Exp",
@@ -370,9 +384,9 @@
       "swePro": 55.4,
       "terminalBench": 87.9,
       "deepSwe": 62.7,
-      "inputCost": 0.2088,
-      "outputCost": 0.4176,
-      "cachedReadCost": 0.0174,
+      "inputCost": 0.95526,
+      "outputCost": 1.91052,
+      "cachedReadCost": 0.079605,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro"
     },
@@ -384,9 +398,9 @@
       "swePro": 55.4,
       "terminalBench": 87.9,
       "deepSwe": 62.7,
-      "inputCost": 0.66,
-      "outputCost": 1.98,
-      "cachedReadCost": 0.022,
+      "inputCost": 1.32,
+      "outputCost": 3.96,
+      "cachedReadCost": 0.044,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813"
     },
@@ -402,7 +416,7 @@
       "terminalBench": 90.6,
       "deepSwe": 74.2,
       "alsoOnZen": true,
-      "goUsage": 60.0
+      "goUsage": 80.0
     },
     {
       "name": "Exo Free",
@@ -413,6 +427,8 @@
       "context": "1M",
       "params": null,
       "plan": "zen",
+      "na": true,
+      "naSince": "2026-10-12",
       "addedOn": "2026-10-07"
     },
     {
@@ -551,8 +567,7 @@
       "inputCost": 1.0,
       "outputCost": 3.2,
       "cachedReadCost": 0.2,
-      "plan": "go",
-      "alsoOnZen": true,
+      "plan": "zen",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5",
       "terminalBench": 56.2
     },
@@ -622,9 +637,9 @@
       "swePro": null,
       "terminalBench": 88.2,
       "deepSwe": 66.9,
-      "inputCost": 0.039,
+      "inputCost": 0.079,
       "outputCost": 4.8,
-      "cachedReadCost": 0.038,
+      "cachedReadCost": 0.059,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.3"
     },
@@ -652,9 +667,9 @@
       "swePro": null,
       "terminalBench": 84.3,
       "deepSwe": 63.4,
-      "inputCost": 0.15,
-      "outputCost": 0.5,
-      "cachedReadCost": 0.03,
+      "inputCost": 0.0232,
+      "outputCost": 1.2,
+      "cachedReadCost": 0.0232,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.3-Flash"
     },
@@ -1014,8 +1029,7 @@
       "inputCost": 2.0,
       "outputCost": 6.0,
       "cachedReadCost": 0.3,
-      "plan": "go",
-      "alsoOnZen": true,
+      "plan": "zen",
       "hfUrl": "https://docs.x.ai/developers/models/grok-4.5"
     },
     {
@@ -1217,8 +1231,7 @@
       "inputCost": 0.6,
       "outputCost": 3.0,
       "cachedReadCost": 0.1,
-      "plan": "go",
-      "alsoOnZen": true,
+      "plan": "zen",
       "hfUrl": "https://huggingface.co/moonshotai/Kimi-K2.5",
       "terminalBench": 50.8
     },
@@ -1286,7 +1299,7 @@
       "swePro": null,
       "terminalBench": null,
       "deepSwe": 67.5,
-      "inputCost": 0.8,
+      "inputCost": 0.73,
       "outputCost": 10.0,
       "cachedReadCost": 0.55,
       "plan": "openrouter",
@@ -1331,6 +1344,8 @@
       "outputCost": 0,
       "cachedReadCost": 0,
       "plan": "zen",
+      "na": true,
+      "naSince": "2026-10-12",
       "hfUrl": "https://benchlm.ai/models/ling-3-0-flash-fin"
     },
     {
@@ -1679,6 +1694,8 @@
       "outputCost": 0,
       "cachedReadCost": 0,
       "plan": "zen",
+      "na": true,
+      "naSince": "2026-10-12",
       "hfUrl": "https://benchlm.ai/models/nemotron-3-ultra"
     },
     {
@@ -1758,8 +1775,7 @@
       "inputCost": 0.2,
       "outputCost": 1.2,
       "cachedReadCost": 0.02,
-      "plan": "go",
-      "alsoOnZen": true,
+      "plan": "zen",
       "hfUrl": "https://qwen.ai/blog?id=qwen3.5-plus"
     },
     {
@@ -1969,7 +1985,7 @@
       "addedOn": "2026-09-17"
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-10-11",
-  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-10-11",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-10-11"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-10-12",
+  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-10-12",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-10-12"
 }
