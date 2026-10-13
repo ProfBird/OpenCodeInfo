@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-10-12",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-10-13",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-10-12",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-10-13",
   "models": [
     {
       "name": "Big Pickle",
@@ -16,6 +16,18 @@
       "cachedReadCost": 0,
       "plan": "zen",
       "hfUrl": "#big-pickle-note"
+    },
+    {
+      "name": "Cat Jam Free",
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "262K",
+      "params": null,
+      "plan": "go",
+      "alsoOnZen": true,
+      "addedOn": "2026-10-13"
     },
     {
       "name": "Claude Fable 5",
@@ -298,9 +310,9 @@
       "swePro": 52.6,
       "terminalBench": 82.7,
       "deepSwe": 54.4,
-      "inputCost": 0.03,
+      "inputCost": 0.0487,
       "outputCost": 1.28,
-      "cachedReadCost": 0.03,
+      "cachedReadCost": 0.0487,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash"
     },
@@ -667,9 +679,9 @@
       "swePro": null,
       "terminalBench": 84.3,
       "deepSwe": 63.4,
-      "inputCost": 0.0232,
-      "outputCost": 1.2,
-      "cachedReadCost": 0.0232,
+      "inputCost": 0.0261,
+      "outputCost": 0.9,
+      "cachedReadCost": 0.0108,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.3-Flash"
     },
@@ -1012,7 +1024,7 @@
       "codingIndex": null,
       "inputCost": 2.0,
       "outputCost": 10.0,
-      "cachedReadCost": 0.1,
+      "cachedReadCost": 0.2,
       "context": "1.05M",
       "params": null,
       "plan": "zen",
@@ -1300,7 +1312,7 @@
       "terminalBench": null,
       "deepSwe": 67.5,
       "inputCost": 0.73,
-      "outputCost": 10.0,
+      "outputCost": 13.5,
       "cachedReadCost": 0.55,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/moonshotai/Kimi-K3"
@@ -1985,7 +1997,7 @@
       "addedOn": "2026-09-17"
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-10-12",
-  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-10-12",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-10-12"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-10-13",
+  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-10-13",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-10-13"
 }
