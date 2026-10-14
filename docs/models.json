@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-10-13",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-10-14",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-10-13",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-10-14",
   "models": [
     {
       "name": "Big Pickle",
@@ -299,8 +299,7 @@
       "cachedReadCost": 0.003,
       "plan": "go",
       "alsoOnZen": true,
-      "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash",
-      "goUsage": 30.0
+      "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash"
     },
     {
       "name": "DeepSeek V4 Flash",
@@ -310,9 +309,9 @@
       "swePro": 52.6,
       "terminalBench": 82.7,
       "deepSwe": 54.4,
-      "inputCost": 0.0487,
-      "outputCost": 1.28,
-      "cachedReadCost": 0.0487,
+      "inputCost": 0.091,
+      "outputCost": 0.182,
+      "cachedReadCost": 0.0182,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash"
     },
@@ -355,8 +354,7 @@
       "outputCost": 0.6,
       "cachedReadCost": 0.003,
       "plan": "go",
-      "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash",
-      "goUsage": 15.0
+      "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash"
     },
     {
       "name": "DeepSeek V4 Flash Vision Exp",
@@ -571,6 +569,29 @@
       "hfUrl": "https://benchlm.ai/models/gemini-3-8-flash"
     },
     {
+      "name": "Gemini 4 Argon",
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "addedOn": "2026-10-14",
+      "deepSwe": 77.9
+    },
+    {
+      "name": "Gemini 4 Argon Contributor",
+      "codingIndex": null,
+      "inputCost": 4.0,
+      "outputCost": 20.0,
+      "cachedReadCost": 0.2,
+      "context": "1M",
+      "params": null,
+      "plan": "go",
+      "addedOn": "2026-10-14"
+    },
+    {
       "name": "GLM-5",
       "params": "744B",
       "context": "203K",
@@ -620,9 +641,9 @@
       "swePro": 62.1,
       "terminalBench": 81,
       "deepSwe": null,
-      "inputCost": 0.06,
+      "inputCost": 0.05,
       "outputCost": 7.0,
-      "cachedReadCost": 0.059,
+      "cachedReadCost": 0.049,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.2"
     },
@@ -679,7 +700,7 @@
       "swePro": null,
       "terminalBench": 84.3,
       "deepSwe": 63.4,
-      "inputCost": 0.0261,
+      "inputCost": 0.036,
       "outputCost": 0.9,
       "cachedReadCost": 0.0108,
       "plan": "openrouter",
@@ -1311,9 +1332,9 @@
       "swePro": null,
       "terminalBench": null,
       "deepSwe": 67.5,
-      "inputCost": 0.73,
-      "outputCost": 13.5,
-      "cachedReadCost": 0.55,
+      "inputCost": 0.7,
+      "outputCost": 15.0,
+      "cachedReadCost": 0.32,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/moonshotai/Kimi-K3"
     },
@@ -1969,6 +1990,19 @@
       "addedOn": "2026-10-09"
     },
     {
+      "name": "Test",
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "na": true,
+      "naSince": "2026-10-14",
+      "addedOn": "2026-10-14"
+    },
+    {
       "name": "Union Alpha",
       "codingIndex": null,
       "inputCost": 0,
@@ -1997,7 +2031,7 @@
       "addedOn": "2026-09-17"
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-10-13",
-  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-10-13",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-10-13"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-10-14",
+  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-10-14",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-10-14"
 }
