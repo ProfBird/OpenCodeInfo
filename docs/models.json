@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-10-15",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-10-16",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-10-15",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-10-16",
   "models": [
     {
       "name": "Big Pickle",
@@ -23,7 +23,7 @@
       "inputCost": 0,
       "outputCost": 0,
       "cachedReadCost": 0,
-      "context": "262K",
+      "context": "1M",
       "params": null,
       "plan": "go",
       "alsoOnZen": true,
@@ -322,9 +322,9 @@
       "swePro": 52.6,
       "terminalBench": 82.7,
       "deepSwe": 54.4,
-      "inputCost": 0.016,
-      "outputCost": 0.64,
-      "cachedReadCost": 0.016,
+      "inputCost": 0.008,
+      "outputCost": 1.28,
+      "cachedReadCost": 0.008,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731"
     },
@@ -653,9 +653,9 @@
       "swePro": 62.1,
       "terminalBench": 81,
       "deepSwe": null,
-      "inputCost": 0.0341,
+      "inputCost": 0.037,
       "outputCost": 7.0,
-      "cachedReadCost": 0.0331,
+      "cachedReadCost": 0.036,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.2"
     },
@@ -712,11 +712,22 @@
       "swePro": null,
       "terminalBench": 84.3,
       "deepSwe": 63.4,
-      "inputCost": 0.036,
-      "outputCost": 0.9,
-      "cachedReadCost": 0.01125,
+      "inputCost": 0.0167,
+      "outputCost": 0.7796,
+      "cachedReadCost": 0.0125,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.3-Flash"
+    },
+    {
+      "name": "GLM-5.3-Flash Free",
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "200K",
+      "params": null,
+      "plan": "zen",
+      "addedOn": "2026-10-16"
     },
     {
       "name": "GPT 5",
@@ -1344,9 +1355,9 @@
       "swePro": null,
       "terminalBench": null,
       "deepSwe": 67.5,
-      "inputCost": 0.45,
-      "outputCost": 15.0,
-      "cachedReadCost": 0.28,
+      "inputCost": 0.304,
+      "outputCost": 11.936,
+      "cachedReadCost": 0.21,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/moonshotai/Kimi-K3"
     },
@@ -1405,6 +1416,17 @@
       "na": true,
       "naSince": "2026-10-15",
       "addedOn": "2026-10-03"
+    },
+    {
+      "name": "LL Alpha Free",
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "262K",
+      "params": null,
+      "plan": "zen",
+      "addedOn": "2026-10-16"
     },
     {
       "name": "LongCat 2.5 Preview Free",
@@ -1786,6 +1808,17 @@
       "hfUrl": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16"
     },
     {
+      "name": "Nemotron 3.5 Super VL Free",
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "addedOn": "2026-10-16"
+    },
+    {
       "name": "Omen Alpha",
       "codingIndex": null,
       "inputCost": 0.2,
@@ -1992,6 +2025,19 @@
       "addedOn": "2026-09-24"
     },
     {
+      "name": "Step 5 Preview",
+      "codingIndex": null,
+      "inputCost": 1.0,
+      "outputCost": 2.7,
+      "cachedReadCost": 0.1,
+      "context": "1M",
+      "params": null,
+      "plan": "go",
+      "addedOn": "2026-10-16",
+      "terminalBench": 85,
+      "deepSwe": 67.7
+    },
+    {
       "name": "Step 5 Preview Free",
       "codingIndex": null,
       "inputCost": 0,
@@ -2000,6 +2046,8 @@
       "context": "1M",
       "params": null,
       "plan": "go",
+      "na": true,
+      "naSince": "2026-10-16",
       "alsoOnZen": true,
       "addedOn": "2026-10-09"
     },
@@ -2045,7 +2093,7 @@
       "addedOn": "2026-09-17"
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-10-15",
-  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-10-15",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-10-15"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-10-16",
+  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-10-16",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-10-16"
 }
