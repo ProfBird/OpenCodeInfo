@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-10-17",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-10-18",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-10-17",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-10-18",
   "models": [
     {
       "name": "Beam Free",
@@ -336,9 +336,9 @@
       "swePro": 52.6,
       "terminalBench": 82.7,
       "deepSwe": 54.4,
-      "inputCost": 0.0154,
-      "outputCost": 0.9653,
-      "cachedReadCost": 0.0154,
+      "inputCost": 0.0049,
+      "outputCost": 0.45,
+      "cachedReadCost": 0.0049,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731"
     },
@@ -726,9 +726,9 @@
       "swePro": null,
       "terminalBench": 84.3,
       "deepSwe": 63.4,
-      "inputCost": 0.0441,
-      "outputCost": 0.5578,
-      "cachedReadCost": 0.0441,
+      "inputCost": 0.048,
+      "outputCost": 0.2,
+      "cachedReadCost": 0.006,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.3-Flash"
     },
@@ -2088,8 +2088,7 @@
       "plan": "go",
       "na": true,
       "naSince": "2026-09-18",
-      "alsoOnZen": true,
-      "addedOn": "2026-09-18"
+      "alsoOnZen": true
     },
     {
       "name": "Union Alpha Free",
@@ -2105,7 +2104,7 @@
       "alsoOnZen": true
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-10-17",
-  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-10-17",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-10-17"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-10-18",
+  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-10-18",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-10-18"
 }
