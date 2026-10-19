@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-10-18",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-10-19",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-10-18",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-10-19",
   "models": [
     {
       "name": "Beam Free",
@@ -336,9 +336,9 @@
       "swePro": 52.6,
       "terminalBench": 82.7,
       "deepSwe": 54.4,
-      "inputCost": 0.0049,
-      "outputCost": 0.45,
-      "cachedReadCost": 0.0049,
+      "inputCost": 0.15,
+      "outputCost": 0.15,
+      "cachedReadCost": 0.042,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731"
     },
@@ -409,9 +409,9 @@
       "swePro": 55.4,
       "terminalBench": 87.9,
       "deepSwe": 62.7,
-      "inputCost": 0.2088,
-      "outputCost": 0.4176,
-      "cachedReadCost": 0.0174,
+      "inputCost": 0.95526,
+      "outputCost": 1.91052,
+      "cachedReadCost": 0.079605,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro"
     },
@@ -697,7 +697,7 @@
       "terminalBench": 88.2,
       "deepSwe": 66.9,
       "inputCost": 0.079,
-      "outputCost": 4.8,
+      "outputCost": 1.4,
       "cachedReadCost": 0.078,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.3"
@@ -726,7 +726,7 @@
       "swePro": null,
       "terminalBench": 84.3,
       "deepSwe": 63.4,
-      "inputCost": 0.048,
+      "inputCost": 0.0392,
       "outputCost": 0.2,
       "cachedReadCost": 0.006,
       "plan": "openrouter",
@@ -1275,8 +1275,7 @@
       "params": null,
       "plan": "zen",
       "na": true,
-      "naSince": "2026-09-21",
-      "addedOn": "2026-09-19"
+      "naSince": "2026-09-21"
     },
     {
       "name": "Jev 1.13 Free",
@@ -1288,8 +1287,7 @@
       "params": null,
       "plan": "zen",
       "na": true,
-      "naSince": "2026-09-21",
-      "addedOn": "2026-09-19"
+      "naSince": "2026-09-21"
     },
     {
       "name": "Kimi K2.5",
@@ -1367,7 +1365,7 @@
       "swePro": null,
       "terminalBench": null,
       "deepSwe": 67.5,
-      "inputCost": 0.304,
+      "inputCost": 0.239,
       "outputCost": 11.936,
       "cachedReadCost": 0.21,
       "plan": "openrouter",
@@ -2104,7 +2102,7 @@
       "alsoOnZen": true
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-10-18",
-  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-10-18",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-10-18"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-10-19",
+  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-10-19",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-10-19"
 }
