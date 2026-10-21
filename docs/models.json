@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-10-20",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-10-21",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-10-20",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-10-21",
   "models": [
     {
       "name": "Beam Free",
@@ -667,9 +667,9 @@
       "swePro": 62.1,
       "terminalBench": 81,
       "deepSwe": null,
-      "inputCost": 0.62,
-      "outputCost": 2.42,
-      "cachedReadCost": 0.14,
+      "inputCost": 0.0341,
+      "outputCost": 7.0,
+      "cachedReadCost": 0.033,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.2"
     },
@@ -726,9 +726,9 @@
       "swePro": null,
       "terminalBench": 84.3,
       "deepSwe": 63.4,
-      "inputCost": 0.048,
-      "outputCost": 0.16,
-      "cachedReadCost": 0.006,
+      "inputCost": 0.041191,
+      "outputCost": 0.12,
+      "cachedReadCost": 0.00375,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.3-Flash"
     },
@@ -1153,7 +1153,6 @@
       "params": null,
       "plan": "go",
       "alsoOnZen": true,
-      "addedOn": "2026-09-21",
       "goUsage": 15.0,
       "deepSwe": 71
     },
@@ -1540,9 +1539,9 @@
       "swePro": 56.1,
       "terminalBench": 65.8,
       "deepSwe": null,
-      "inputCost": 0.14,
-      "outputCost": 0.28,
-      "cachedReadCost": 0.0028,
+      "inputCost": 0.119,
+      "outputCost": 0.238,
+      "cachedReadCost": 0.00255,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/XiaomiMiMo/MiMo-V2.5"
     },
@@ -1775,6 +1774,20 @@
       "hfUrl": "https://developer.meta.com/ai/models/muse-spark/",
       "deepSwe": 75.4,
       "terminalBench": 88.8
+    },
+    {
+      "name": "Muse Wonder",
+      "codingIndex": null,
+      "inputCost": 4.0,
+      "outputCost": 20.0,
+      "cachedReadCost": 0.2,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "na": true,
+      "naSince": "2026-10-21",
+      "addedOn": "2026-10-21",
+      "deepSwe": 78.8
     },
     {
       "name": "Nemotron 3 Ultra Free",
@@ -2118,7 +2131,7 @@
       "alsoOnZen": true
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-10-20",
-  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-10-20",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-10-20"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-10-21",
+  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-10-21",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-10-21"
 }
