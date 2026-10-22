@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-10-21",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-10-22",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-10-21",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-10-22",
   "models": [
     {
       "name": "Beam Free",
@@ -423,9 +423,9 @@
       "swePro": 55.4,
       "terminalBench": 87.9,
       "deepSwe": 62.7,
-      "inputCost": 0.66,
-      "outputCost": 1.98,
-      "cachedReadCost": 0.022,
+      "inputCost": 1.32,
+      "outputCost": 3.96,
+      "cachedReadCost": 0.044,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813"
     },
@@ -479,6 +479,17 @@
       "na": true,
       "naSince": "2026-10-09",
       "addedOn": "2026-10-02"
+    },
+    {
+      "name": "Flint 40B Free",
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "262K",
+      "params": null,
+      "plan": "zen",
+      "addedOn": "2026-10-22"
     },
     {
       "name": "Gemini 3 Flash",
@@ -726,9 +737,9 @@
       "swePro": null,
       "terminalBench": 84.3,
       "deepSwe": 63.4,
-      "inputCost": 0.041191,
-      "outputCost": 0.12,
-      "cachedReadCost": 0.00375,
+      "inputCost": 0.0075,
+      "outputCost": 0.1825,
+      "cachedReadCost": 0.0075,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.3-Flash"
     },
@@ -1448,6 +1459,8 @@
       "context": "1M",
       "params": null,
       "plan": "go",
+      "na": true,
+      "naSince": "2026-10-22",
       "alsoOnZen": true,
       "addedOn": "2026-09-27"
     },
@@ -1473,7 +1486,6 @@
       "params": null,
       "plan": "go",
       "goUsage": 60.0,
-      "addedOn": "2026-09-22",
       "terminalBench": 87.6,
       "deepSwe": 67.9
     },
@@ -1487,7 +1499,6 @@
       "params": null,
       "plan": "go",
       "goUsage": 15.0,
-      "addedOn": "2026-09-22",
       "terminalBench": 89.9,
       "deepSwe": 71.9
     },
@@ -1582,8 +1593,7 @@
       "cachedReadCost": 0,
       "context": "200K",
       "params": null,
-      "plan": "zen",
-      "addedOn": "2026-09-22"
+      "plan": "zen"
     },
     {
       "name": "MiniMax M2.5",
@@ -2075,7 +2085,8 @@
       "plan": "go",
       "addedOn": "2026-10-16",
       "terminalBench": 85,
-      "deepSwe": 67.7
+      "deepSwe": 67.7,
+      "goUsage": 15.0
     },
     {
       "name": "Step 5 Preview Free",
@@ -2131,7 +2142,7 @@
       "alsoOnZen": true
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-10-21",
-  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-10-21",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-10-21"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-10-22",
+  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-10-22",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-10-22"
 }
