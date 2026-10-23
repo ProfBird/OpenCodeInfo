@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-10-22",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-10-23",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-10-22",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-10-23",
   "models": [
     {
       "name": "Beam Free",
@@ -207,7 +207,6 @@
       "context": "1M",
       "params": null,
       "plan": "zen",
-      "addedOn": "2026-09-23",
       "swePro": 89.9,
       "deepSwe": 74.2
     },
@@ -737,9 +736,9 @@
       "swePro": null,
       "terminalBench": 84.3,
       "deepSwe": 63.4,
-      "inputCost": 0.0075,
-      "outputCost": 0.1825,
-      "cachedReadCost": 0.0075,
+      "inputCost": 0.0052,
+      "outputCost": 0.1985,
+      "cachedReadCost": 0.0052,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.3-Flash"
     },
@@ -1071,7 +1070,6 @@
       "context": "1.05M",
       "params": null,
       "plan": "go",
-      "addedOn": "2026-09-23",
       "deepSwe": 66.6,
       "alsoOnZen": true,
       "goUsage": 15.0
@@ -1085,7 +1083,6 @@
       "context": "1.05M",
       "params": null,
       "plan": "zen",
-      "addedOn": "2026-09-23",
       "deepSwe": 68.8
     },
     {
@@ -1093,7 +1090,7 @@
       "codingIndex": null,
       "inputCost": 2.0,
       "outputCost": 10.0,
-      "cachedReadCost": 0.2,
+      "cachedReadCost": 0.1,
       "context": "1.05M",
       "params": null,
       "plan": "zen",
@@ -1665,6 +1662,19 @@
       "hfUrl": "https://huggingface.co/MiniMaxAI/Minimax-M3"
     },
     {
+      "name": "Minimax M3.1 Flash",
+      "codingIndex": null,
+      "inputCost": 0.15,
+      "outputCost": 0.6,
+      "cachedReadCost": 0.015,
+      "context": "1M",
+      "params": null,
+      "plan": "go",
+      "goUsage": 20.0,
+      "addedOn": "2026-10-23",
+      "deepSwe": 73.7
+    },
+    {
       "name": "MiniMax M3.1 Flash Free",
       "codingIndex": null,
       "inputCost": 0,
@@ -1673,6 +1683,8 @@
       "context": "1M",
       "params": null,
       "plan": "go",
+      "na": true,
+      "naSince": "2026-10-23",
       "alsoOnZen": true,
       "addedOn": "2026-10-20"
     },
@@ -1969,9 +1981,9 @@
       "swePro": 61.7,
       "terminalBench": 73,
       "deepSwe": 42.2,
-      "inputCost": 0.04,
-      "outputCost": 1.35,
-      "cachedReadCost": 0.018,
+      "inputCost": 0.2,
+      "outputCost": 2.5,
+      "cachedReadCost": 0.09,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/Qwen/Qwen3.8-27B"
     },
@@ -2142,7 +2154,7 @@
       "alsoOnZen": true
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-10-22",
-  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-10-22",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-10-22"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-10-23",
+  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-10-23",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-10-23"
 }
