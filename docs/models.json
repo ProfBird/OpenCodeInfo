@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-10-24",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-10-25",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-10-24",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-10-25",
   "models": [
     {
       "name": "Beam Free",
@@ -335,9 +335,9 @@
       "swePro": 52.6,
       "terminalBench": 82.7,
       "deepSwe": 54.4,
-      "inputCost": 0.04444,
-      "outputCost": 0.13332,
-      "cachedReadCost": 0.001414,
+      "inputCost": 0.0422,
+      "outputCost": 0.1694,
+      "cachedReadCost": 0.028,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731"
     },
@@ -408,9 +408,9 @@
       "swePro": 55.4,
       "terminalBench": 87.9,
       "deepSwe": 62.7,
-      "inputCost": 0.469626,
-      "outputCost": 0.939252,
-      "cachedReadCost": 0.039135,
+      "inputCost": 0.2088,
+      "outputCost": 0.4176,
+      "cachedReadCost": 0.0174,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro"
     },
@@ -612,9 +612,11 @@
       "cachedReadCost": 0,
       "context": "1M",
       "params": null,
-      "plan": "zen",
+      "plan": "go",
       "addedOn": "2026-10-14",
-      "deepSwe": 77.9
+      "deepSwe": 77.9,
+      "alsoOnZen": true,
+      "goUsage": 30.0
     },
     {
       "name": "Gemini 4 Argon Contributor",
@@ -625,6 +627,8 @@
       "context": "1M",
       "params": null,
       "plan": "go",
+      "na": true,
+      "naSince": "2026-10-25",
       "addedOn": "2026-10-14"
     },
     {
@@ -1257,6 +1261,17 @@
       "cachedReadCost": 0.042,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/tencent/Hy4-preview"
+    },
+    {
+      "name": "Iceman Contributor Free",
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "go",
+      "addedOn": "2026-10-25"
     },
     {
       "name": "Inkling Free",
@@ -2166,7 +2181,7 @@
       "alsoOnZen": true
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-10-24",
-  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-10-24",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-10-24"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-10-25",
+  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-10-25",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-10-25"
 }
