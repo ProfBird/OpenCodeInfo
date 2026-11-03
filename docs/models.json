@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-11-02",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-11-03",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-11-02",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-11-03",
   "models": [
     {
       "name": "Beam Free",
@@ -336,9 +336,9 @@
       "swePro": 52.6,
       "terminalBench": 82.7,
       "deepSwe": 54.4,
-      "inputCost": 0.119,
-      "outputCost": 0.238,
-      "cachedReadCost": 0.0238,
+      "inputCost": 0.059,
+      "outputCost": 0.3,
+      "cachedReadCost": 0.035,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731"
     },
@@ -743,9 +743,9 @@
       "swePro": null,
       "terminalBench": 84.3,
       "deepSwe": 63.4,
-      "inputCost": 0.0285,
-      "outputCost": 0.0923,
-      "cachedReadCost": 0.0285,
+      "inputCost": 0.0313,
+      "outputCost": 0.086,
+      "cachedReadCost": 0.03,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.3-Flash"
     },
@@ -1459,8 +1459,7 @@
       "params": null,
       "plan": "zen",
       "na": true,
-      "naSince": "2026-10-15",
-      "addedOn": "2026-10-03"
+      "naSince": "2026-10-15"
     },
     {
       "name": "LL Alpha Free",
@@ -1935,6 +1934,17 @@
       "hfUrl": "https://openrouter.ai/stealth/ox-alpha"
     },
     {
+      "name": "Pulse Alpha Free",
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "addedOn": "2026-11-03"
+    },
+    {
       "name": "Qwen3.5 Plus",
       "params": "397B",
       "context": "1M",
@@ -2181,7 +2191,7 @@
       "alsoOnZen": true
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-11-02",
-  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-02",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-11-02"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-11-03",
+  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-03",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-11-03"
 }
