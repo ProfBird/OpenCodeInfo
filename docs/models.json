@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-11-06",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-11-07",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-11-06",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-11-07",
   "models": [
     {
       "name": "Beam Free",
@@ -348,7 +348,7 @@
       "swePro": 52.6,
       "terminalBench": 82.7,
       "deepSwe": 54.4,
-      "inputCost": 0.059,
+      "inputCost": 0.0514,
       "outputCost": 0.3,
       "cachedReadCost": 0.035,
       "plan": "openrouter",
@@ -421,9 +421,9 @@
       "swePro": 55.4,
       "terminalBench": 87.9,
       "deepSwe": 62.7,
-      "inputCost": 0.95526,
-      "outputCost": 1.91052,
-      "cachedReadCost": 0.079605,
+      "inputCost": 0.788916,
+      "outputCost": 1.577832,
+      "cachedReadCost": 0.065743,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro"
     },
@@ -476,8 +476,7 @@
       "params": null,
       "plan": "zen",
       "na": true,
-      "naSince": "2026-10-12",
-      "addedOn": "2026-10-07"
+      "naSince": "2026-10-12"
     },
     {
       "name": "Fledge Alpha Free",
@@ -1300,6 +1299,28 @@
       "addedOn": "2026-10-25"
     },
     {
+      "name": "Iceman Free",
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "262K",
+      "params": null,
+      "plan": "zen",
+      "addedOn": "2026-11-07"
+    },
+    {
+      "name": "Inkling 2 Small Free",
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "addedOn": "2026-11-07"
+    },
+    {
       "name": "Inkling Free",
       "params": null,
       "context": "1M",
@@ -1749,8 +1770,7 @@
       "cachedReadCost": 0,
       "context": "524K",
       "params": null,
-      "plan": "zen",
-      "addedOn": "2026-10-07"
+      "plan": "zen"
     },
     {
       "name": "Muse Spark 1.2",
@@ -1967,6 +1987,8 @@
       "context": "1M",
       "params": null,
       "plan": "zen",
+      "na": true,
+      "naSince": "2026-11-07",
       "addedOn": "2026-11-03"
     },
     {
@@ -2215,7 +2237,7 @@
       "alsoOnZen": true
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-11-06",
-  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-06",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-11-06"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-11-07",
+  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-07",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-11-07"
 }
