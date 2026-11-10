@@ -550,7 +550,6 @@ OPENROUTER_PARAMS = {
     "moonshotai/kimi-k3": "2.8T",
     "nvidia/nemotron-3-ultra-550b-a55b:free": "550B",
     "nvidia/nemotron-3.5-lightning:free": "30B",
-    "thinkingmachines/inkling:free": "952B",  # HF thinkingmachines/Inkling safetensors total
     "openai/gpt-5.6-luna": "85B",
     "openai/gpt-5.6-sol": "635B",
     "openai/gpt-5.6-terra": "635B",
