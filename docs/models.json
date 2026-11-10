@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-11-09",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-11-10",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-11-09",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-11-10",
   "models": [
     {
       "name": "Beam Free",
@@ -719,9 +719,9 @@
       "swePro": 62.1,
       "terminalBench": 81,
       "deepSwe": null,
-      "inputCost": 0.006,
+      "inputCost": 0.009,
       "outputCost": 6.8,
-      "cachedReadCost": 0.005,
+      "cachedReadCost": 0.008,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.2"
     },
@@ -1805,10 +1805,7 @@
       "cachedReadCost": 0,
       "context": "1M",
       "params": null,
-      "plan": "go",
-      "na": true,
-      "naSince": "2026-10-23",
-      "alsoOnZen": true,
+      "plan": "zen",
       "addedOn": "2026-10-20"
     },
     {
@@ -2123,7 +2120,7 @@
     {
       "name": "Qwen3.8 27B",
       "params": "27B",
-      "context": "1.02M",
+      "context": "1.05M",
       "codingIndex": 68.1,
       "swePro": 61.7,
       "terminalBench": 73,
@@ -2298,7 +2295,7 @@
       "alsoOnZen": true
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-11-09",
-  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-09",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-11-09"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-11-10",
+  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-10",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-11-10"
 }
