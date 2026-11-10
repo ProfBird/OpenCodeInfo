@@ -51,6 +51,14 @@
   .toolbar input { width: 3.5rem; }
   .toolbar label.avail-check input[type="checkbox"] { width: auto; }
   .toolbar select { width: auto; }
+  /* Native option lists (esp. Chrome on Windows) don't inherit the transparent
+     select's backdrop, so give options explicit colors or they render
+     light-on-white in dark mode. */
+  .toolbar select option { background-color: #fff; color: #1e293b; }
+  @media (prefers-color-scheme: dark) {
+    .toolbar select { background-color: #0f172a; }
+    .toolbar select option { background-color: #0f172a; color: #e2e8f0; }
+  }
   #mobileSort { display: none; }
   table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 0.9rem; }
   th, td { padding: 0.45rem 0.7rem; text-align: right; border-bottom: 1px solid #ccc; }
