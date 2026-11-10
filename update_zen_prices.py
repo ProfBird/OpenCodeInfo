@@ -119,6 +119,19 @@ KNOWN_URLS = {
     "deepseek-v4-flash-free": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash",
     "mimo-v2.5-free": "https://huggingface.co/XiaomiMiMo/MiMo-V2.5",
     "hy3-free": "https://huggingface.co/tencent/HY3",
+    "glm-5.3-flash-free": "https://huggingface.co/zai-org/GLM-5.3-Flash",
+    "deepseek-v4.1-flash": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash",
+    "deepseek-v4.1-flash-free": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash",
+    # Xiaomi publishes the Flash weights only as -RL / -MOPD repos (no plain MiMo-V2.6-Flash repo)
+    "mimo-v2.6-flash-free": "https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Flash-RL",
+    "nemotron-3.5-super-vl-free": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-BF16",
+    "flint-40b-free": "https://huggingface.co/RecursiveSI/flint",
+    # Beam Free = Reflection AI's Beam 1.0 (models.dev family "beam", release 2026-10-05,
+    # listed on opencode.ai/data/reflection as Beam 1.0 501B A23B)
+    "beam-free": "https://huggingface.co/reflection/Beam-1.0-501B-A23B",
+    "longcat-2.5-free": "https://huggingface.co/meituan-longcat/LongCat-2.5",
+    # Inkling 2 Small is proprietary (no HF card) -> BenchLM specs
+    "inkling-2-small-free": "https://benchlm.ai/models/inkling-2-small",
     # proprietary/closed -> manufacturer page
     "grok-4.5": "https://docs.x.ai/developers/models/grok-4.5",
     "glm-5.3": "https://docs.z.ai/guides/llm/glm-5.3",
@@ -222,6 +235,17 @@ BENCH_SLUG_OVERRIDES = {
     "GPT 5.6 Sol": "gpt-5-6-sol",
     "GPT 5.6 Terra": "gpt-5-6-terra",
     "GPT 5.6 Luna": "gpt-5-6-luna",
+    # BenchLM labels the current build "DeepSeek V4.1 Flash 1017"
+    "Deepseek V4.1 Flash": "deepseek-v4-1-flash",
+    # free variants with no paid twin row: same model, look up the base BenchLM slug
+    "MiMo-V2.6-Flash Free": "mimo-v2-6-flash",
+    "Nemotron 3.5 Super VL Free": "nemotron-3-5-super-vl-120b-a12b",
+    "Inkling 2 Small Free": "inkling-2-small",
+    "Beam Free": "reflection-beam",
+    "LongCat 2.5 Free": "longcat-2-5",
+    # OpenRouter :free rows (bare display name doesn't match the BenchLM model name)
+    "MiniMax M3 Free": "minimax-m3",
+    "Inkling Free": "inkling",
 }
 
 def normalize(name: str) -> str:
@@ -274,6 +298,10 @@ def fetch_json(url: str):
 def strip_tags(s):
     return html.unescape(re.sub(r'<[^>]+>', '', s)).strip()
 
+def price_cell(s):
+    """Text of a pricing cell; discounted cells ("<del>$1.36</del> $0.68") keep the current price."""
+    return strip_tags(re.sub(r'<del>.*?</del>', '', s, flags=re.DOTALL))
+
 def extract_pricing_table(html_text: str, is_go: bool = False):
     """Parse pricing table. Zen: 5 cols, Go: 6 cols (sixth = Usage / Monthly limit)."""
     if is_go:
@@ -305,7 +333,7 @@ def extract_pricing_table(html_text: str, is_go: bool = False):
             continue
         if ("Peak" in model and "Off-Peak" not in model) or "> 2" in model:
             continue
-        pricing[normalize(base)] = (parse_price(strip_tags(row[1])), parse_price(strip_tags(row[2])), parse_price(strip_tags(row[3])))
+        pricing[normalize(base)] = (parse_price(price_cell(row[1])), parse_price(price_cell(row[2])), parse_price(price_cell(row[3])))
     return pricing
 
 def extract_go_usage(html_text: str):
@@ -405,6 +433,15 @@ PARAM_OVERRIDES = {
     "muse-spark-1.2-contributor-free": "405B",
     "nemotron-3-ultra-free": "550B",
     "nemotron-3.5-lightning-free": "30B",
+    "nemotron-3.5-super-vl-free": "120B",  # NVIDIA-Nemotron-3.5-Super-VL-120B-A12B (HF)
+    "glm-5.3-flash-free": "320B",
+    # HF safetensors total 763.2B: 552B MoE backbone + ~200B n-gram embedding (8B/16B active)
+    "deepseek-v4.1-flash": "763B",
+    "deepseek-v4.1-flash-free": "763B",
+    "mimo-v2.6-flash-free": "309B",  # 309B total / 15B active MoE (Xiaomi; HF safetensors 310.8B incl. MTP layers)
+    "flint-40b-free": "40B",  # RecursiveSI/flint card: 39.8B total / ~2.5B active
+    "beam-free": "501B",  # Reflection Beam 1.0 501B-A23B
+    "longcat-2.5-free": "1.6T",  # meituan-longcat/LongCat-2.5 card: 1.6T total / ~48B active
     "gpt-5": "635B",
     "gpt-5-codex": "635B",
     "gpt-5-nano": "18B",
@@ -513,6 +550,7 @@ OPENROUTER_PARAMS = {
     "moonshotai/kimi-k3": "2.8T",
     "nvidia/nemotron-3-ultra-550b-a55b:free": "550B",
     "nvidia/nemotron-3.5-lightning:free": "30B",
+    "thinkingmachines/inkling:free": "952B",  # HF thinkingmachines/Inkling safetensors total
     "openai/gpt-5.6-luna": "85B",
     "openai/gpt-5.6-sol": "635B",
     "openai/gpt-5.6-terra": "635B",
@@ -656,7 +694,9 @@ def build_desired(zen_ids, go_ids, md, mdgo=None):
         if i == "x-preview-f-free" and "ox-alpha-free" in go_set:
             continue  # same model as Go Ox Alpha Free
         nid = normalize(i)
-        m = md.get(i, {}) or md.get(nid, {})
+        # Go-only models have no `opencode` entry; fall back to `opencode-go`
+        # so their context/cost come from models.dev instead of defaults.
+        m = md.get(i, {}) or md.get(nid, {}) or (mdgo or {}).get(i, {})
         cost = m.get("cost", {})
         plan = "go" if i in go_set else "zen"
         price = None
@@ -880,6 +920,15 @@ SWE_PRO_OVERRIDES = {
     "Hy3": 57.9,
 }
 
+# Hardcoded scores for other benchmark fields BenchLM lacks: {name: {field: score}}.
+BENCH_VALUE_OVERRIDES = {
+    # Recursive self-reported on the RecursiveSI/flint model card (Terminus 2 harness,
+    # avg pass@1 over >=5 attempts; web-retrieved solutions counted as failures).
+    # Its "SWE-bench Pro v2" 89.7 is a different benchmark from Scale's SWE-bench Pro,
+    # so swePro stays null.
+    "Flint 40B Free": {"terminalBench": 54.9},
+}
+
 # Free-tier variants publish no benchmark runs of their own; they serve the same
 # model as their non-free counterpart, so they inherit its scores.
 # (Z.ai confirms Ox Alpha was the internal testing name for GLM-5.3-Flash.)
@@ -891,6 +940,8 @@ BENCH_INHERIT_FROM = {
     "Laguna S 2.1 Free": "Laguna S 2.1",
     "Muse Spark 1.2 Contributor Free": "Muse Spark 1.2",
     "Muse Spark 1.3 Free": "Muse Spark 1.3",
+    "GLM-5.3-Flash Free": "GLM-5.3-Flash",
+    "DeepSeek V4.1 Flash Free": "Deepseek V4.1 Flash",
 }
 
 def inherit_benchmarks(models, bench_items, dry_run=False):
@@ -901,6 +952,10 @@ def inherit_benchmarks(models, bench_items, dry_run=False):
         by_slug[it.get("slug")] = it
         by_norm[normalize(it.get("model"))] = it
 
+    rows_by_name = {}
+    for r in models:
+        rows_by_name.setdefault(r["name"], []).append(r)
+
     changed = []
     for m in models:
         counterpart = BENCH_INHERIT_FROM.get(m["name"])
@@ -908,8 +963,19 @@ def inherit_benchmarks(models, bench_items, dry_run=False):
             continue
         it = by_slug.get(bench_slug_for(counterpart)) or by_norm.get(normalize(counterpart))
         if not it:
-            continue
+            it = {}
         coding = it.get("benchmarks", {}).get("coding", {}) or {}
+        # Fields BenchLM lacks (e.g. codingIndex from the OpenRouter snapshot) are
+        # filled from the counterpart's own row; existing values are never overwritten.
+        for field in ("codingIndex", "swePro", "terminalBench", "deepSwe"):
+            if m.get(field) is not None:
+                continue
+            val = next((r.get(field) for r in rows_by_name.get(counterpart, [])
+                        if r is not m and r.get(field) is not None), None)
+            if val is not None:
+                changed.append((field, m["name"], None, val))
+                if not dry_run:
+                    _set_bench_field(m, field, val)
         pairs = [
             ("codingIndex", coding.get("aaCodingIndex")),
             ("swePro", coding.get("swePro")),
@@ -940,6 +1006,13 @@ def apply_bench_overrides(models, dry_run=False):
             changed.append(("swePro", m["name"], old, score))
             if not dry_run:
                 m["swePro"] = score
+    for m in models:
+        for field, score in BENCH_VALUE_OVERRIDES.get(m["name"], {}).items():
+            old_num = _bench_num(m.get(field))
+            if old_num is None or abs(old_num - score) > 1e-9:
+                changed.append((field, m["name"], m.get(field), score))
+                if not dry_run:
+                    _set_bench_field(m, field, score)
     return changed
 
 # Uncertain benchmark values, stored verbatim (with a trailing "?") on rows whose
