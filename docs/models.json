@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-11-10",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-11-11",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-11-10",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-11-11",
   "models": [
     {
       "name": "Beam Free",
@@ -352,9 +352,9 @@
       "swePro": 52.6,
       "terminalBench": 82.7,
       "deepSwe": 54.4,
-      "inputCost": 0.091,
-      "outputCost": 0.182,
-      "cachedReadCost": 0.0182,
+      "inputCost": 0.09,
+      "outputCost": 0.18,
+      "cachedReadCost": 0.018,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash"
     },
@@ -671,6 +671,17 @@
       "addedOn": "2026-10-14"
     },
     {
+      "name": "Gemini 4 Carbon",
+      "codingIndex": null,
+      "inputCost": 2.0,
+      "outputCost": 10.0,
+      "cachedReadCost": 0.1,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "addedOn": "2026-11-11"
+    },
+    {
       "name": "GLM-5",
       "params": "744B",
       "context": "203K",
@@ -719,9 +730,9 @@
       "swePro": 62.1,
       "terminalBench": 81,
       "deepSwe": null,
-      "inputCost": 0.009,
+      "inputCost": 0.007,
       "outputCost": 6.8,
-      "cachedReadCost": 0.008,
+      "cachedReadCost": 0.006,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.2"
     },
@@ -778,8 +789,8 @@
       "swePro": null,
       "terminalBench": 84.3,
       "deepSwe": 63.4,
-      "inputCost": 0.15,
-      "outputCost": 0.5,
+      "inputCost": 0.0399,
+      "outputCost": 0.0784,
       "cachedReadCost": 0.03,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.3-Flash"
@@ -2295,7 +2306,7 @@
       "alsoOnZen": true
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-11-10",
-  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-10",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-11-10"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-11-11",
+  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-11",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-11-11"
 }
