@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-11-12",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-11-13",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-11-12",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-11-13",
   "models": [
     {
       "name": "Beam Free",
@@ -44,8 +44,7 @@
       "plan": "go",
       "na": true,
       "naSince": "2026-10-17",
-      "alsoOnZen": true,
-      "addedOn": "2026-10-13"
+      "alsoOnZen": true
     },
     {
       "name": "Claude Fable 5",
@@ -438,9 +437,9 @@
       "swePro": 55.4,
       "terminalBench": 87.9,
       "deepSwe": 62.7,
-      "inputCost": 0.95526,
-      "outputCost": 1.91052,
-      "cachedReadCost": 0.079605,
+      "inputCost": 0.9,
+      "outputCost": 1.5,
+      "cachedReadCost": 0.25,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro"
     },
@@ -681,6 +680,17 @@
       "addedOn": "2026-11-11"
     },
     {
+      "name": "Gemini 4 Hydrogen",
+      "codingIndex": null,
+      "inputCost": 1.5,
+      "outputCost": 7.5,
+      "cachedReadCost": 0.075,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "addedOn": "2026-11-13"
+    },
+    {
       "name": "GLM-5",
       "params": "744B",
       "context": "203K",
@@ -758,9 +768,9 @@
       "swePro": null,
       "terminalBench": 88.2,
       "deepSwe": 66.9,
-      "inputCost": 0.0699,
-      "outputCost": 1.4,
-      "cachedReadCost": 0.0689,
+      "inputCost": 0.084,
+      "outputCost": 3.6,
+      "cachedReadCost": 0.079,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.3"
     },
@@ -2305,7 +2315,7 @@
       "alsoOnZen": true
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-11-12",
-  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-12",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-11-12"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-11-13",
+  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-13",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-11-13"
 }
