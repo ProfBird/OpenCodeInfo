@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-11-13",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-11-14",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-11-13",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-11-14",
   "models": [
     {
       "name": "Beam Free",
@@ -650,7 +650,6 @@
       "context": "1M",
       "params": null,
       "plan": "go",
-      "addedOn": "2026-10-14",
       "deepSwe": 77.9,
       "alsoOnZen": true,
       "goUsage": 30.0
@@ -665,8 +664,7 @@
       "params": null,
       "plan": "go",
       "na": true,
-      "naSince": "2026-10-25",
-      "addedOn": "2026-10-14"
+      "naSince": "2026-10-25"
     },
     {
       "name": "Gemini 4 Carbon",
@@ -1080,9 +1078,9 @@
       "swePro": 64.6,
       "terminalBench": 91.9,
       "deepSwe": 72.7,
-      "inputCost": 4.4,
-      "outputCost": 22.0,
-      "cachedReadCost": 0.44,
+      "inputCost": 4.0,
+      "outputCost": 20.0,
+      "cachedReadCost": 0.4,
       "plan": "openrouter",
       "hfUrl": "https://openrouter.ai/openai/gpt-5.6-sol"
     },
@@ -2140,7 +2138,7 @@
     {
       "name": "Qwen3.8 27B",
       "params": "27B",
-      "context": "1.05M",
+      "context": "1.02M",
       "codingIndex": 68.1,
       "swePro": 61.7,
       "terminalBench": 73,
@@ -2285,8 +2283,7 @@
       "params": null,
       "plan": "zen",
       "na": true,
-      "naSince": "2026-10-14",
-      "addedOn": "2026-10-14"
+      "naSince": "2026-10-14"
     },
     {
       "name": "Union Alpha",
@@ -2315,7 +2312,7 @@
       "alsoOnZen": true
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-11-13",
-  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-13",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-11-13"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-11-14",
+  "benchmarkTerminal": "Terminal-Bench (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-14",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-11-14"
 }
