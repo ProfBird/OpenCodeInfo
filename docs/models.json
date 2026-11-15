@@ -2566,9 +2566,9 @@
       "deepSwe": 73.7,
       "params": null,
       "context": "1M",
-      "inputCost": 0.15,
-      "outputCost": 0.6,
-      "cachedReadCost": 0.015,
+      "inputCost": 0.075,
+      "outputCost": 0.3,
+      "cachedReadCost": 0.0075,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/MiniMaxAI/MiniMax-M3.1-Flash",
       "addedOn": "2026-11-15"
