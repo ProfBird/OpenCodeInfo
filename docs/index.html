@@ -369,7 +369,7 @@
       <label id="mobileSort">Sort
         <select id="sortSelect">
           <option value="name">Model</option>
-          <option value="rank">Rank</option>
+          <option value="rank">Combined Rank</option>
           <option value="params">Params</option>
           <option value="context">Context</option>
           <option value="codingIndex">AA index</option>
@@ -466,7 +466,7 @@ let secondarySort = null; // { key, dir } — previous primary, used as tiebreak
 
 /* ── Column definitions (all selectable) ── */
 const COLUMNS = [
-  { key: 'rank',            label: 'Rank',               shortLabel: 'Rank',             hint: 'composite',     defaultDir:  1, defaultVisible: true },
+  { key: 'rank',            label: 'Combined Rank',     shortLabel: 'Rank',             hint: 'composite',     defaultDir:  1, defaultVisible: true },
   { key: 'name',            label: 'Model',              shortLabel: 'Model',            hint: 'model name',    defaultDir:  1, defaultVisible: true },
   { key: 'params',          label: 'Params',             shortLabel: 'Params',           hint: 'parameters',    defaultDir: -1, defaultVisible: true },
   { key: 'context',         label: 'Context',            shortLabel: 'Context',          hint: 'context window', defaultDir: -1, defaultVisible: true },
