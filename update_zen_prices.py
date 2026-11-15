@@ -538,7 +538,11 @@ PARAM_OVERRIDES = {
     "nemotron-3.5-lightning-free": "30B",
     "nemotron-3.5-super-vl-free": "120B",  # NVIDIA-Nemotron-3.5-Super-VL-120B-A12B (HF)
     "glm-5.3-flash-free": "320B",
-    # HF safetensors total 763.2B: 552B MoE backbone + ~200B n-gram embedding (8B/16B active)
+    # HF safetensors "Model size" reads 763B: a 552B MoE backbone plus DeepSeek's
+    # Engram conditional memory (196B, sparsely accessed by token lookup) and the
+    # rest; 8B activated per token on prefill, 16B on decode. OpenRouter's catalog
+    # description quotes the 552B backbone alone, so the two figures differ by what
+    # they count, not by disagreeing — this column is total parameters.
     "deepseek-v4.1-flash": "763B",
     "deepseek-v4.1-flash-free": "763B",
     "mimo-v2.6-flash-free": "309B",  # 309B total / 15B active MoE (Xiaomi; HF safetensors 310.8B incl. MTP layers)
