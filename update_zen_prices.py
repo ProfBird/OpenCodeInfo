@@ -13,6 +13,7 @@ Sources:
   DeepSWE:       https://benchlm.ai/data/models.json       (per-model benchmarks.coding.deepSwe)
   Bug Hunt:      https://benchlm.ai/data/models.json       (per-model benchmarks.coding["bug-hunt-bench"],
                  with https://bughunt.productcompass.pm/data/benchmark.json filling models BenchLM lacks)
+  FrontierCode 2.0: https://benchlm.ai/data/models.json    (per-model benchmarks.coding.frontierCode2)
 
 Every model in models.json carries a "plan" field: "go" for models on the Go
 $10/mo plan, "zen" for Zen-only models. The web page lets you filter by plan.
@@ -205,8 +206,61 @@ KNOWN_URLS = {
     # Ling 3.0 Flash Fin: finance fine-tune; weights not on HF yet (API-only launch
     # 2026-08-27) -> BenchLM spec profile per the fallback chain.
     "ling-3.0-flash-fin-free": "https://benchlm.ai/models/ling-3-0-flash-fin",
-    # Hy4 Preview: no public HF card (tencent/Hy4 401s; cf. HY3 200) -> BenchLM specs.
-    "hy4-preview": "https://benchlm.ai/models/hy4-preview",
+    # Hy4 / Hy4 preview: Tencent publishes the preview weights as tencent/Hy4-preview
+    # (tencent/Hy4 itself 401s; cf. HY3 200).
+    "hy4": "https://huggingface.co/tencent/Hy4-preview",
+    "hy4-preview": "https://huggingface.co/tencent/Hy4-preview",
+    # open weights released after the original map
+    "kimi-k3.1-pro": "https://huggingface.co/moonshotai/Kimi-K3.1-Pro",
+    "minimax-m3.1-flash": "https://huggingface.co/MiniMaxAI/MiniMax-M3.1-Flash",
+    "minimax-m3.1-flash-free": "https://huggingface.co/MiniMaxAI/MiniMax-M3.1-Flash",
+    # Xiaomi publishes the Pro/Flash weights only as -RL / -MOPD repos (no plain repo)
+    "mimo-v2.6-pro": "https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Pro-RL",
+    "mimo-v2.6-flash": "https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Flash-RL",
+    "ling-3.1-flash-free": "https://huggingface.co/inclusionAI/Ling-3.1-flash",
+    "longcat-2.5-preview-free": "https://huggingface.co/meituan-longcat/LongCat-2.5",
+    # DeepSeek renamed its small tier to `deepseek-flash` (= DeepSeek-V4.1-Flash)
+    "deepseek-flash": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash",
+    # newest closed models -> BenchLM specs
+    "claude-fable-5-2": "https://benchlm.ai/models/claude-fable-5-2",
+    "claude-opus-5-5": "https://benchlm.ai/models/claude-opus-5-5",
+    # legacy backup listing of the same model
+    "claude-opus-5-5-backup": "https://benchlm.ai/models/claude-opus-5-5",
+    "claude-sonnet-5-5": "https://benchlm.ai/models/claude-sonnet-5-5",
+    "claude-haiku-5-5": "https://benchlm.ai/models/claude-haiku-5-5",
+    "gemini-4-carbon": "https://benchlm.ai/models/gemini-4-carbon",
+    "gemini-4-argon": "https://benchlm.ai/models/gemini-4-argon",
+    "gemini-4-argon-contributor": "https://benchlm.ai/models/gemini-4-argon",
+    "gemini-4-hydrogen": "https://benchlm.ai/models/gemini-4-hydrogen",
+    "gpt-6-sol": "https://benchlm.ai/models/gpt-6-sol",
+    "gpt-6.1-sol": "https://benchlm.ai/models/gpt-6-1-sol",
+    "gpt-6-luna": "https://benchlm.ai/models/gpt-6-luna",
+    "mistral-large-4": "https://benchlm.ai/models/mistral-large-4",
+    "step-5-preview": "https://benchlm.ai/models/step-5-preview",
+    "step-5-preview-free": "https://benchlm.ai/models/step-5-preview",
+    "grok-4.7": "https://docs.x.ai/developers/models/grok-4.7",
+    # Meta's Muse line publishes per-model pages under developer.meta.com
+    "muse-ember-1.0": "https://developer.meta.com/ai/models/muse-ember/",
+    "muse-wonder": "https://developer.meta.com/ai/models/muse-wonder/",
+    "muse-wonder-1.0": "https://developer.meta.com/ai/models/muse-wonder/",
+    # revealed stealth codenames -> the model they turned out to be
+    "cat-jam-free": "https://huggingface.co/reflection/Beam-1.0-501B-A23B",   # Reflection AI Beam
+    "crouton-alpha-free": "https://developer.meta.com/ai/models/muse-ember/",  # Meta Muse Ember
+    "fledge-alpha-free": "https://benchlm.ai/models/inkling-2-small",          # Thinking Machines Inkling 2 Small
+    "ll-alpha-free": "https://huggingface.co/RecursiveSI/flint",               # Recursive Flint
+    "space-bunny": "https://huggingface.co/MiniMaxAI/MiniMax-M3.1-Flash",      # MiniMax M3.1 Flash
+    "space-bunny-free": "https://huggingface.co/MiniMaxAI/MiniMax-M3.1-Flash",
+    # still-anonymous / retired stealth codenames -> the stealth-model tracker
+    "iceman-free": "https://artificialwatch.com/stealth-models",
+    "iceman-contributor-free": "https://artificialwatch.com/stealth-models",
+    "exo-free": "https://artificialwatch.com/stealth-models",
+    "pulse-alpha-free": "https://artificialwatch.com/stealth-models",
+    "union-alpha": "https://artificialwatch.com/stealth-models",
+    "union-alpha-free": "https://artificialwatch.com/stealth-models",
+    "jev-1.13": "https://artificialwatch.com/stealth-models",
+    "jev-1.13-free": "https://artificialwatch.com/stealth-models",
+    # catalog test entry (no model page anywhere) -> the Zen catalog it appears in
+    "test": "https://opencode.ai/docs/zen",
 }
 
 # OpenCode model name -> BenchLM slug for SWE-bench Pro lookups where the
@@ -682,7 +736,7 @@ def sync_openrouter(models, or_models, dry_run=False, today=None):
                 by_name[normalize(name)] = existing
         if existing is None:
             row = {"name": name, "rank": None, "codingIndex": None, "swePro": None, "bugHunt": None,
-                   "terminalBench2": None, "terminalBench4": None, "deepSwe": None}
+                   "frontierCode2": None, "terminalBench2": None, "terminalBench4": None, "deepSwe": None}
             row.update(row_data)
             _insert_after(row, "addedOn", today.isoformat(), "hfUrl")
             added.append((name, oid))
@@ -734,6 +788,28 @@ def build_desired(zen_ids, go_ids, md, mdgo=None):
             "params": PARAM_OVERRIDES.get(i) or PARAM_OVERRIDES.get(nid),
         }
     return desired
+
+def backfill_known_urls(models, dry_run=False):
+    """Fill `hfUrl` from KNOWN_URLS for rows that are no longer in a catalog.
+
+    reconcile() only maintains rows still listed in the Zen/Go catalogs, so rows
+    flagged N.A. (or whose catalog id changed) would otherwise never gain a
+    model-info link. Matching uses the normalized catalog id or display name and
+    never overwrites an existing link.
+    """
+    known = {normalize(k): v for k, v in KNOWN_URLS.items()}
+    changed = []
+    for m in models:
+        if m.get("plan") == "openrouter" or m.get("hfUrl"):
+            continue
+        name = m.get("name", "")
+        url = known.get(normalize(id_from_name(name))) or known.get(normalize(name))
+        if not url:
+            continue
+        changed.append(("hfUrl", name, None, url))
+        if not dry_run:
+            _insert_after(m, "hfUrl", url, "addedOn")
+    return changed
 
 def reconcile(data, desired, zen_pricing, go_pricing, go_usage, md, dry_run=False, today=None):
     """Add/update models to match the desired catalog.
@@ -877,11 +953,11 @@ def bench_slug_for(name: str) -> str:
     return id_from_name(name)
 
 # BenchLM coding benchmark fields merged into each model (null if unpublished).
-BENCH_FIELDS = ("codingIndex", "swePro", "bugHunt", "terminalBench2", "terminalBench4", "deepSwe")
+BENCH_FIELDS = ("codingIndex", "swePro", "bugHunt", "frontierCode2", "terminalBench2", "terminalBench4", "deepSwe")
 
 def bench_item_for(model_name, field, by_slug, by_norm):
     """Resolve the BenchLM item for a model+field (per-field slug overrides)."""
-    if field in ("swePro", "bugHunt", "terminalBench", "terminalBench2", "terminalBench4", "deepSwe"):
+    if field in ("swePro", "bugHunt", "frontierCode2", "terminalBench", "terminalBench2", "terminalBench4", "deepSwe"):
         slug = BENCH_SLUG_OVERRIDES_RELEASED.get(model_name) or bench_slug_for(model_name)
     else:
         slug = bench_slug_for(model_name)
@@ -1102,7 +1178,7 @@ def inherit_benchmarks(models, bench_items, dry_run=False):
         coding = it.get("benchmarks", {}).get("coding", {}) or {}
         # Fields BenchLM lacks (e.g. codingIndex from the OpenRouter snapshot) are
         # filled from the counterpart's own row; existing values are never overwritten.
-        for field in ("codingIndex", "swePro", "bugHunt", "terminalBench2", "terminalBench4", "deepSwe"):
+        for field in ("codingIndex", "swePro", "bugHunt", "frontierCode2", "terminalBench2", "terminalBench4", "deepSwe"):
             if m.get(field) is not None:
                 continue
             val = next((r.get(field) for r in rows_by_name.get(counterpart, [])
@@ -1116,6 +1192,7 @@ def inherit_benchmarks(models, bench_items, dry_run=False):
             ("codingIndex", coding.get("aaCodingIndex")),
             ("swePro", coding.get("swePro")),
             ("bugHunt", coding.get("bug-hunt-bench")),
+            ("frontierCode2", coding.get("frontierCode2")),
             ("deepSwe", coding.get("deepSwe")),
             ("terminalBench2", (coding.get("terminalBench21") if coding.get("terminalBench21") is not None
                                else agentic.get("terminalBench21") if agentic.get("terminalBench21") is not None
@@ -1190,9 +1267,10 @@ _BENCH_FIELD_PREDS = {
     "codingIndex": ("context",),
     "swePro": ("codingIndex", "context"),
     "bugHunt": ("swePro", "codingIndex", "context"),
-    "terminalBench2": ("bugHunt", "swePro", "codingIndex", "context"),
-    "terminalBench4": ("terminalBench2", "bugHunt", "swePro", "codingIndex", "context"),
-    "deepSwe": ("terminalBench4", "terminalBench2", "bugHunt", "swePro", "codingIndex", "context"),
+    "frontierCode2": ("bugHunt", "swePro", "codingIndex", "context"),
+    "terminalBench2": ("frontierCode2", "bugHunt", "swePro", "codingIndex", "context"),
+    "terminalBench4": ("terminalBench2", "frontierCode2", "bugHunt", "swePro", "codingIndex", "context"),
+    "deepSwe": ("terminalBench4", "terminalBench2", "frontierCode2", "bugHunt", "swePro", "codingIndex", "context"),
 }
 
 def _set_bench_field(m, field, val):
@@ -1234,7 +1312,7 @@ def cross_copy_benchmarks(models, dry_run=False):
     for rows in groups.values():
         if len(rows) < 2:
             continue
-        for field in ("codingIndex", "swePro", "bugHunt", "terminalBench2", "terminalBench4", "deepSwe"):
+        for field in ("codingIndex", "swePro", "bugHunt", "frontierCode2", "terminalBench2", "terminalBench4", "deepSwe"):
             have = [m for m in rows if m.get(field) is not None]
             if not have or len(have) == len(rows):
                 continue
@@ -1355,6 +1433,7 @@ BENCH_WEIGHTS = {
     "swePro":         1.0,  # Standard reference coding benchmark
     "codingIndex":    1.0,  # Standard reference coding index
     "bugHunt":        1.0,  # 2026 blind-graded real-bug repair (single publisher, TS-only)
+    "frontierCode2":  0.5,  # Mergeability (maintainer-merge rubric); sparse + harness varies by row
     "terminalBench2": 0.5,  # Legacy early-2026 suite, largely saturated
 }
 
@@ -1381,7 +1460,9 @@ def compute_model_ranks(models, dry_run=False):
        a_f so Z_cal = (l - b_f) / a_f aligns every suite to a global N(0, 1) skill scale.
     4. Suite Weights & Conservative Bayesian Skill (Lower Confidence Bound):
        Suites are weighted by rigor and recency (Terminal-Bench 4: 1.5x, DeepSWE: 1.5x,
-       SWE-bench Pro: 1.0x, AA Coding Index: 1.0x, Bug Hunt: 1.0x, Terminal-Bench 2: 0.5x).
+       SWE-bench Pro: 1.0x, AA Coding Index: 1.0x, Bug Hunt: 1.0x, FrontierCode 2.0: 0.5x,
+       Terminal-Bench 2: 0.5x). FrontierCode 2.0 is down-weighted because it covers a sparse
+       cohort (28 rows) and its per-model runs use different agent harnesses.
        Each model's rating uses TrueSkill-style conservative posterior skill
        R = mu_post - kappa * sigma_post
        (lambda = 0.35, kappa = 0.75), where mu_post = sum(w_f * Z_cal) / (sum(w_f) + lambda)
@@ -1393,7 +1474,7 @@ def compute_model_ranks(models, dry_run=False):
        OpenRouter builds) are scored from their own benchmarks against the canonical scale;
        models with no benchmark scores receive None.
     """
-    bench_fields = ("codingIndex", "swePro", "bugHunt", "terminalBench2", "terminalBench4", "deepSwe")
+    bench_fields = ("codingIndex", "swePro", "bugHunt", "frontierCode2", "terminalBench2", "terminalBench4", "deepSwe")
     LAMBDA_PRIOR = 0.35
     KAPPA_LCB = 0.75
     # Bug Hunt reports planted bugs fixed out of 105; every other suite is a %.
@@ -1632,7 +1713,7 @@ def main():
     or_added, or_changed = sync_openrouter(data["models"], or_models, dry_run=args.dry_run, today=run_today)
     added = list(added) + or_added
     changed = list(changed) + or_changed
-
+    url_changed = backfill_known_urls(data["models"], dry_run=args.dry_run)
     bench_changed = merge_benchmarks(data["models"], bench_items, dry_run=args.dry_run)
     bench_changed += apply_bench_overrides(data["models"], dry_run=args.dry_run)
     bench_changed += inherit_benchmarks(data["models"], bench_items, dry_run=args.dry_run)
@@ -1661,6 +1742,10 @@ def main():
         for name, kind in na_changed:
             label = {"flag": "-> (N.A.)", "unflag": "-> available", "backfill": "-> (N.A.) [recorded naSince]"}[kind]
             print(f"  {name:34} {label}", file=sys.stderr)
+    if url_changed:
+        print(f"\n{len(url_changed)} model link update(s):" + (" (dry-run)" if args.dry_run else ""), file=sys.stderr)
+        for field, name, old, new in url_changed:
+            print(f"  {field:10} {name:34} {new}", file=sys.stderr)
     if added:
         print(f"\n{len(added)} model(s) to add:" if args.dry_run else f"\n{len(added)} model(s) added:", file=sys.stderr)
         for name, i in added:
@@ -1669,10 +1754,10 @@ def main():
         print(f"\n{len(new_expired)} New badge(s) expired:" + (" (dry-run)" if args.dry_run else ""), file=sys.stderr)
         for name in new_expired:
             print(f"  - {name:34} (addedOn dropped)", file=sys.stderr)
-    if not (changed or added or bench_changed or na_changed or new_expired or rank_changed):
+    if not (changed or added or bench_changed or na_changed or new_expired or rank_changed or url_changed):
         print("\nCatalog, prices and benchmarks in sync (no changes).", file=sys.stderr)
 
-    if not args.dry_run and (changed or added or bench_changed or na_changed or new_expired or rank_changed):
+    if not args.dry_run and (changed or added or bench_changed or na_changed or new_expired or rank_changed or url_changed):
         today = date.today().isoformat()
         data["source"] = f"OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved {today}"
         data["goSource"] = f"OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved {today}"
@@ -1681,6 +1766,8 @@ def main():
         data["benchmarkTerminal4"] = f"Terminal-Bench 4 (Laude Institute), via {DEFAULT_BENCHLM_URL}, retrieved {today}"
         data.pop("benchmarkTerminal", None)
         data["benchmarkDeepSwe"] = f"DeepSWE (Datacurve), via {DEFAULT_BENCHLM_URL}, retrieved {today}"
+        data["benchmarkBugHunt"] = f"Bug Hunt Bench (Product Compass) planted bugs fixed out of 105, via {DEFAULT_BENCHLM_URL} and https://bughunt.productcompass.pm/data/benchmark.json, retrieved {today}"
+        data["benchmarkFrontierCode2"] = f"FrontierCode 2.0 (Cognition) mergeability score, via {DEFAULT_BENCHLM_URL}, retrieved {today}"
         data["rankingSource"] = f"Composite log-odds latent skill with 2-parameter Mean-Sigma equating and conservative Bayesian LCB, computed {today}"
         args.output.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         print(f"\nWrote {args.output}", file=sys.stderr)

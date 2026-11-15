@@ -1,14 +1,14 @@
 # OpenCode Zen & Go — Model Benchmarks & Cost
 
-A small static web page that displays **all OpenCode Zen models** (coding benchmark scores, pricing, context) with sortable columns, SWE-bench Pro and Bug Hunt score columns, filters, and a Go-plan toggle.
+A small static web page that displays **all OpenCode Zen models** (coding benchmark scores, pricing, context) with sortable columns, SWE-bench Pro, Bug Hunt and FrontierCode 2.0 score columns, filters, and a Go-plan toggle.
 
 **Live page:** <a href="https://profbird.github.io/OpenCodeInfo/" target="_blank">https://profbird.github.io/OpenCodeInfo/</a>
 
 ## Files
 
-- `docs/models.json` — Model data: composite benchmark rank (`rank`), AA Coding Index score, SWE-bench Pro score, Bug Hunt score (planted bugs fixed out of 105), Terminal-Bench 2 score, Terminal-Bench 4 score, DeepSWE score, USD-per-1M-token pricing (input, output, cached read), `params` (total parameters, e.g. "744B", "1.6T", `null` if undisclosed), `context` window (e.g. "1M", "500K"), a `plan` field (`"go"` for models on the Go $10/mo plan, `"zen"` for Zen-only, `"openrouter"` for OpenRouter's programming-category models, which carry OpenRouter's own pricing and are badged (OpenRouter) on the page), `alsoOnZen: true` when a Go-plan model is also available on Zen pay-as-you-go, and `na: true` when a model is no longer selectable in OpenCode (shown as (N.A.) on the page), for every model in the Zen catalog. Models that leave the catalog are never removed; they stay listed as (N.A.). Each model also has a link (`hfUrl`) to its model card — Hugging Face when weights are open, otherwise BenchLM model specs, or the manufacturer's site.
+- `docs/models.json` — Model data: composite benchmark rank (`rank`), AA Coding Index score, SWE-bench Pro score, Bug Hunt score (planted bugs fixed out of 105), FrontierCode 2.0 mergeability score, Terminal-Bench 2 score, Terminal-Bench 4 score, DeepSWE score, USD-per-1M-token pricing (input, output, cached read), `params` (total parameters, e.g. "744B", "1.6T", `null` if undisclosed), `context` window (e.g. "1M", "500K"), a `plan` field (`"go"` for models on the Go $10/mo plan, `"zen"` for Zen-only, `"openrouter"` for OpenRouter's programming-category models, which carry OpenRouter's own pricing and are badged (OpenRouter) on the page), `alsoOnZen: true` when a Go-plan model is also available on Zen pay-as-you-go, and `na: true` when a model is no longer selectable in OpenCode (shown as (N.A.) on the page), for every model in the Zen catalog. Models that leave the catalog are never removed; they stay listed as (N.A.). Each model also has a link (`hfUrl`) to its model card — Hugging Face when weights are open, otherwise BenchLM model specs, or the manufacturer's site.
 - `docs/index.html` — The page itself. Loads `models.json` and renders the table. Filtering and sorting all happen in the browser. Published to GitHub Pages via the `docs/` folder.
-- `update_zen_prices.py` — Fetches the current OpenCode Zen catalog and pricing, the Go plan, model context/cost data, and SWE-bench Pro / Bug Hunt / Terminal-Bench 2 & 4 / DeepSWE scores, computes transitive rankings, then updates `docs/models.json` (adds models that join the catalog, refreshes prices, maintains the `plan`/`alsoOnZen` flags, and flags models that are no longer selectable in OpenCode as `na` — models are never removed).
+- `update_zen_prices.py` — Fetches the current OpenCode Zen catalog and pricing, the Go plan, model context/cost data, and SWE-bench Pro / Bug Hunt / FrontierCode 2.0 / Terminal-Bench 2 & 4 / DeepSWE scores, computes transitive rankings, then updates `docs/models.json` (adds models that join the catalog, refreshes prices, maintains the `plan`/`alsoOnZen` flags, and flags models that are no longer selectable in OpenCode as `na` — models are never removed).
 - `prune_na_models.py` — Removes models that have been flagged `na` (N.A.) for over 6 months (tracked via each model's `naSince` date); `--dry-run` previews, `--months` overrides the cutoff. Run automatically in the daily CI job after the update.
 - `.github/workflows/update_models.yml` — Daily GitHub Actions job (03:00 UTC) that runs the update script and commits any changes to `docs/models.json` and `docs/index.html`.
 
@@ -27,9 +27,10 @@ A small static web page that displays **all OpenCode Zen models** (coding benchm
 - Click the sort button (⇅) next to a column name, or the column header itself, to sort (click again to reverse direction).
 - **Plan** filter: show all models, recently added (**New**) models, models available on Zen pay-as-you-go (including Go-plan models also on Zen), **Go Plan** models only, or **OpenRouter** programming-category models (36 verified of OpenRouter's 47; separate rows with OpenRouter's own pricing, badged (OpenRouter)).
 - **Available only** checkbox: hide models marked (N.A.) — those no longer selectable in OpenCode's model picker.
-- Filter by **Min AA index**, **Min SWE-bench Pro**, **Min Bug Hunt (0–105)**, **Min Terminal-Bench 2**, **Min Terminal-Bench 4**, **Min DeepSWE**, and **Max output price ($/1M)** — same order as the columns.
+- Filter by **Min AA index**, **Min SWE-bench Pro**, **Min Bug Hunt (0–105)**, **Min FrontierCode 2.0**, **Min Terminal-Bench 2**, **Min Terminal-Bench 4**, **Min DeepSWE**, and **Max output price ($/1M)** — same order as the columns.
 - **Reset** clears all filters, restores the default column set, and re-sorts by **Rank** (ascending).
-- Default view: sorted by **Rank**; AA Coding Index, Terminal-Bench 2, Input, Cached Read, and Go Limits are hidden until enabled under **choose columns**.
+- Default view: sorted by **Rank**; AA Coding Index, SWE-bench Pro, Terminal-Bench 2, Input, Cached Read, and Go Limits are hidden until enabled under **choose columns**.
+- On narrow screens each model becomes a compact card showing only its name and platform badge; tap the header (or the ▸ button) to expand rank, benchmarks, and output cost.
 - Models with no benchmark score (`—`) sort to the bottom when sorting by benchmark.
 
 ## Composite Ranking & Benchmark Methodology
@@ -72,18 +73,21 @@ To provide fair, monotonic, and clone-invariant rankings across the entire catal
 
 The catalog spans over 175 models across OpenCode Zen, the Go plan, and OpenRouter. To provide meaningful comparisons across this broad spectrum, the benchmark suite must strike a balance between **modern technical rigor** for frontier models and **wide catalog coverage** across commercial and open-weight models alike.
 
-The six selected benchmarks are:
+The seven selected benchmarks are:
 
 - **Terminal-Bench 4 (Laude Institute, v4.1 / v4.0 / AA):** Redesigned in late 2026 to evaluate long-horizon agentic reasoning, multi-turn terminal command execution, and live debugging under distribution shifts. Crucially, tasks are engineered to resist data leakage and memorization.
 - **DeepSWE (Datacurve):** Contamination-free long-horizon software engineering benchmark testing pass@1 code generation and bug fixes across 113 realistic tasks spanning 91 distinct open-source codebases. Evaluates real-world repo-level comprehension, dependency navigation, and multi-file editing.
 - **SWE-bench Pro (Scale AI):** Industry-standard repository problem-solving benchmark (1,865 standardized tasks with human-verified gold patches). Serves as a primary reference point across enterprise coding models.
 - **Bug Hunt (Product Compass):** 2026 blind-graded bug-fixing benchmark: 105 real bugs hidden in two production TypeScript repos (a ~28K-line VS Code extension and a ~60K-line React/Supabase LMS), with each model's patches judged blind. Reports bugs fixed out of 105 and directly measures repository comprehension, debugging, and patch precision rather than from-scratch generation.
+- **FrontierCode 2.0 (Cognition):** The first benchmark to score *mergeability* — would the repository's maintainer actually merge this PR? 132 tasks written by the maintainers of the repos they come from, graded by unit tests, rubrics and verifiers across correctness, test quality, scope discipline, style and codebase standards. Kept at 0.5× because its cohort is still sparse and per-model harnesses differ.
 - **AA Coding Index (Artificial Analysis):** Broad multi-dimensional coding index snapshot combining code generation, code repair, and language proficiency into a standardized composite metric.
 - **Terminal-Bench 2 (Laude Institute, v2.1 / v2.0):** Established 89-task CLI benchmark. While partially saturated by frontier models, it offers the highest evaluation density across older, smaller, and open-weight models, acting as a crucial bridge connecting diverse models into the comparison pool.
 
 #### Why Newer Niche Benchmarks Were Excluded
 
-Recent specialized benchmarks (such as Vals Index, KingBench 4, FrontierCode 2.0, or FrontierSWE v2) provide interesting frontier data points but currently only evaluate 10–25 flagship models. Including them would leave 75–85% of the 175-model catalog blank, fragmenting the interface without providing comparative value for the broader catalog. The 6 selected suites represent the optimal intersection of high evaluation rigor and broad cross-model coverage (evaluating 67 to 103 models per suite).
+Recent specialized benchmarks (such as Vals Index, KingBench 4, or FrontierSWE v2) provide interesting frontier data points but currently only evaluate 10–25 flagship models. Including them would leave 75–85% of the 175-model catalog blank, fragmenting the interface without providing comparative value for the broader catalog. The 7 selected suites represent the optimal intersection of high evaluation rigor and broad cross-model coverage (evaluating 67 to 103 models per suite for six of them; FrontierCode 2.0 is the deliberate exception — see below).
+
+**FrontierCode 2.0** is included despite covering only ~28 models because mergeability is the closest published proxy for what a coding agent is actually asked to do (land a change a maintainer accepts). It carries **0.5×** weight — the same as the saturated Terminal-Bench 2 anchor — so its sparse, harness-varying coverage cannot dominate the composite: it nudges models it covers and leaves the rest untouched. Artificial Analysis' independent FrontierCode-AA 2.0 run (55 models, Stirrup harness) is **not** used as a fill source because it diverges materially from the official board on the models both cover (e.g. Kimi K3 17.7 vs 10.9, DeepSeek V4.1 Flash 19.3 vs 28.5).
 
 ---
 
@@ -97,6 +101,7 @@ The relative weights assigned to each suite reflect a deliberate trade-off betwe
 | **DeepSWE** | **1.5×** | **Highest real-world repo depth.** 91 distinct repositories ensure test variety without reliance on a single project structure; zero contamination pass@1 evaluation. |
 | **SWE-bench Pro** | **1.0×** | **Standard reference baseline.** Essential multi-repo benchmark, but downweighted from 1.5× due to independent audits (e.g. OpenAI's July 2026 study) identifying ~30% task flakiness or broken test environments in the public dataset. |
 | **Bug Hunt** | **1.0×** | **Direct, blind-graded bug fixing.** Independent, uncontaminated 2026 suite that measures real debugging and patch precision, but kept at 1.0× rather than 1.5× because it is a single publisher's board over two TypeScript-only repos and harness/effort vary by entry. |
+| **FrontierCode 2.0** | **0.5×** | **Mergeability, sparsely covered.** The only suite that grades whether a change would actually be merged (maintainer-written tasks, rubric + test ensemble), but it covers ~28 models and its per-model runs use different agent harnesses, so it is held at 0.5× to keep it from dominating. |
 | **AA Coding Index** | **1.0×** | **Broad multi-skill composite.** Well-calibrated across a wide range of model families, but relies more heavily on curated/synthetic tasks rather than full agentic repository environments. |
 | **Terminal-Bench 2** | **0.5×** | **Statistical anchor.** Early-2026 suite with ceiling saturation among frontier models. Retained at 0.5× so it grounds older and open-weight models in the global ranking without distorting the standings of top-tier models. |
 
@@ -123,6 +128,7 @@ Sources:
 - **Benchmark (AA)** — AA Coding Index via the BenchLM mirror: `https://benchlm.ai/benchmarks/aacodingindex` (display-only mirror of Artificial Analysis), snapshot 2026-08-21.
 - **Benchmark (SWE-bench Pro)** — `https://benchlm.ai/data/models.json` (`benchmarks.coding.swePro`), refreshed on every run.
 - **Benchmark (Bug Hunt)** — `https://benchlm.ai/data/models.json` (`benchmarks.coding["bug-hunt-bench"]`), with `https://bughunt.productcompass.pm/data/benchmark.json` filling models BenchLM has not imported (publisher values are fallbacks only), refreshed on every run.
+- **Benchmark (FrontierCode 2.0)** — `https://benchlm.ai/data/models.json` (`benchmarks.coding.frontierCode2`, a mirror of Cognition's official board at `https://cognition.com/frontiercode`), refreshed on every run.
 - **Benchmark (Terminal-Bench 2)** — `https://benchlm.ai/data/models.json` (`benchmarks.coding.terminalBench21`, fallback `terminalBench2`), refreshed on every run.
 - **Benchmark (Terminal-Bench 4)** — `https://benchlm.ai/data/models.json` (`benchmarks.coding.terminalBench41` / `agentic.terminalBench41` / `terminalBench4` / `aaTerminalBench4`), refreshed on every run.
 - **Benchmark (DeepSWE)** — `https://benchlm.ai/data/models.json` (`benchmarks.coding.deepSwe`), refreshed on every run.
