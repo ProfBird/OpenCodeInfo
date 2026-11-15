@@ -242,15 +242,20 @@
     table, tbody { display: block; }
     thead { display: none; }
     table { font-size: 0.85rem; }
-    tbody tr { display: grid; grid-template-columns: auto 1fr; column-gap: 0; border: 1px solid #bbb; border-radius: 10px; margin-bottom: 0.7rem; padding: 0.45rem 0.6rem; }
+    /* Card = header row (rank + model, full width) over a 3-column grid of label/value tiles */
+    tbody tr { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 0.75rem; row-gap: 0.5rem; border: 1px solid #bbb; border-radius: 10px; margin-bottom: 0.7rem; padding: 0.45rem 0.6rem; }
     tbody tr:hover { background: rgba(128,128,128,0.06); }
     td { grid-column: 1 / -1; display: block; border-bottom: none; text-align: left; padding: 0.2rem 0.1rem; }
-    td[data-label], td[data-label="Rank"] { display: flex; justify-content: space-between; align-items: baseline; gap: 0.75rem; text-align: right; width: auto; }
-    td[data-label]::before { content: attr(data-label); font-weight: 600; opacity: 0.65; text-align: left; flex-shrink: 0; }
+    /* Detail tile: small dimmed label above the value, three tiles per line */
+    td[data-label] { grid-column: auto; display: flex; flex-direction: column; align-items: flex-start; gap: 0.1rem; text-align: left; width: auto; min-width: 0; font-variant-numeric: tabular-nums; font-size: 0.95rem; }
+    td[data-label]::before { content: attr(data-label); font-size: 0.72rem; font-weight: 600; opacity: 0.65; line-height: 1.2; overflow-wrap: anywhere; }
     /* Card header line: rank + model name/badges + expand chevron */
-    td[data-label="Rank"] { grid-column: 1; grid-row: 1; display: block; width: auto; text-align: left; align-self: center; padding-right: 0.5rem; }
+    /* Rank and Model share the full-width header row; the model name is indented
+       past a fixed rank gutter so the 3 detail columns below stay equal width */
+    td[data-label="Rank"] { grid-column: 1 / -1; grid-row: 1; display: block; width: 2.6rem; font-size: inherit; text-align: left; align-self: center; padding-right: 0; }
     td[data-label="Rank"]::before { content: none; }
-    td[data-label="Model"] { grid-column: 2; grid-row: 1; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; text-align: left; font-weight: 600; cursor: pointer; }
+    td[data-label="Model"] { grid-column: 1 / -1; grid-row: 1; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 0.5rem; text-align: left; font-size: inherit; font-weight: 600; cursor: pointer; }
+    td[data-label="Rank"] + td[data-label="Model"] { padding-left: 2.6rem; }
     td[data-label="Model"]::before { content: none; }
     td[data-label="Model"] .card-head { flex: 1 1 auto; min-width: 0; }
     td[data-label="Model"] .card-toggle {
@@ -270,7 +275,8 @@
     tbody tr.expanded td[data-label="Model"] .card-price { display: none; }
     /* The (New) badge is noise on a card header: it keeps working in the table */
     .new-badge { display: none; }
-    tbody tr.expanded td[data-label="Rank"], tbody tr.expanded td[data-label="Model"] { border-bottom: 1px solid #ccc; padding-bottom: 0.35rem; }
+    tbody tr.expanded td[data-label="Model"] { border-bottom: 1px solid #ccc; padding-bottom: 0.35rem; margin-bottom: 0.15rem; }
+    tbody tr.expanded td[data-label="Rank"] { padding-bottom: 0.35rem; margin-bottom: 0.15rem; }
     /* Collapsed card: rank + model name + platform badge only; tap the header to expand */
     tbody tr:not(.expanded) td:not([data-label="Model"]):not([data-label="Rank"]) { display: none; }
     tbody tr:not(.expanded) td[data-label="Model"], tbody tr:not(.expanded) td[data-label="Rank"] { border-bottom: none; padding-bottom: 0; }
