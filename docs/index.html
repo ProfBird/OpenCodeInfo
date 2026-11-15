@@ -243,8 +243,8 @@
     .toolbar-row { gap: 0.5rem; }
     .toolbar input { width: 3rem; }
     #mobileSort { display: flex; }
-    /* Per-benchmark ranks are a wide-table feature */
-    .bench-rank { display: none; }
+    /* Tile value line "1) 92.4": rank sits snug against the score, no fixed slot */
+    .bench-rank { display: inline; min-width: 0; text-align: left; }
     table, tbody { display: block; }
     thead { display: none; }
     table { font-size: 0.85rem; }
@@ -553,7 +553,8 @@ function fmtScore(v) {
 
 // Benchmark cell: the row's rank on that suite (benchRanks, computed by
 // update_zen_prices.py over canonical models) before the score, e.g. "1) 92.4".
-// The rank prefix shows in the wide table only; the card layout hides it.
+// Rank and score share one span so a card tile (a column flexbox) keeps them on
+// one line.
 function fmtBench(m, field) {
   const v = m[field];
   const r = m.benchRanks ? m.benchRanks[field] : null;
@@ -562,7 +563,7 @@ function fmtBench(m, field) {
   const tip = rs.endsWith('?')
     ? 'Inferred rank on this benchmark: the score is unconfirmed (?)'
     : `Rank ${rs} on this benchmark`;
-  return `<span class="bench-rank" title="${tip}">${escapeHtml(rs)})</span> ${fmtScore(v)}`;
+  return `<span class="bench-val"><span class="bench-rank" title="${tip}">${escapeHtml(rs)})</span> ${fmtScore(v)}</span>`;
 }
 
 // Numeric value of a score/params cell; tolerates a trailing "?" (uncertain values).
