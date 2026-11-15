@@ -35,36 +35,35 @@ A small static web page that displays **all OpenCode Zen models** (coding benchm
 
 The site computes an automatic, objective composite rank across all evaluated models whenever new benchmarks or models are added.
 
-### Ranking Algorithm: Standardized Multi-Suite Skill with Cohort Calibration & Bayesian Coverage
+### Ranking Algorithm: Log-Odds Latent Skill with 2-Parameter Mean-Sigma Equating & Conservative Bayesian LCB
 
-Raw percentage scores from different coding benchmarks cannot be directly averaged or compared. Different benchmarks exhibit vastly different difficulty curves, scales, and score distributions: for example, resolving 67% of tasks on **Terminal-Bench 4** is state-of-the-art frontier performance (#1 in the catalog), whereas 67% on **Terminal-Bench 2** is mid-tier.
+Raw percentage scores from different coding benchmarks cannot be directly averaged or compared. Different benchmarks exhibit vastly different difficulty curves, ceiling compression, and score distributions: for example, resolving 67% of tasks on **Terminal-Bench 4** is state-of-the-art frontier performance (#1 in the catalog), whereas 67% on **Terminal-Bench 2** is mid-tier.
 
-Furthermore, naive z-score normalization suffers from **cohort selection bias**: cutting-edge benchmarks like **Terminal-Bench 4** and **DeepSWE** were designed in late 2026 and have only evaluated high-capability frontier models (models tested on TB4 average 85.8% on TB2, compared to the catalog average of 75.2%). Comparing a lightweight or mid-tier model against frontier giants on TB4 yields a negative z-score, while older models that never participated in TB4 escape the comparison entirely.
+Furthermore, naive linear z-scores suffer from three distinct distortions:
+1. **Ceiling Compression & Skew:** On older or higher-scoring benchmarks (such as **Terminal-Bench 2** and **AA Coding Index**), frontier models cluster near 80–92% while legacy/lightweight models create a long lower tail, compressing top-tier linear z-scores to $+1.2\sigma$ while newer benchmarks reach $+2.3\sigma$.
+2. **Cohort Range Restriction (Location & Scale Bias):** Cutting-edge benchmarks like **Terminal-Bench 4** and **DeepSWE** evaluate narrower, higher-capability frontier cohorts than broad catalog benchmarks. Adjusting only for cohort *mean* (shift-only equating) ignores cohort *variance* restriction and distorts relative slopes across suites.
+3. **Symmetric Shrinkage Distortion:** Shrinking sparse models symmetrically toward the catalog mean ($Z = 0$) pulls weak single-suite models *upward* above thoroughly tested mid-tier models.
 
-To provide fair, accurate, and contamination-resistant rankings across the entire catalog, the ranking pipeline uses **Standardized Multi-Suite Skill with Benchmark Cohort Calibration (Anchored Equating) and Bayesian Coverage Weighting**:
+To provide fair, monotonic, and clone-invariant rankings across the entire catalog, `compute_model_ranks` uses **Log-Odds Latent Skill (Item Response Theory) with 2-Parameter Mean-Sigma Anchored Equating and Conservative Bayesian Lower-Confidence-Bound (LCB) Weighting**:
 
-1. **Standardized Raw Z-Scores:** For each benchmark suite $f$, the pipeline computes the sample mean $\mu_f$ and standard deviation $\sigma_f$ across all models evaluated on that suite, converting raw scores $x_{m,f}$ to standard units:
-   $$Z_{m,f}^{\text{raw}} = \frac{x_{m,f} - \mu_f}{\sigma_f}$$
+1. **Canonical Model Deduplication:** Free tiers, Contributor tiers, OpenRouter twins, and `BENCH_INHERIT_FROM` aliases representing the same underlying model are collapsed into a single canonical identity during calibration and rank numbering (and unconfirmed `?` proxy scores are excluded from parameter fitting), preventing duplicate rows from skewing suite statistics or creating artificial rank gaps.
 
-2. **Benchmark Cohort Calibration (Anchored Equating):**
-   Because different benchmarks evaluate non-equivalent cohorts, tests taken by elite models have higher raw sample means than broad tests taken across the whole catalog.
-   
-   To align all benchmarks onto a unified global baseline, the pipeline uses "bridge models" (models evaluated across multiple suites) to iteratively estimate the latent cohort ability offset $C_f$ for each benchmark:
-   $$C_f = \frac{1}{|M_f|} \sum_{m \in M_f} \hat{R}_m^{(-f)} - \bar{C}$$
-   Where $\hat{R}_m^{(-f)}$ is model $m$'s composite performance across all suites *other* than $f$, and $\bar{C}$ centers the offsets. Calibrated z-scores are then computed as:
-   $$Z_{m,f}^{\text{calibrated}} = Z_{m,f}^{\text{raw}} + C_f$$
-   This prevents participation penalties: scoring 18.2% on TB4 is recognized as a respectable result on a frontier benchmark rather than penalized as a failure.
+2. **Log-Odds (IRT Logistic) Transformation:** For each suite $f$, raw percentage pass rates $p_{m,f} \in (0, 100)$ (clamped to $[0.5, 99.5]$) are mapped to log-odds:
+   $$\ell_{m,f} = \ln\left(\frac{p_{m,f}}{100 - p_{m,f}}\right)$$
+   Under the logistic Item Response Theory link, equal capability gains near benchmark ceilings (e.g. $88\% \to 92\%$) receive appropriate credit relative to mid-range gains ($50\% \to 54\%$).
 
-3. **Suite Weighting:** Each suite is assigned an explicit importance weight $w_f$ reflecting test recency, evaluation rigor, and resistance to contamination (see [Suite Weighting Rationale](#suite-weighting-rationale) below).
+3. **2-Parameter Mean-Sigma Anchored Equating:**
+   Using reliability-weighted multi-suite "bridge models" (models evaluated on suite $f$ plus at least one other suite), the pipeline iteratively estimates both suite **location/difficulty** $b_f$ and **scale/discrimination** $a_f$ so that calibrated skill scores match the bridge cohort's leave-one-out latent skill mean and standard deviation on a global $\mathcal{N}(0, 1)$ scale:
+   $$a_f = \frac{\sigma_{\ell \mid B_f}}{\sigma_{\hat{\theta}^{(-f)} \mid B_f}}, \qquad b_f = \mu_{\ell \mid B_f} - a_f \mu_{\hat{\theta}^{(-f)} \mid B_f}, \qquad Z_{m,f}^{\text{cal}} = \frac{\ell_{m,f} - b_f}{a_f}$$
 
-4. **Bayesian Coverage Shrinkage ($\lambda_{\text{prior}} = 0.75$):**
-   Simply calculating a weighted average of available scores introduces severe selection bias ("one-hit wonder" syndrome) — a model evaluated on only a single benchmark where it happened to perform well would leapfrog comprehensively evaluated frontier models that have proven themselves across 3, 4, or 5 rigorous suites.
-   
-   To enforce statistical confidence, each model's composite score $R_m$ incorporates a Bayesian shrinkage prior $\lambda_{\text{prior}} = 0.75$ (pulling uncertain scores toward the catalog baseline $Z = 0$):
-   $$R_m = \frac{\sum_{f \in \mathcal{F}_m} w_f \cdot Z_{m,f}^{\text{calibrated}}}{\sum_{f \in \mathcal{F}_m} w_f + \lambda_{\text{prior}}}$$
-   Where $\mathcal{F}_m$ is the set of benchmark suites on which model $m$ has a verified score. This shrinkage smoothly discounts sparse, single-test evaluations while rewarding models that demonstrate sustained, reproducible excellence across diverse testing methodologies.
+4. **Suite Weighting:** Each suite is assigned an explicit importance weight $w_f$ reflecting test recency, evaluation rigor, and resistance to contamination (see [Suite Weighting Rationale](#suite-weighting-rationale) below).
 
-5. **Competition Ranking:** Models are sorted by descending composite score $R_m$ and assigned standard competition ranks ($1, 2, 2, 4\dots$). Models without any published benchmark evaluations receive `—` and sort to the bottom.
+5. **Conservative Bayesian Skill (TrueSkill LCB, $\lambda = 0.35, \kappa = 0.75$):**
+   Each model's posterior mean $\mu_m$ and posterior uncertainty $\sigma_m$ are combined into a TrueSkill-style conservative lower confidence bound:
+   $$\mu_m = \frac{\sum_{f \in \mathcal{F}_m} w_f \cdot Z_{m,f}^{\text{cal}}}{\sum_{f \in \mathcal{F}_m} w_f + \lambda}, \qquad \sigma_m = \frac{1}{\sqrt{\sum_{f \in \mathcal{F}_m} w_f + \lambda}}, \qquad R_m = \mu_m - \kappa \cdot \sigma_m$$
+   Because $-\kappa \sigma_m$ penalizes high uncertainty regardless of sign, sparse single-benchmark models cannot leapfrog proven multi-suite frontier models at the top *or* get pulled artificially upward toward the average in the lower half of the table.
+
+6. **Competition Ranking:** Canonical models are sorted by descending conservative rating $R_m$ and assigned standard competition ranks ($1, 2, 2, 4\dots$). Any row whose benchmark profile materially diverges from its canonical twin (e.g. an older build on OpenRouter) is scored from its own benchmarks against the canonical scale. Models without published benchmarks receive `—` and sort to the bottom.
 
 ---
 

@@ -27,6 +27,7 @@ import argparse
 import calendar
 import html
 import json
+import math
 import re
 import sys
 import urllib.request
@@ -73,8 +74,11 @@ DISPLAY_NAME = {
     "ling-3.0-flash-fin-free": "Ling 3.0 Flash Fin Free",
     "gpt-5.6-luna": "GPT 5.6 Luna", "grok-4.5": "Grok 4.5",
     "deepseek-v4-pro": "DeepSeek V4 Pro", "deepseek-v4-flash": "DeepSeek V4 Flash",
+    "deepseek-v4.1-flash": "DeepSeek V4.1 Flash", "deepseek-v4.1-flash-free": "DeepSeek V4.1 Flash Free",
+    "deepseek-flash": "DeepSeek Flash",
     "deepseek-v4-flash-vision-exp": "DeepSeek V4 Flash Vision Exp",
     "glm-5.3-flash": "GLM-5.3-Flash", "glm-5.3": "GLM-5.3", "glm-5.2": "GLM-5.2", "glm-5.1": "GLM-5.1", "glm-5": "GLM-5",
+    "minimax-m3.1-flash": "MiniMax M3.1 Flash", "minimax-m3.1-flash-free": "MiniMax M3.1 Flash Free",
     "minimax-m3": "MiniMax M3", "minimax-m2.7": "MiniMax M2.7", "minimax-m2.5": "MiniMax M2.5",
     "kimi-k3": "Kimi K3", "kimi-k2.7-code": "Kimi K2.7 Code", "kimi-k2.6": "Kimi K2.6",
     "kimi-k2.5": "Kimi K2.5", "qwen3.6-plus": "Qwen3.6 Plus", "qwen3.5-plus": "Qwen3.5 Plus",
@@ -237,6 +241,7 @@ BENCH_SLUG_OVERRIDES = {
     "GPT 5.6 Terra": "gpt-5-6-terra",
     "GPT 5.6 Luna": "gpt-5-6-luna",
     # BenchLM labels the current build "DeepSeek V4.1 Flash 1017"
+    "DeepSeek V4.1 Flash": "deepseek-v4-1-flash",
     "Deepseek V4.1 Flash": "deepseek-v4-1-flash",
     # free variants with no paid twin row: same model, look up the base BenchLM slug
     "MiMo-V2.6-Flash Free": "mimo-v2-6-flash",
@@ -273,7 +278,14 @@ def display_from_id(model_id: str) -> str:
             out.append(p.upper())
         else:
             out.append(p.capitalize())
-    return " ".join(out).replace("Mimo", "MiMo")
+    return (
+        " ".join(out)
+        .replace("Mimo", "MiMo")
+        .replace("Deepseek", "DeepSeek")
+        .replace("Minimax", "MiniMax")
+        .replace("Glm", "GLM")
+        .replace("Gpt", "GPT")
+    )
 
 def parse_price(s: str):
     s = s.strip()
@@ -637,17 +649,23 @@ def sync_openrouter(models, or_models, dry_run=False, today=None):
             continue  # only curated Programming-category models get rows
         name = or_display_name(oid, om.get("name") or oid)
         price = om.get("pricing", {}) or {}
-        def per_million(v):
+        def per_million(v, default=None):
+            if v is None or v == "":
+                return default
             try:
-                return round(float(v) * 1_000_000, 6)
+                val = float(v)
+                return round(val * 1_000_000, 6) if val >= 0 else default
             except (TypeError, ValueError):
-                return 0
+                return default
+        in_cost = per_million(price.get("prompt"), default=0)
+        out_cost = per_million(price.get("completion"), default=0)
+        cache_default = 0 if (in_cost == 0 and out_cost == 0) else None
         row_data = {
             "params": OPENROUTER_PARAMS.get(oid),
             "context": fmt_ctx(om.get("context_length")),
-            "inputCost": per_million(price.get("prompt")),
-            "outputCost": per_million(price.get("completion")),
-            "cachedReadCost": per_million(price.get("input_cache_read")),
+            "inputCost": in_cost,
+            "outputCost": out_cost,
+            "cachedReadCost": per_million(price.get("input_cache_read"), default=cache_default),
             "plan": "openrouter",
             "codingIndex": OPENROUTER_CODING_INDEX.get(oid),
         }
@@ -701,7 +719,6 @@ def build_desired(zen_ids, go_ids, md, mdgo=None):
         m = md.get(i, {}) or md.get(nid, {}) or (mdgo or {}).get(i, {})
         cost = m.get("cost", {})
         plan = "go" if i in go_set else "zen"
-        price = None
         # pricing handled later by the caller via tables; here just defaults
         desired[i] = {
             "id": i,
@@ -780,6 +797,9 @@ def reconcile(data, desired, zen_pricing, go_pricing, go_usage, md, dry_run=Fals
                 models.append(row)
         else:
             updates = {}
+            # canonical display name (e.g. DeepSeek / MiniMax casing from DISPLAY_NAME)
+            if i in DISPLAY_NAME and existing.get("name") != d["name"]:
+                updates["name"] = d["name"]
             # plan
             if existing.get("plan") != d["plan"]:
                 updates["plan"] = d["plan"]
@@ -833,6 +853,17 @@ def reconcile(data, desired, zen_pricing, go_pricing, go_usage, md, dry_run=Fals
                         else:
                             existing[k] = v
 
+    # Normalize display names on retired Zen/Go rows not visited in desired
+    visited_rows = {id(by_id.get(normalize(i)) or by_id.get(normalize(d["name"]))) for i, d in desired.items()}
+    for m in models:
+        if m.get("plan") == "openrouter" or id(m) in visited_rows:
+            continue
+        canon_disp = DISPLAY_NAME.get(id_from_name(m["name"]))
+        if canon_disp and m["name"] != canon_disp:
+            changed.append((m["name"], {"name": canon_disp}))
+            if not dry_run:
+                m["name"] = canon_disp
+
     if not dry_run:
         data["models"].sort(key=lambda x: x["name"].lower())
     return added, changed
@@ -844,7 +875,7 @@ def bench_slug_for(name: str) -> str:
     return id_from_name(name)
 
 # BenchLM coding benchmark fields merged into each model (null if unpublished).
-BENCH_FIELDS = ("swePro", "terminalBench2", "terminalBench4", "deepSwe")
+BENCH_FIELDS = ("codingIndex", "swePro", "terminalBench2", "terminalBench4", "deepSwe")
 
 def bench_item_for(model_name, field, by_slug, by_norm):
     """Resolve the BenchLM item for a model+field (per-field slug overrides)."""
@@ -886,6 +917,10 @@ def merge_benchmarks(models, bench_items, dry_run=False):
     changed = []
     for m in models:
         for field in BENCH_FIELDS:
+            # OpenRouter rows carry build-matched OPENROUTER_CODING_INDEX snapshots
+            # (with missing values filled by cross_copy_benchmarks).
+            if field == "codingIndex" and m.get("plan") == "openrouter":
+                continue
             if field in BENCH_VALUE_OVERRIDES.get(m["name"], {}) and BENCH_VALUE_OVERRIDES[m["name"]][field] is None:
                 continue
             it = bench_item_for(m["name"], field, by_slug, by_norm)
@@ -893,7 +928,9 @@ def merge_benchmarks(models, bench_items, dry_run=False):
                 continue
             coding = it.get("benchmarks", {}).get("coding", {}) or {}
             agentic = it.get("benchmarks", {}).get("agentic", {}) or {}
-            if field == "terminalBench2":
+            if field == "codingIndex":
+                score = coding.get("aaCodingIndex")
+            elif field == "terminalBench2":
                 # prefer the newer Terminal-Bench 2.1, fall back to 2.0
                 score = (coding.get("terminalBench21") if coding.get("terminalBench21") is not None
                          else agentic.get("terminalBench21") if agentic.get("terminalBench21") is not None
@@ -956,7 +993,9 @@ BENCH_VALUE_OVERRIDES = {
     "Qwen3.8 Flash": {"terminalBench4": 25.3},
     "Qwen3.8 Max": {"terminalBench4": 38.9},
     "DeepSeek V4 Flash": {"terminalBench4": 31.2},
+    "DeepSeek V4 Flash 0731": {"terminalBench4": 31.2},
     "DeepSeek V4 Pro": {"terminalBench4": 14.1},
+    "DeepSeek V4 Pro 0813": {"terminalBench4": 14.1},
     # Datacurve DeepSWE evaluations
     "Claude Haiku 5.5": {"deepSwe": 59.9},
     "Claude Sonnet 5": {"deepSwe": 53.8},
@@ -977,8 +1016,8 @@ BENCH_INHERIT_FROM = {
     "Muse Spark 1.2 Contributor Free": "Muse Spark 1.2",
     "Muse Spark 1.3 Free": "Muse Spark 1.3",
     "GLM-5.3-Flash Free": "GLM-5.3-Flash",
-    "DeepSeek V4.1 Flash Free": "Deepseek V4.1 Flash",
-    "MiniMax M3.1 Flash Free": "Minimax M3.1 Flash",
+    "DeepSeek V4.1 Flash Free": "DeepSeek V4.1 Flash",
+    "MiniMax M3.1 Flash Free": "MiniMax M3.1 Flash",
     "Step 5 Preview Free": "Step 5 Preview",
     "LongCat 2.5 Preview Free": "LongCat 2.5 Free",
 }
@@ -1033,12 +1072,14 @@ def inherit_benchmarks(models, bench_items, dry_run=False):
         for field, score in pairs:
             if score is None:
                 continue
+            if field in BENCH_VALUE_OVERRIDES.get(m["name"], {}) or (field == "swePro" and m["name"] in SWE_PRO_OVERRIDES):
+                continue
             old = m.get(field)
             old_num = _bench_num(old)
             if old_num is None or abs(old_num - score) > 1e-9:
                 changed.append((field, m["name"], old, score))
                 if not dry_run:
-                    m[field] = score
+                    _set_bench_field(m, field, score)
     return changed
 
 def apply_bench_overrides(models, dry_run=False):
@@ -1053,7 +1094,7 @@ def apply_bench_overrides(models, dry_run=False):
         if old_num is None or abs(old_num - score) > 1e-9:
             changed.append(("swePro", m["name"], old, score))
             if not dry_run:
-                m["swePro"] = score
+                _set_bench_field(m, "swePro", score)
     for m in models:
         for field, score in BENCH_VALUE_OVERRIDES.get(m["name"], {}).items():
             old = m.get(field)
@@ -1258,132 +1299,189 @@ BENCH_WEIGHTS = {
 }
 
 def compute_model_ranks(models, dry_run=False):
-    """Compute global ranking across all benchmarks using standardized multi-suite skill
-    with benchmark cohort calibration (anchored equating) and Bayesian coverage weighting.
+    """Compute global ranking across all benchmarks via log-odds latent skill with
+    2-parameter Mean-Sigma anchored equating and conservative Bayesian skill (LCB).
 
-    1. For each benchmark, standardize raw scores into z-scores (mean 0, std 1) across
-       all evaluated models.
-    2. Benchmark Cohort Calibration (Anchored Equating): Cutting-edge benchmarks
-       (Terminal-Bench 4, DeepSWE) were only evaluated on high-capability frontier models,
-       while older suites (Terminal-Bench 2, AA Coding Index) evaluate the broader catalog.
-       Uncalibrated z-scores heavily penalize models participating in elite suites compared
-       to models that skip them. Iterative anchored calibration estimates a latent cohort
-       ability offset for each benchmark using bridge models evaluated across multiple suites,
-       placing all benchmarks onto a unified global scale.
-    3. Apply benchmark weights reflecting recency and rigor (Terminal-Bench 4: 1.5×,
-       DeepSWE: 1.5×, SWE-bench Pro: 1.0×, AA Coding Index: 1.0×, Terminal-Bench 2: 0.5×).
-    4. Apply Bayesian coverage weighting (shrinkage towards population mean, lambda=0.75)
-       to reward broad multi-suite consistency and avoid 'one-hit-wonder' selection bias
-       from models evaluated on only a single test.
-    5. Assign integer competition ranks (1..N, with tied scores sharing ranks) to
-       benchmark-evaluated models, and None to models with no benchmark data.
+    1. Canonical Deduplication: Variants serving the same underlying model (Free,
+       Contributor, OpenRouter twins, and BENCH_INHERIT_FROM aliases) are grouped
+       into canonical model identities so duplicate rows neither skew suite
+       statistics nor create competition-rank gaps. Unconfirmed ('?') scores are
+       excluded when fitting suite parameters so they cannot distort calibration,
+       then evaluated afterward on the calibrated scale.
+    2. Log-Odds Transformation: Raw percentage scores p in (0, 100) are mapped to
+       log-odds l = ln(p / (100 - p)) (Item Response Theory logistic link, clamped
+       to [0.5, 99.5]%), eliminating ceiling compression on saturated suites
+       (e.g. Terminal-Bench 2, AA Coding Index) and floor skew.
+    3. 2-Parameter Mean-Sigma Anchored Equating: Cutting-edge suites (Terminal-Bench 4,
+       DeepSWE) evaluate narrower, higher-ability frontier cohorts than broad suites.
+       Reliability-weighted Mean-Sigma equating across multi-suite bridge models
+       iteratively estimates both suite difficulty/location b_f and discrimination/scale
+       a_f so Z_cal = (l - b_f) / a_f aligns every suite to a global N(0, 1) skill scale.
+    4. Suite Weights & Conservative Bayesian Skill (Lower Confidence Bound):
+       Suites are weighted by rigor and recency (Terminal-Bench 4: 1.5x, DeepSWE: 1.5x,
+       SWE-bench Pro: 1.0x, AA Coding Index: 1.0x, Terminal-Bench 2: 0.5x). Each model's
+       rating uses TrueSkill-style conservative posterior skill R = mu_post - kappa * sigma_post
+       (lambda = 0.35, kappa = 0.75), where mu_post = sum(w_f * Z_cal) / (sum(w_f) + lambda)
+       and sigma_post = 1 / sqrt(sum(w_f) + lambda). Unlike symmetric shrinkage toward 0,
+       conservative LCB penalizes sparse single-suite coverage across the entire table
+       without pulling weak single-suite models upward toward the mean.
+    5. Competition Ranking: Canonical models receive standard competition ranks (1..K);
+       rows whose benchmarks materially diverge from their canonical twin (e.g. distinct
+       OpenRouter builds) are scored from their own benchmarks against the canonical scale;
+       models with no benchmark scores receive None.
     """
     bench_fields = ("codingIndex", "swePro", "terminalBench2", "terminalBench4", "deepSwe")
+    LAMBDA_PRIOR = 0.35
+    KAPPA_LCB = 0.75
 
     def parse_score(v):
         if v is None:
-            return None
+            return None, False
         if isinstance(v, (int, float)):
-            return float(v)
+            return float(v), False
         if isinstance(v, str):
+            uncertain = "?" in v
             s = v.rstrip("?").strip()
             try:
-                return float(s)
+                return float(s), uncertain
             except ValueError:
-                return None
-        return None
+                return None, False
+        return None, False
 
-    # Collect benchmarks per unique model name (twins share benchmark scores)
-    unique_models = {}
-    for m in models:
-        name = m["name"]
-        if name not in unique_models:
-            scores = {f: parse_score(m.get(f)) for f in bench_fields if parse_score(m.get(f)) is not None}
-            if scores:
-                unique_models[name] = scores
+    def canonical_id(name):
+        cur = name
+        visited = set()
+        while cur in BENCH_INHERIT_FROM and cur not in visited:
+            visited.add(cur)
+            cur = BENCH_INHERIT_FROM[cur]
+        cur = re.sub(r"\s+(Contributor\s+Free|Contributor|Free)$", "", cur, flags=re.IGNORECASE)
+        return normalize(cur)
 
-    model_names = sorted(unique_models.keys())
-    if not model_names:
+    def logit(p):
+        clamped = max(0.5, min(99.5, float(p))) / 100.0
+        return math.log(clamped / (1.0 - clamped))
+
+    # Build canonical benchmark profiles (Zen/Go and active rows take precedence over
+    # 1-decimal OpenRouter snapshots; '?' uncertain values excluded from calibration).
+    cal_scores = {}
+    canon_scores = {}
+    ordered_rows = sorted(
+        models,
+        key=lambda r: (r.get("plan") == "openrouter", bool(r.get("na")), r["name"]),
+    )
+    for m in ordered_rows:
+        cid = canonical_id(m["name"])
+        for f in bench_fields:
+            val, uncertain = parse_score(m.get(f))
+            if val is None:
+                continue
+            canon_scores.setdefault(cid, {}).setdefault(f, val)
+            if not uncertain:
+                cal_scores.setdefault(cid, {}).setdefault(f, val)
+
+    l_cal = {cid: {f: logit(v) for f, v in sc.items()} for cid, sc in cal_scores.items() if sc}
+    if not l_cal:
         return []
 
-    # 1. Standardize each benchmark to Z-scores (mean 0, std 1)
-    bench_z = {}
+    # Initialize suite location (b_f) and scale (a_f) in log-odds space
+    a_scale = {}
+    b_loc = {}
     for f in bench_fields:
-        scores = [(name, unique_models[name][f]) for name in model_names if f in unique_models[name]]
-        if not scores:
+        xs = [l_cal[c][f] for c in l_cal if f in l_cal[c]]
+        if not xs:
+            a_scale[f], b_loc[f] = 1.0, 0.0
             continue
-        vals = [s[1] for s in scores]
-        mean_v = sum(vals) / len(vals)
-        var_v = sum((x - mean_v) ** 2 for x in vals) / len(vals)
-        std_v = (var_v ** 0.5) if var_v > 1e-9 else 1.0
-        bench_z[f] = {name: (val - mean_v) / std_v for name, val in scores}
+        mu = sum(xs) / len(xs)
+        var = sum((x - mu) ** 2 for x in xs) / len(xs)
+        b_loc[f] = mu
+        a_scale[f] = max(var ** 0.5, 0.1)
 
-    # 2. Benchmark Cohort Calibration (Anchored Equating):
-    # Tests like TB4 and DeepSWE have a higher-ability evaluating cohort than broad tests like TB2.
-    # Iteratively estimate the cohort ability offset for each benchmark using bridge models.
-    LAMBDA_PRIOR = 0.75  # Bayesian prior shrinkage for missing benchmark coverage
-    cohort_offsets = {f: 0.0 for f in bench_fields}
+    # Iterative reliability-weighted Mean-Sigma Anchored Equating across bridge models
+    for _ in range(40):
+        theta = {}
+        for cid, ls in l_cal.items():
+            w_sum = sum(BENCH_WEIGHTS.get(f, 1.0) for f in ls)
+            theta[cid] = sum(BENCH_WEIGHTS.get(f, 1.0) * ((ls[f] - b_loc[f]) / a_scale[f]) for f in ls) / w_sum
+        t_vals = list(theta.values())
+        t_mu = sum(t_vals) / len(t_vals)
+        t_var = sum((x - t_mu) ** 2 for x in t_vals) / len(t_vals)
+        t_sd = (t_var ** 0.5) if t_var > 1e-9 else 1.0
 
-    for _ in range(10):
-        # Current ratings with cohort offsets
-        ratings = {}
-        for name in model_names:
-            present = [f for f in bench_fields if f in bench_z and name in bench_z[f]]
-            w_sum = sum(BENCH_WEIGHTS.get(f, 1.0) for f in present)
-            weighted_z = sum(BENCH_WEIGHTS.get(f, 1.0) * (bench_z[f][name] + cohort_offsets[f]) for f in present)
-            ratings[name] = weighted_z / (w_sum + LAMBDA_PRIOR)
-
-        # Estimate benchmark cohort offset from performance on other benchmarks
-        new_offsets = {}
+        new_a, new_b = {}, {}
         for f in bench_fields:
-            cohort_models = [name for name in model_names if f in bench_z and name in bench_z[f]]
-            other_skills = []
-            for name in cohort_models:
-                other_benches = [b for b in bench_fields if b != f and b in bench_z and name in bench_z[b]]
-                if other_benches:
-                    w_sum = sum(BENCH_WEIGHTS.get(b, 1.0) for b in other_benches)
-                    weighted_z = sum(BENCH_WEIGHTS.get(b, 1.0) * (bench_z[b][name] + cohort_offsets[b]) for b in other_benches)
-                    other_skills.append(weighted_z / (w_sum + LAMBDA_PRIOR))
-            new_offsets[f] = (sum(other_skills) / len(other_skills)) if other_skills else 0.0
+            bridge = []
+            for cid, ls in l_cal.items():
+                if f not in ls:
+                    continue
+                others = [g for g in ls if g != f]
+                if not others:
+                    continue
+                w_other = sum(BENCH_WEIGHTS.get(g, 1.0) for g in others)
+                t_other = sum(BENCH_WEIGHTS.get(g, 1.0) * ((ls[g] - b_loc[g]) / a_scale[g]) for g in others) / w_other
+                t_other = (t_other - t_mu) / t_sd
+                rel = w_other / (w_other + 1.0)
+                bridge.append((rel, t_other, ls[f]))
+            if len(bridge) < 2:
+                new_a[f], new_b[f] = a_scale[f], b_loc[f]
+                continue
+            w_tot = sum(w for w, _, _ in bridge)
+            mx = sum(w * tx for w, tx, _ in bridge) / w_tot
+            my = sum(w * ly for w, _, ly in bridge) / w_tot
+            sx = (sum(w * (tx - mx) ** 2 for w, tx, _ in bridge) / w_tot) ** 0.5
+            sy = (sum(w * (ly - my) ** 2 for w, _, ly in bridge) / w_tot) ** 0.5
+            new_a[f] = max(sy / max(sx, 0.1), 0.1)
+            new_b[f] = my - new_a[f] * mx
+        a_scale, b_loc = new_a, new_b
 
-        # Center offsets so the global average offset is 0.0
-        avg_offset = sum(new_offsets.values()) / len(new_offsets)
-        for f in bench_fields:
-            cohort_offsets[f] = new_offsets[f] - avg_offset
+    def conservative_rating(sc):
+        w_sum = sum(BENCH_WEIGHTS.get(f, 1.0) for f in sc)
+        z_sum = sum(BENCH_WEIGHTS.get(f, 1.0) * ((logit(sc[f]) - b_loc[f]) / a_scale[f]) for f in sc)
+        denom = w_sum + LAMBDA_PRIOR
+        return (z_sum / denom) - (KAPPA_LCB / math.sqrt(denom))
 
-    # Compute final calibrated ratings
-    ratings = {}
-    for name in model_names:
-        present = [f for f in bench_fields if f in bench_z and name in bench_z[f]]
-        if not present:
-            continue
-        w_sum = sum(BENCH_WEIGHTS.get(f, 1.0) for f in present)
-        weighted_z = sum(BENCH_WEIGHTS.get(f, 1.0) * (bench_z[f][name] + cohort_offsets[f]) for f in present)
-        ratings[name] = weighted_z / (w_sum + LAMBDA_PRIOR)
-
-    # 3. Standard competition ranking
-    sorted_ranked = sorted(ratings.keys(), key=lambda name: ratings[name], reverse=True)
-    ranks = {}
+    canon_ratings = {cid: conservative_rating(sc) for cid, sc in canon_scores.items() if sc}
+    sorted_cids = sorted(canon_ratings.keys(), key=lambda c: canon_ratings[c], reverse=True)
+    canon_ranks = {}
     curr_rank = 1
     prev_score = None
-    for idx, name in enumerate(sorted_ranked):
-        score = ratings[name]
+    for idx, cid in enumerate(sorted_cids):
+        score = canon_ratings[cid]
         if prev_score is not None and abs(score - prev_score) < 1e-5:
-            ranks[name] = curr_rank
+            canon_ranks[cid] = curr_rank
         else:
             curr_rank = idx + 1
-            ranks[name] = curr_rank
+            canon_ranks[cid] = curr_rank
             prev_score = score
 
-    # Apply to model dicts
+    # Assign ranks to every row (ensuring unranked rows also carry explicit "rank": None)
     changed = []
     for m in models:
-        new_rank = ranks.get(m["name"])
+        row_sc = {}
+        for f in bench_fields:
+            val, _ = parse_score(m.get(f))
+            if val is not None:
+                row_sc[f] = val
+        if not row_sc:
+            new_rank = None
+        else:
+            cid = canonical_id(m["name"])
+            base_sc = canon_scores.get(cid, {})
+            # Score build-divergent rows (e.g. distinct OpenRouter builds differing by > 0.1)
+            # from their own benchmark profile; rounded twins share their canonical rank.
+            diverges = any(f in base_sc and abs(row_sc[f] - base_sc[f]) > 0.1 for f in row_sc)
+            if diverges:
+                r_row = conservative_rating(row_sc)
+                new_rank = 1 + sum(1 for c in sorted_cids if canon_ratings[c] > r_row + 1e-5)
+            else:
+                new_rank = canon_ranks.get(cid)
+
+        has_rank_key = "rank" in m
         old_rank = m.get("rank")
-        if old_rank != new_rank:
-            changed.append((m["name"], old_rank, new_rank))
+        if old_rank != new_rank or not has_rank_key:
+            if old_rank != new_rank:
+                changed.append((m["name"], old_rank, new_rank))
             if not dry_run:
-                if "rank" in m:
+                if has_rank_key:
                     m["rank"] = new_rank
                 else:
                     _insert_after(m, "rank", new_rank, "name")
@@ -1512,7 +1610,7 @@ def main():
         data["benchmarkTerminal4"] = f"Terminal-Bench 4 (Laude Institute), via {DEFAULT_BENCHLM_URL}, retrieved {today}"
         data.pop("benchmarkTerminal", None)
         data["benchmarkDeepSwe"] = f"DeepSWE (Datacurve), via {DEFAULT_BENCHLM_URL}, retrieved {today}"
-        data["rankingSource"] = f"Composite standardized multi-suite skill with Bayesian coverage weighting, computed {today}"
+        data["rankingSource"] = f"Composite log-odds latent skill with 2-parameter Mean-Sigma equating and conservative Bayesian LCB, computed {today}"
         args.output.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         print(f"\nWrote {args.output}", file=sys.stderr)
     elif args.dry_run:

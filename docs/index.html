@@ -206,21 +206,23 @@
     .toolbar-row { gap: 0.5rem; }
     .toolbar input { width: 3rem; }
     #mobileSort { display: flex; }
-    table, tbody, tr, td { display: block; }
+    table, tbody { display: block; }
     thead { display: none; }
     table { font-size: 0.85rem; }
-    tbody tr { border: 1px solid #bbb; border-radius: 10px; margin-bottom: 0.7rem; padding: 0.45rem 0.6rem; }
+    tbody tr { display: flex; flex-direction: column; border: 1px solid #bbb; border-radius: 10px; margin-bottom: 0.7rem; padding: 0.45rem 0.6rem; }
     tbody tr:hover { background: rgba(128,128,128,0.06); }
-    td { border-bottom: none; text-align: right; padding: 0.2rem 0.1rem; }
-    td[data-label]::before { content: attr(data-label); float: left; font-weight: 600; opacity: 0.65; margin-right: 0.75rem; }
-    td:first-child { text-align: left; font-weight: 600; border-bottom: 1px solid #ccc; padding-bottom: 0.35rem; margin-bottom: 0.3rem; }
+    td { display: block; border-bottom: none; text-align: left; padding: 0.2rem 0.1rem; }
+    td[data-label], td[data-label="Rank"] { display: flex; justify-content: space-between; align-items: baseline; gap: 0.75rem; text-align: right; width: auto; }
+    td[data-label]::before { content: attr(data-label); font-weight: 600; opacity: 0.65; text-align: left; flex-shrink: 0; }
+    td[data-label="Model"] { order: -1; display: block; text-align: left; font-weight: 600; border-bottom: 1px solid #ccc; padding-bottom: 0.35rem; margin-bottom: 0.3rem; }
+    td[data-label="Model"]::before { content: none; }
   }
 </style>
 </head>
 <body>
   <h1>OpenCode Zen &amp; Go, OpenRouter — Model Benchmarks &amp; Cost</h1>
   <p class="toplinks"><a href="https://opencode.ai/zen" target="_blank" rel="noopener noreferrer">OpenCode Zen</a> · <a href="https://opencode.ai/docs/go" target="_blank" rel="noopener noreferrer">OpenCode Go</a> · <a href="https://openrouter.ai/models?categories=programming" target="_blank" rel="noopener noreferrer">OpenRouter</a></p>
-  <p class="subtitle"><strong>OpenCode</strong> provides the Zen pay-as-you-go catalog and the $10/mo <strong>Go</strong> plan; <strong>OpenRouter</strong> is a third-party model provider — its rows carry OpenRouter's own pricing and context, which can differ from the same model's Zen/Go twins, and OpenRouter adds a 5.5% charge on top of the listed price. Use the <strong>Plan</strong> filter to show all models, recently added (<strong>New</strong>) models, models available on Zen pay-as-you-go, the Go plan subset, or OpenRouter programming-category models. Every model is badged: <strong>(Zen)</strong> = Zen pay-as-you-go only, <strong>(Go)</strong> = on the Go plan, <strong>(Go · Zen)</strong> = also on Zen pay-as-you-go, <strong>(OpenRouter)</strong> = OpenRouter row. Costs are USD per 1M tokens. <strong>Rank</strong> is an objective composite calculated across 5 benchmark suites: <a href="https://www.tbench.ai/" target="_blank" rel="noopener noreferrer">Terminal-Bench 4 &amp; 2</a>, <a href="https://deepswe.datacurve.ai/" target="_blank" rel="noopener noreferrer">DeepSWE</a>, <a href="https://labs.scale.com/leaderboard/swe_bench_pro_public" target="_blank" rel="noopener noreferrer">SWE-bench Pro</a>, and the <a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener noreferrer">AA Coding Index</a> via standardized multi-suite skill with cohort calibration and Bayesian coverage weighting. Click any column header or sort button to sort; selecting a new column keeps the previous sort as the tiebreaker for equal values.</p>
+  <p class="subtitle"><strong>OpenCode</strong> provides the Zen pay-as-you-go catalog and the $10/mo <strong>Go</strong> plan; <strong>OpenRouter</strong> is a third-party model provider — its rows carry OpenRouter's own pricing and context, which can differ from the same model's Zen/Go twins, and OpenRouter adds a 5.5% charge on top of the listed price. Use the <strong>Plan</strong> filter to show all models, recently added (<strong>New</strong>) models, models available on Zen pay-as-you-go, the Go plan subset, or OpenRouter programming-category models. Every model is badged: <strong>(Zen)</strong> = Zen pay-as-you-go only, <strong>(Go)</strong> = on the Go plan, <strong>(Go · Zen)</strong> = also on Zen pay-as-you-go, <strong>(OpenRouter)</strong> = OpenRouter row. Costs are USD per 1M tokens. <strong>Rank</strong> is an objective composite calculated across 5 benchmark suites: <a href="https://www.tbench.ai/" target="_blank" rel="noopener noreferrer">Terminal-Bench 4 &amp; 2</a>, <a href="https://deepswe.datacurve.ai/" target="_blank" rel="noopener noreferrer">DeepSWE</a>, <a href="https://labs.scale.com/leaderboard/swe_bench_pro_public" target="_blank" rel="noopener noreferrer">SWE-bench Pro</a>, and the <a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener noreferrer">AA Coding Index</a> via log-odds latent skill with 2-parameter Mean-Sigma cohort equating and conservative Bayesian lower-confidence-bound (LCB) weighting. Click any column header or sort button to sort; selecting a new column keeps the previous sort as the tiebreaker for equal values.</p>
 
   <div class="toolbar">
     <div class="toolbar-row toolbar-actions">
@@ -320,7 +322,7 @@
   <table>
     <thead>
       <tr id="theadRow">
-        <th data-key="rank" title="Composite coding benchmark rank across all 5 benchmark suites via standardized multi-suite skill with cohort calibration and Bayesian coverage weighting">Rank</th>
+        <th data-key="rank" title="Composite coding benchmark rank across all 5 benchmark suites via log-odds latent skill with 2-parameter Mean-Sigma equating and conservative Bayesian LCB">Rank</th>
         <th data-key="name">Model</th>
         <th data-key="params">Params</th>
         <th data-key="context">Context</th>
@@ -339,7 +341,7 @@
   </table>
 
   <p class="footer">Models with no benchmark score (—) or params (—) sort last on those columns. All AA Coding Index values from <a href="https://benchlm.ai/benchmarks/aacodingindex" target="_blank" rel="noopener noreferrer">BenchLM AA Coding Index</a> (display-only mirror of <a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener noreferrer">Artificial Analysis</a>, verified 2026-08-21, e.g. Kimi K3 76.24, GLM-5.3 74.76, Grok 4.5 72.45, Muse Spark 1.2 72.22, DeepSeek V4 Pro 68.83/Flash 69.06 for builds 0813/0731); Vision Exp, LongCat-2.0 etc. have no published AA Coding Index on that page and show —.</p>
-  <p class="footer"><strong>Rank:</strong> Composite coding benchmark rank across all 5 benchmark suites (AA Coding Index, SWE-bench Pro, Terminal-Bench 2, Terminal-Bench 4, and DeepSWE) calculated via standardized multi-suite skill (z-score normalization) with benchmark cohort calibration (anchored equating) and Bayesian coverage weighting. Suite weights reflect test recency and rigor (Terminal-Bench 4: 1.5×, DeepSWE: 1.5×, SWE-bench Pro: 1.0×, AA Coding Index: 1.0×, Terminal-Bench 2: 0.5×). Cross-suite bridge models align elite and broad testing cohorts to prevent missingness bias, while coverage weighting rewards consistent multi-suite performance. Unranked models (—) have no published benchmark scores.</p>
+  <p class="footer"><strong>Rank:</strong> Composite coding benchmark rank across all 5 benchmark suites (AA Coding Index, SWE-bench Pro, Terminal-Bench 2, Terminal-Bench 4, and DeepSWE) calculated via log-odds latent skill (IRT logistic link) with 2-parameter Mean-Sigma cohort equating and TrueSkill-style conservative Bayesian lower-confidence-bound (LCB) weighting. Suite weights reflect test recency and rigor (Terminal-Bench 4: 1.5×, DeepSWE: 1.5×, SWE-bench Pro: 1.0×, AA Coding Index: 1.0×, Terminal-Bench 2: 0.5×). Canonical model deduplication prevents Free/Contributor/OpenRouter twins from skewing suite statistics or skipping rank numbers, 2-parameter bridge equating aligns both location and scale across cohorts, and LCB uncertainty penalties reward consistent multi-suite performance across the entire table. Unranked models (—) have no published benchmark scores.</p>
   <p class="footer"><strong>SWE-bench Pro:</strong> Scale AI's contamination-resistant coding benchmark (1,865 tasks, standardized harness), mirrored from <a href="https://benchlm.ai/benchmarks/swe-bench-pro" target="_blank" rel="noopener noreferrer">BenchLM</a>. OpenAI's July 2026 audit found ~30% of its public tasks broken, so treat scores as directional.</p>
   <p class="footer"><strong>Terminal-Bench 2:</strong> Laude Institute's agentic terminal &amp; CLI coding benchmark (89 tasks), mirrored from <a href="https://benchlm.ai/benchmarks/terminal-bench" target="_blank" rel="noopener noreferrer">BenchLM</a>. Shows Terminal-Bench 2.1 where published, else 2.0. — = not published.</p>
   <p class="footer"><strong>Terminal-Bench 4:</strong> Laude Institute's newer, harder uncontaminated agentic terminal benchmark (66 tasks), mirrored from <a href="https://benchlm.ai/benchmarks/terminal-bench" target="_blank" rel="noopener noreferrer">BenchLM</a>. Shows Terminal-Bench 4.1 where published, else 4.0 / AA Terminal-Bench 4.0. Not directly comparable to Terminal-Bench 2 due to task redesign and strict anti-leakage isolation. — = not published.</p>
@@ -368,7 +370,7 @@
    </section>
 
  <footer style="margin-top:2rem; padding-top:1rem; border-top:1px solid #ccc; font-size:0.8rem; color:#666; text-align:center;">
-   <p><a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer"><img src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" referrerpolicy="no-referrer" alt="Creative Commons License" style="vertical-align:middle; margin-right:0.5rem; border:0;"></a> <span>OpenCode Zen &amp; Go, OpenRouter — Model Benchmarks &amp; Cost</span> by <a href="https://profbird.dev" target="_blank" rel="noopener noreferrer">Brian Bird</a>, 2026 are licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">Creative Commons Attribution-ShareAlike 4.0 International License</a>.</p>
+   <p><a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer"><img src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" referrerpolicy="no-referrer" alt="Creative Commons License" style="vertical-align:middle; margin-right:0.5rem; border:0;"></a> <span>OpenCode Zen &amp; Go, OpenRouter — Model Benchmarks &amp; Cost</span> by <a href="https://profbird.dev" target="_blank" rel="noopener noreferrer">Brian Bird</a>, 2026 are licensed under a <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">Creative Commons Attribution-ShareAlike 4.0 International License</a>.</p>
    <hr style="border:none; border-top:1px solid #ddd; margin:1rem 0;">
  </footer>
 
@@ -382,19 +384,23 @@ let secondarySort = null; // { key, dir } — previous primary, used as tiebreak
 
 /* ── Column definitions (all selectable) ── */
 const COLUMNS = [
-  { key: 'rank',            label: 'Rank',              shortLabel: 'Rank',           defaultVisible: true },
-  { key: 'name',            label: 'Model',             shortLabel: 'Model',          defaultVisible: true },
-  { key: 'params',          label: 'Params',            shortLabel: 'Params',         defaultVisible: true },
-  { key: 'context',         label: 'Context',           shortLabel: 'Context',        defaultVisible: true },
-  { key: 'codingIndex',     label: 'AA Coding Index',   shortLabel: 'AA index',       defaultVisible: true },
-  { key: 'swePro',          label: 'SWE-bench Pro',     shortLabel: 'SWE-bench Pro',  defaultVisible: true },
-  { key: 'terminalBench2',  label: 'Terminal-Bench 2',  shortLabel: 'Terminal-Bench 2', defaultVisible: true },
-  { key: 'terminalBench4',  label: 'Terminal-Bench 4',  shortLabel: 'Terminal-Bench 4', defaultVisible: true },
-  { key: 'deepSwe',         label: 'DeepSWE',           shortLabel: 'DeepSWE',        defaultVisible: true },
-  { key: 'inputCost',       label: 'Input ($/1M)',      shortLabel: 'Input',          defaultVisible: false },
-  { key: 'cachedReadCost',  label: 'Cached Read ($/1M)', shortLabel: 'Cached Read',   defaultVisible: false },
-  { key: 'outputCost',      label: 'Output ($/1M)',     shortLabel: 'Output',         defaultVisible: true },
-  { key: 'goUsage',         label: 'Go Limits ($)',     shortLabel: 'Go Limits',      defaultVisible: false },
+  { key: 'rank',            label: 'Rank',               shortLabel: 'Rank',             hint: 'composite',     defaultDir:  1, defaultVisible: true },
+  { key: 'name',            label: 'Model',              shortLabel: 'Model',            hint: 'model name',    defaultDir:  1, defaultVisible: true },
+  { key: 'params',          label: 'Params',             shortLabel: 'Params',           hint: 'parameters',    defaultDir: -1, defaultVisible: true },
+  { key: 'context',         label: 'Context',            shortLabel: 'Context',          hint: 'context window', defaultDir: -1, defaultVisible: true },
+  { key: 'codingIndex',     label: 'AA Coding Index',    shortLabel: 'AA index',         hint: 'AA index',      defaultDir: -1, defaultVisible: true },
+  { key: 'swePro',          label: 'SWE-bench Pro',      shortLabel: 'SWE-bench Pro',    hint: 'Scale AI',      defaultDir: -1, defaultVisible: true },
+  { key: 'terminalBench2',  label: 'Terminal-Bench 2',   shortLabel: 'Terminal-Bench 2', hint: 'Laude v2',      defaultDir: -1, defaultVisible: true },
+  { key: 'terminalBench4',  label: 'Terminal-Bench 4',   shortLabel: 'Terminal-Bench 4', hint: 'Laude v4',      defaultDir: -1, defaultVisible: true },
+  { key: 'deepSwe',         label: 'DeepSWE',            shortLabel: 'DeepSWE',          hint: 'Datacurve',     defaultDir: -1, defaultVisible: true },
+  { key: 'inputCost',       label: 'Input ($/1M)',       shortLabel: 'Input',            hint: 'input tokens',  defaultDir:  1, defaultVisible: false },
+  { key: 'cachedReadCost',  label: 'Cached Read ($/1M)', shortLabel: 'Cached Read',      hint: 'cached read',   defaultDir:  1, defaultVisible: false },
+  { key: 'outputCost',      label: 'Output ($/1M)',      shortLabel: 'Output',           hint: 'output tokens', defaultDir:  1, defaultVisible: true },
+  { key: 'goUsage',         label: 'Go Limits ($)',      shortLabel: 'Go Limits',        hint: 'Go limits',     defaultDir: -1, defaultVisible: false },
+];
+const FILTER_INPUT_IDS = [
+  'filterMinAA', 'filterMinSWE', 'filterMinTerminal2', 'filterMinTerminal4', 'filterMinDeepSwe',
+  'filterMaxInput', 'filterMaxCached', 'filterMaxOutput', 'filterMinGoUsage'
 ];
 const colVisibility = {};
 COLUMNS.forEach(c => colVisibility[c.key] = c.defaultVisible);
@@ -410,12 +416,6 @@ function fmtCost(v) {
   if (v === null || v === undefined) return '<span class="na">—</span>';
   if (v === 0) return 'Free';
   return '$' + v.toLocaleString(undefined, { maximumFractionDigits: 4 });
-}
-
-function fmtBench(v) {
-  if (v === null || v === undefined) return '<span class="na">—</span>';
-  if (typeof v === 'number') return v.toFixed(1);
-  return escapeHtml(String(v));
 }
 
 function fmtScore(v) {
@@ -456,23 +456,34 @@ function isNewModel(addedOn) {
 
 /* ── Popover helpers ── */
 const backdrop = document.getElementById('popoverBackdrop');
+let lastPopoverTrigger = null;
 function openPopover(id) {
   document.querySelectorAll('.popover.open').forEach(p => p.classList.remove('open'));
   document.querySelectorAll('.popover-btn[aria-expanded="true"]').forEach(b => b.setAttribute('aria-expanded','false'));
   const pop = document.getElementById(id);
   const btn = document.querySelector(`[aria-controls="${id}"]`) || document.getElementById(id === 'filterPopover' ? 'filterBtn' : 'colsBtn');
+  lastPopoverTrigger = btn || null;
   if (pop) pop.classList.add('open');
   if (btn) btn.setAttribute('aria-expanded','true');
-  if (backdrop) { backdrop.hidden = false; requestAnimationFrame(()=> backdrop.classList.add('open')); }
+  if (backdrop) { backdrop.hidden = false; requestAnimationFrame(() => backdrop.classList.add('open')); }
+  if (pop) {
+    const firstFocusable = pop.querySelector('select, input, button');
+    requestAnimationFrame(() => firstFocusable?.focus());
+  }
 }
-function closePopovers() {
+function closePopovers(restoreFocus = false) {
+  const wasOpen = !!document.querySelector('.popover.open');
   document.querySelectorAll('.popover.open').forEach(p => p.classList.remove('open'));
   document.querySelectorAll('.popover-btn[aria-expanded="true"]').forEach(b => b.setAttribute('aria-expanded','false'));
-  if (backdrop) { backdrop.classList.remove('open'); setTimeout(()=> { if(!document.querySelector('.popover.open')) backdrop.hidden = true; }, 180); }
+  if (backdrop) { backdrop.classList.remove('open'); setTimeout(() => { if (!document.querySelector('.popover.open')) backdrop.hidden = true; }, 180); }
+  if (restoreFocus && wasOpen && lastPopoverTrigger) {
+    lastPopoverTrigger.focus();
+  }
+  lastPopoverTrigger = null;
 }
 function togglePopover(id) {
   const pop = document.getElementById(id);
-  if (pop && pop.classList.contains('open')) closePopovers();
+  if (pop && pop.classList.contains('open')) closePopovers(true);
   else openPopover(id);
 }
 
@@ -486,7 +497,7 @@ function renderColumnsList() {
       <input type="checkbox" data-col="${c.key}" ${colVisibility[c.key] ? 'checked' : ''}>
       <span style="flex:1; display:flex; align-items:center; justify-content:space-between; gap:0.5rem;">
         <span>${c.label}</span>
-        <small>${c.key === 'inputCost' ? 'input tokens' : c.key === 'cachedReadCost' ? 'cached read' : c.key === 'outputCost' ? 'output tokens' : c.key === 'goUsage' ? 'Go limits' : c.key}</small>
+        <small>${c.hint}</small>
       </span>
     </label>
   `).join('');
@@ -653,7 +664,7 @@ function render() {
     if (colVisibility.name)            cells.push(`<td data-label="Model">${nameHtml}${noteLink}</td>`);
     if (colVisibility.params)          cells.push(`<td data-label="Params">${fmtParams(m.params)}</td>`);
     if (colVisibility.context)         cells.push(`<td data-label="Context">${escapeHtml(m.context)}</td>`);
-    if (colVisibility.codingIndex)     cells.push(`<td class="num" data-label="AA Coding Index">${fmtBench(m.codingIndex)}</td>`);
+    if (colVisibility.codingIndex)     cells.push(`<td class="num" data-label="AA Coding Index">${fmtScore(m.codingIndex)}</td>`);
     if (colVisibility.swePro)          cells.push(`<td class="num" data-label="SWE-bench Pro">${fmtScore(m.swePro)}</td>`);
     if (colVisibility.terminalBench2)  cells.push(`<td class="num" data-label="Terminal-Bench 2">${fmtScore(m.terminalBench2)}</td>`);
     if (colVisibility.terminalBench4)  cells.push(`<td class="num" data-label="Terminal-Bench 4">${fmtScore(m.terminalBench4)}</td>`);
@@ -705,9 +716,9 @@ function cmpKey(key, a, b) {
     if (!Number.isFinite(fa)) fa = null;
     if (!Number.isFinite(fb)) fb = null;
   } else if (key === 'params') {
-    // legacy: nulls handled by sortMissing; unparseable values compare as -1
-    fa = (va === null || va === undefined) ? null : paramSize(va);
-    fb = (vb === null || vb === undefined) ? null : paramSize(vb);
+    fa = paramSize(va); fb = paramSize(vb);
+    if (fa < 0) fa = null;
+    if (fb < 0) fb = null;
   } else {
     fa = benchNum(va); fb = benchNum(vb);
   }
@@ -722,9 +733,15 @@ function cmpKey(key, a, b) {
 function sortMissing(key, row) {
   const v = row[key];
   if (v === null || v === undefined) return true;
-  if (key === 'name' || key === 'params') return false; // params: legacy -1 comparison
+  if (key === 'name') return false;
+  if (key === 'params') return paramSize(v) < 0;
   if (key === 'context') return !Number.isFinite(contextSize(v));
   return benchNum(v) === null;
+}
+
+function defaultSortDir(key) {
+  const col = COLUMNS.find(c => c.key === key);
+  return col ? col.defaultDir : 1;
 }
 
 function setSort(key, dir) {
@@ -733,7 +750,7 @@ function setSort(key, dir) {
   } else {
     secondarySort = { key: sortKey, dir: sortDir }; // previous primary becomes tiebreaker
     sortKey = key;
-    sortDir = dir === undefined ? 1 : dir;
+    sortDir = dir === undefined ? defaultSortDir(key) : dir;
   }
   const ss = document.getElementById('sortSelect');
   if (ss && ss.value !== key) ss.value = key;
@@ -743,31 +760,34 @@ function setSort(key, dir) {
 
 function updateArrows() {
   document.querySelectorAll('th[data-key]').forEach(th => {
-    if (th.style.display === 'none') return;
     const key = th.getAttribute('data-key');
     const active = key === sortKey;
     const secondary = !active && secondarySort && key === secondarySort.key;
+    th.setAttribute('aria-sort', active ? (sortDir > 0 ? 'ascending' : 'descending') : 'none');
+    if (th.style.display === 'none') return;
     const btn = th.querySelector('.arrow');
     if (!btn) return;
+    const col = COLUMNS.find(c => c.key === key);
+    const label = col ? col.shortLabel : key;
     btn.textContent = active ? (sortDir > 0 ? '▲' : '▼') : secondary ? (secondarySort.dir > 0 ? '▲' : '▼') : '⇅';
     const sortbtn = th.querySelector('.sortbtn');
     sortbtn?.classList.toggle('active', active);
     sortbtn?.classList.toggle('secondary', !!secondary);
-    sortbtn?.setAttribute('title', active ? 'Sort by ' + key : secondary ? 'Secondary sort by ' + key : 'Sort by ' + key);
+    sortbtn?.setAttribute('title', active ? 'Sorted by ' + label : secondary ? 'Secondary sort by ' + label : 'Sort by ' + label);
   });
 }
 
 // ── Popover wiring ──
 document.getElementById('filterBtn')?.addEventListener('click', (e) => { e.stopPropagation(); togglePopover('filterPopover'); });
 document.getElementById('colsBtn')?.addEventListener('click', (e) => { e.stopPropagation(); togglePopover('colsPopover'); });
-document.getElementById('filterClose')?.addEventListener('click', closePopovers);
-document.getElementById('colsClose')?.addEventListener('click', closePopovers);
-document.getElementById('filterDone')?.addEventListener('click', closePopovers);
-document.getElementById('colsDone')?.addEventListener('click', closePopovers);
+document.getElementById('filterClose')?.addEventListener('click', () => closePopovers(true));
+document.getElementById('colsClose')?.addEventListener('click', () => closePopovers(true));
+document.getElementById('filterDone')?.addEventListener('click', () => closePopovers(true));
+document.getElementById('colsDone')?.addEventListener('click', () => closePopovers(true));
 document.getElementById('filterClear')?.addEventListener('click', () => {
   document.getElementById('planFilter').value = 'all';
   document.getElementById('deprecatedFilter').checked = false;  // restore default
-  ['filterMinAA','filterMinSWE','filterMinTerminal','filterMinDeepSwe','filterMaxInput','filterMaxCached','filterMaxOutput','filterMinGoUsage'].forEach(id => {
+  FILTER_INPUT_IDS.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
@@ -784,22 +804,44 @@ document.getElementById('colsHideAll')?.addEventListener('click', () => {
   document.querySelectorAll('#columnsList input[data-col]').forEach(cb => cb.checked = colVisibility[cb.dataset.col]);
   applyColumnVisibility(); updateColsBadge(); render();
 });
-backdrop?.addEventListener('click', closePopovers);
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopovers(); });
+backdrop?.addEventListener('click', () => closePopovers(false));
+document.addEventListener('keydown', e => {
+  const openPop = document.querySelector('.popover.open');
+  if (!openPop) return;
+  if (e.key === 'Escape') {
+    e.preventDefault();
+    closePopovers(true);
+    return;
+  }
+  if (e.key === 'Tab') {
+    const focusables = [...openPop.querySelectorAll('button, select, input, a[href], [tabindex]:not([tabindex="-1"])')]
+      .filter(el => !el.disabled && el.offsetParent !== null);
+    if (!focusables.length) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
+});
 document.addEventListener('click', e => {
-  if (!e.target.closest('.popover-wrap') && !e.target.closest('.popover')) closePopovers();
+  if (!e.target.closest('.popover-wrap') && !e.target.closest('.popover')) closePopovers(false);
 });
 
 document.getElementById('planFilter').addEventListener('change', render);
 document.getElementById('deprecatedFilter').addEventListener('change', render);
-['filterMinAA','filterMinSWE','filterMinTerminal2','filterMinTerminal4','filterMinDeepSwe','filterMaxInput','filterMaxCached','filterMaxOutput','filterMinGoUsage'].forEach(id => {
+FILTER_INPUT_IDS.forEach(id => {
   document.getElementById(id)?.addEventListener('input', render);
 });
-document.getElementById('sortSelect').addEventListener('change', e => setSort(e.target.value, 1));
+document.getElementById('sortSelect').addEventListener('change', e => setSort(e.target.value));
 document.getElementById('reset').addEventListener('click', () => {
   document.getElementById('planFilter').value = 'all';
   document.getElementById('deprecatedFilter').checked = false;  // restore default
-  ['filterMinAA','filterMinSWE','filterMinTerminal2','filterMinTerminal4','filterMinDeepSwe','filterMaxInput','filterMaxCached','filterMaxOutput','filterMinGoUsage'].forEach(id => {
+  FILTER_INPUT_IDS.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
@@ -815,11 +857,13 @@ document.getElementById('reset').addEventListener('click', () => {
 
 document.querySelectorAll('th[data-key]').forEach(th => {
   const key = th.getAttribute('data-key');
+  const col = COLUMNS.find(c => c.key === key);
+  const label = col ? col.shortLabel : key;
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.className = 'sortbtn';
-  btn.setAttribute('aria-label', 'Sort by ' + key);
-  btn.title = 'Sort by ' + key;
+  btn.setAttribute('aria-label', 'Sort by ' + label);
+  btn.title = 'Sort by ' + label;
   const span = document.createElement('span');
   span.className = 'arrow';
   span.textContent = '⇅';
