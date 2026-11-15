@@ -77,7 +77,7 @@ DISPLAY_NAME = {
     "ling-3.0-flash-fin-free": "Ling 3.0 Flash Fin Free",
     "gpt-5.6-luna": "GPT 5.6 Luna", "grok-4.5": "Grok 4.5",
     "deepseek-v4-pro": "DeepSeek V4 Pro", "deepseek-v4-flash": "DeepSeek V4 Flash",
-    "deepseek-v4.1-flash": "DeepSeek V4.1 Flash", "deepseek-v4.1-flash-free": "DeepSeek V4.1 Flash Free",
+    "deepseek-v4.1-flash": "DeepSeek V4.1 Flash 1017", "deepseek-v4.1-flash-free": "DeepSeek V4.1 Flash Free",
     "deepseek-flash": "DeepSeek Flash",
     "deepseek-v4-flash-vision-exp": "DeepSeek V4 Flash Vision Exp",
     "glm-5.3-flash": "GLM-5.3-Flash", "glm-5.3": "GLM-5.3", "glm-5.2": "GLM-5.2", "glm-5.1": "GLM-5.1", "glm-5": "GLM-5",
@@ -296,7 +296,9 @@ BENCH_SLUG_OVERRIDES = {
     "GPT 5.6 Sol": "gpt-5-6-sol",
     "GPT 5.6 Terra": "gpt-5-6-terra",
     "GPT 5.6 Luna": "gpt-5-6-luna",
-    # BenchLM labels the current build "DeepSeek V4.1 Flash 1017"
+    # BenchLM labels the current build "DeepSeek V4.1 Flash 1017" (the name the
+    # Zen/Go catalogs use too); the undated keys stay as aliases for older rows.
+    "DeepSeek V4.1 Flash 1017": "deepseek-v4-1-flash",
     "DeepSeek V4.1 Flash": "deepseek-v4-1-flash",
     "Deepseek V4.1 Flash": "deepseek-v4-1-flash",
     # free variants with no paid twin row: same model, look up the base BenchLM slug
@@ -321,6 +323,22 @@ def id_from_name(name: str) -> str:
     s = re.sub(r'[^a-z0-9.-]', '', s)
     s = re.sub(r'-+', '-', s)
     return s
+
+# Reverse of DISPLAY_NAME: a row's display name back to its catalog id. Needed
+# wherever a row is matched to the catalogs by name, because a display name may
+# carry a build label the catalog id does not ("DeepSeek V4.1 Flash 1017" ->
+# deepseek-v4.1-flash), and id_from_name() would invent an id that no provider
+# lists — which would flag the row (N.A.).
+# A name whose own id_from_name() already yields its catalog id keeps that id
+# (so a name shared by two ids, such as Ox Alpha Free, resolves to the catalog
+# one rather than to its alias); any other name maps to the id that declares it.
+NAME_TO_ID = {normalize(n): i for i, n in DISPLAY_NAME.items()}
+NAME_TO_ID.update({normalize(n): i for i, n in DISPLAY_NAME.items()
+                   if id_from_name(n) == i})
+
+def catalog_id_for(name: str) -> str:
+    """The catalog id a row's display name refers to."""
+    return NAME_TO_ID.get(normalize(name)) or id_from_name(name)
 
 def display_from_id(model_id: str) -> str:
     if model_id in DISPLAY_NAME:
@@ -373,6 +391,13 @@ def price_cell(s):
     """Text of a pricing cell; discounted cells ("<del>$1.36</del> $0.68") keep the current price."""
     return strip_tags(re.sub(r'<del>.*?</del>', '', s, flags=re.DOTALL))
 
+# An above-threshold context tier in a pricing row's name: "(> 512K tokens)",
+# "(over 200K)", "(≥ 1M tokens)". Such a row prices only the context above that
+# threshold, so it must never overwrite the model's headline rate (which used to
+# happen for any threshold not starting with "2", e.g. MiniMax M3's "> 512K" and
+# Claude Haiku 5.5's "> 100K"). Base tiers (≤, <, "up to") are kept.
+TIER_SURCHARGE = re.compile(r'(?:>=|>|≥|over|above|beyond)\s*\d', re.IGNORECASE)
+
 def extract_pricing_table(html_text: str, is_go: bool = False):
     """Parse pricing table. Zen: 5 cols, Go: 6 cols (sixth = Usage / Monthly limit)."""
     if is_go:
@@ -402,7 +427,11 @@ def extract_pricing_table(html_text: str, is_go: bool = False):
         base = model.split("(")[0].strip()
         if not model:
             continue
-        if ("Peak" in model and "Off-Peak" not in model) or "> 2" in model:
+        # Peak/Off-Peak and context-tier rows list the same model more than once
+        # and all strip to one base name, so the last row written would win.
+        # Keep the headline rate: the Off-Peak row, and the base context tier
+        # ("≤ 512K tokens") rather than the surcharge above it ("> 512K tokens").
+        if ("Peak" in model and "Off-Peak" not in model) or TIER_SURCHARGE.search(model):
             continue
         pricing[normalize(base)] = (parse_price(price_cell(row[1])), parse_price(price_cell(row[2])), parse_price(price_cell(row[3])))
     return pricing
@@ -803,7 +832,7 @@ def backfill_known_urls(models, dry_run=False):
         if m.get("plan") == "openrouter" or m.get("hfUrl"):
             continue
         name = m.get("name", "")
-        url = known.get(normalize(id_from_name(name))) or known.get(normalize(name))
+        url = known.get(normalize(catalog_id_for(name))) or known.get(normalize(name))
         if not url:
             continue
         changed.append(("hfUrl", name, None, url))
@@ -811,30 +840,136 @@ def backfill_known_urls(models, dry_run=False):
             _insert_after(m, "hfUrl", url, "addedOn")
     return changed
 
-def reconcile(data, desired, zen_pricing, go_pricing, go_usage, md, dry_run=False, today=None):
+def _base_cost(prov, mid):
+    """A model's headline per-1M cost in one models.dev provider, or None.
+
+    Only the base rate: `tiers` / `context_over_200k` surcharges are ignored, so
+    a model that merely bills more above some context size is not mistaken for
+    one the two plans price differently.
+    """
+    cost = ((prov or {}).get(mid) or {}).get("cost") or {}
+    got = tuple(cost.get(k) for k in ("input", "output", "cache_read"))
+    return None if all(v is None for v in got) else got
+
+def split_plan_ids(desired, md, mdgo, models):
+    """Catalog ids that need one row per plan instead of a single (Go · Zen) row.
+
+    A model in both catalogs normally gets one row at the Go price, badged
+    (Go · Zen). That hides the real cost when the two plans price it
+    differently — Zen pay-as-you-go charges DeepSeek V4 Pro $1.74/$3.48 against
+    Go's $0.66/$1.98 — so such a model gets a `go` row and a `zen` row, each
+    carrying its own plan's price.
+
+    Divergence is read from models.dev's per-provider cost (`opencode` vs
+    `opencode-go`), which is one unambiguous figure per id, NOT from the docs
+    pricing tables: those list a model's context tiers as separate rows whose
+    names normalize to the same key (MiniMax M3 "≤ 512K" / "> 512K"), so the
+    tier price can shadow the base rate and fake a divergence.
+
+    The split is sticky: once both rows exist they stay split even if the prices
+    converge later, because dropping one would strand it (no further price
+    updates, and never flagged N.A.). A model that merely moves from Zen to Go,
+    which has only the one row, is unaffected.
+    """
+    rows_by_plan = {}
+    for m in models:
+        if m.get("plan") == "openrouter":
+            continue
+        for k in {normalize(catalog_id_for(m["name"])), normalize(m["name"])}:
+            rows_by_plan.setdefault(k, set()).add(m.get("plan"))
+
+    out = set()
+    for i, d in desired.items():
+        if d["plan"] != "go" or not d.get("alsoOnZen"):
+            continue
+        nid, disp_norm = normalize(i), normalize(d["name"])
+        plans = rows_by_plan.get(nid, set()) | rows_by_plan.get(disp_norm, set())
+        zc, gc = _base_cost(md, i), _base_cost(mdgo, i)
+        if (zc and gc and zc != gc) or {"go", "zen"} <= plans:
+            out.add(i)
+    return out
+
+def split_row_ids(models):
+    """Normalized catalog ids that have both a `go` and a `zen` row.
+
+    Derived from the rows themselves rather than from the catalogs, so it also
+    holds under --no-sync. Availability is checked per plan for these ids (see
+    apply_na_flags): a model that leaves Zen but stays on Go must flag only its
+    Zen row.
+    """
+    plans = {}
+    for m in models:
+        if m.get("plan") in ("go", "zen"):
+            plans.setdefault(normalize(catalog_id_for(m["name"])), set()).add(m["plan"])
+    return {i for i, p in plans.items() if {"go", "zen"} <= p}
+
+def reconcile(data, desired, zen_pricing, go_pricing, go_usage, md, mdgo=None, dry_run=False, today=None):
     """Add/update models to match the desired catalog.
 
     Models that leave the catalog are NEVER removed — they stay listed and
     get flagged `na` (Not Available) by apply_na_flags (see main()).
+
+    Ids in split_plan_ids() contribute two rows (one per plan) rather than one;
+    rows are matched to their own plan first, so the pair stays stable across
+    runs, and a model whose plan merely changed is still updated in place.
     """
     models = data.setdefault("models", [])
     by_id = {}
     for m in models:
         if m.get("plan") == "openrouter":
             continue  # separate identity space; synced by name in sync_openrouter
-        by_id[normalize(id_from_name(m["name"]))] = m
-        by_id[normalize(m["name"])] = m
+        for k in {normalize(catalog_id_for(m["name"])), normalize(m["name"])}:
+            by_id.setdefault(k, []).append(m)
 
     if today is None:
         today = date.today()
     added = []
     changed = []
 
-    # Update existing + add new
+    # One spec per row to write: split ids yield a `go` and a `zen` spec.
+    split_ids = split_plan_ids(desired, md, mdgo, models)
+    had_row = {i for i in desired
+               if by_id.get(normalize(i)) or by_id.get(normalize(desired[i]["name"]))}
+    specs = []
     for i, d in desired.items():
+        if i not in split_ids:
+            specs.append((i, d))
+            continue
+        for plan in ("go", "zen"):
+            sd = dict(d)
+            sd["plan"] = plan
+            sd["alsoOnZen"] = False   # each plan has its own row now
+            sd["_split"] = True
+            specs.append((i, sd))
+
+    # Match each spec to an existing row: same plan first, then any unclaimed
+    # row for that id (so a model that changed plan is updated, not duplicated).
+    claimed = []
+    claimed_ids = set()
+    matched = {}
+    def _take(idx, i, d, want_plan):
+        for key in (normalize(i), normalize(d["name"])):
+            for row in by_id.get(key, []):
+                if id(row) in claimed_ids:
+                    continue
+                if want_plan is not None and row.get("plan") != want_plan:
+                    continue
+                claimed.append(row)
+                claimed_ids.add(id(row))
+                matched[idx] = row
+                return True
+        return False
+    for idx, (i, d) in enumerate(specs):
+        _take(idx, i, d, d["plan"])
+    for idx, (i, d) in enumerate(specs):
+        if idx not in matched:
+            _take(idx, i, d, None)
+
+    # Update existing + add new
+    for idx, (i, d) in enumerate(specs):
         nid = normalize(i)
         disp_norm = normalize(d["name"])
-        existing = by_id.get(nid) or by_id.get(disp_norm)
+        existing = matched.get(idx)
         # Determine price: go table preferred for go models, else zen table
         price = None
         if d["plan"] == "go":
@@ -869,8 +1004,11 @@ def reconcile(data, desired, zen_pricing, go_pricing, go_usage, md, dry_run=Fals
             if row["inputCost"] is None: row["inputCost"] = 0
             if row["outputCost"] is None: row["outputCost"] = 0
             if row["cachedReadCost"] is None: row["cachedReadCost"] = 0
-            _insert_after(row, "addedOn", today.isoformat(), "hfUrl")
-            added.append((d["name"], i))
+            # A split sibling is the same model under a second plan, not a new
+            # arrival, so it gets no addedOn (and no green "(New)" badge).
+            if not (d.get("_split") and i in had_row):
+                _insert_after(row, "addedOn", today.isoformat(), "hfUrl")
+            added.append((d["name"], f"{i} [{d['plan']}]" if d.get("_split") else i))
             if not dry_run:
                 models.append(row)
         else:
@@ -901,8 +1039,8 @@ def reconcile(data, desired, zen_pricing, go_pricing, go_usage, md, dry_run=Fals
                 pass
             # pricing
             if price:
-                for field, idx in (("inputCost", 0), ("outputCost", 1), ("cachedReadCost", 2)):
-                    newv = price[idx]
+                for field, pos in (("inputCost", 0), ("outputCost", 1), ("cachedReadCost", 2)):
+                    newv = price[pos]
                     if newv is None:
                         continue
                     old = existing.get(field)
@@ -932,11 +1070,11 @@ def reconcile(data, desired, zen_pricing, go_pricing, go_usage, md, dry_run=Fals
                             existing[k] = v
 
     # Normalize display names on retired Zen/Go rows not visited in desired
-    visited_rows = {id(by_id.get(normalize(i)) or by_id.get(normalize(d["name"]))) for i, d in desired.items()}
+    visited_rows = {id(r) for r in claimed}
     for m in models:
         if m.get("plan") == "openrouter" or id(m) in visited_rows:
             continue
-        canon_disp = DISPLAY_NAME.get(id_from_name(m["name"]))
+        canon_disp = DISPLAY_NAME.get(catalog_id_for(m["name"]))
         if canon_disp and m["name"] != canon_disp:
             changed.append((m["name"], {"name": canon_disp}))
             if not dry_run:
@@ -1153,7 +1291,7 @@ BENCH_INHERIT_FROM = {
     "Muse Spark 1.2 Contributor Free": "Muse Spark 1.2",
     "Muse Spark 1.3 Free": "Muse Spark 1.3",
     "GLM-5.3-Flash Free": "GLM-5.3-Flash",
-    "DeepSeek V4.1 Flash Free": "DeepSeek V4.1 Flash",
+    "DeepSeek V4.1 Flash Free": "DeepSeek V4.1 Flash 1017",
     "MiniMax M3.1 Flash Free": "MiniMax M3.1 Flash",
     "Step 5 Preview Free": "Step 5 Preview",
     "LongCat 2.5 Preview Free": "LongCat 2.5 Free",
@@ -1391,7 +1529,8 @@ def prune_new_flags(models, today, dry_run=False):
             m.pop("addedOn", None)
     return expired
 
-def apply_na_flags(models, md, mdgo, catalog_ids=(), dry_run=False, today=None):
+def apply_na_flags(models, md, mdgo, catalog_ids=(), zen_ids=(), go_ids=(),
+                   split_ids=(), dry_run=False, today=None):
     """Set/unset the `na` field (Not Available) on every row.
 
     A model is Not Available when it has no non-deprecated entry in models.dev
@@ -1400,16 +1539,29 @@ def apply_na_flags(models, md, mdgo, catalog_ids=(), dry_run=False, today=None):
     Also maintains `naSince` (date the model was first flagged) so
     prune_na_models.py can retire rows that have been N.A. for over 6 months.
     Returns list of (name, kind) where kind is 'flag' | 'unflag' | 'backfill'.
+
+    Ids in `split_ids` carry one row per plan, so each row is checked against
+    only its own plan's catalog and provider: a model that leaves Zen but stays
+    on the Go plan flags its Zen row and keeps its Go row available.
     """
     if today is None:
         today = date.today()
     cat_norm = {normalize(i) for i in catalog_ids}
+    zen_norm = {normalize(i) for i in zen_ids}
+    go_norm = {normalize(i) for i in go_ids}
+    split_norm = {normalize(i) for i in split_ids}
     changed = []
     for m in models:
         if m.get("plan") == "openrouter":
             continue  # availability maintained via the OpenRouter catalog sync
-        mid = id_from_name(m["name"])
-        na = normalize(mid) not in cat_norm or not is_available(mid, md, mdgo)
+        mid = catalog_id_for(m["name"])
+        plan = m.get("plan")
+        if normalize(mid) in split_norm and plan in ("zen", "go"):
+            listed = zen_norm if plan == "zen" else go_norm
+            provider = (md, {}) if plan == "zen" else ({}, mdgo)
+            na = normalize(mid) not in listed or not is_available(mid, *provider)
+        else:
+            na = normalize(mid) not in cat_norm or not is_available(mid, md, mdgo)
         if bool(m.get("na")) == na and (not na or m.get("naSince")):
             continue
         kind = "flag" if na else "unflag"
@@ -1767,7 +1919,8 @@ def main():
 
     if not args.no_sync:
         desired = build_desired(zen_ids, go_ids, md, mdgo)
-        added, changed = reconcile(data, desired, zen_pricing, go_pricing, go_usage, md, dry_run=args.dry_run, today=run_today)
+        added, changed = reconcile(data, desired, zen_pricing, go_pricing, go_usage, md, mdgo,
+                                   dry_run=args.dry_run, today=run_today)
     else:
         added = changed = []
 
@@ -1785,7 +1938,11 @@ def main():
     bench_changed += inherit_benchmarks(data["models"], bench_items, dry_run=args.dry_run)
     bench_changed += apply_uncertain_bench_overrides(data["models"], dry_run=args.dry_run)
     bench_changed += cross_copy_benchmarks(data["models"], dry_run=args.dry_run)
-    na_changed = apply_na_flags(data["models"], md, mdgo, catalog_ids=list(zen_ids) + list(go_ids), dry_run=args.dry_run, today=run_today)
+    na_changed = apply_na_flags(data["models"], md, mdgo,
+                                catalog_ids=list(zen_ids) + list(go_ids),
+                                zen_ids=zen_ids, go_ids=go_ids,
+                                split_ids=split_row_ids(data["models"]),
+                                dry_run=args.dry_run, today=run_today)
     new_expired = prune_new_flags(data["models"], run_today, dry_run=args.dry_run)
     rank_changed = compute_model_ranks(data["models"], dry_run=args.dry_run)
 
