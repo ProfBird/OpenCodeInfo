@@ -11,6 +11,8 @@ Sources:
   SWE-bench Pro: https://benchlm.ai/data/models.json       (per-model benchmarks.coding.swePro)
   Terminal-Bench: https://benchlm.ai/data/models.json      (per-model benchmarks.coding/agentic.terminalBench21 / terminalBench41)
   DeepSWE:       https://benchlm.ai/data/models.json       (per-model benchmarks.coding.deepSwe)
+  Bug Hunt:      https://benchlm.ai/data/models.json       (per-model benchmarks.coding["bug-hunt-bench"],
+                 with https://bughunt.productcompass.pm/data/benchmark.json filling models BenchLM lacks)
 
 Every model in models.json carries a "plan" field: "go" for models on the Go
 $10/mo plan, "zen" for Zen-only models. The web page lets you filter by plan.
@@ -679,7 +681,7 @@ def sync_openrouter(models, or_models, dry_run=False, today=None):
                 existing["name"] = name
                 by_name[normalize(name)] = existing
         if existing is None:
-            row = {"name": name, "rank": None, "codingIndex": None, "swePro": None,
+            row = {"name": name, "rank": None, "codingIndex": None, "swePro": None, "bugHunt": None,
                    "terminalBench2": None, "terminalBench4": None, "deepSwe": None}
             row.update(row_data)
             _insert_after(row, "addedOn", today.isoformat(), "hfUrl")
@@ -875,11 +877,11 @@ def bench_slug_for(name: str) -> str:
     return id_from_name(name)
 
 # BenchLM coding benchmark fields merged into each model (null if unpublished).
-BENCH_FIELDS = ("codingIndex", "swePro", "terminalBench2", "terminalBench4", "deepSwe")
+BENCH_FIELDS = ("codingIndex", "swePro", "bugHunt", "terminalBench2", "terminalBench4", "deepSwe")
 
 def bench_item_for(model_name, field, by_slug, by_norm):
     """Resolve the BenchLM item for a model+field (per-field slug overrides)."""
-    if field in ("swePro", "terminalBench", "terminalBench2", "terminalBench4", "deepSwe"):
+    if field in ("swePro", "bugHunt", "terminalBench", "terminalBench2", "terminalBench4", "deepSwe"):
         slug = BENCH_SLUG_OVERRIDES_RELEASED.get(model_name) or bench_slug_for(model_name)
     else:
         slug = bench_slug_for(model_name)
@@ -927,13 +929,24 @@ def merge_benchmarks(models, bench_items, dry_run=False):
                 continue
             if field in BENCH_VALUE_OVERRIDES.get(m["name"], {}) and BENCH_VALUE_OVERRIDES[m["name"]][field] is None:
                 continue
-            it = bench_item_for(m["name"], field, by_slug, by_norm)
-            if not it:
-                continue
+            it = bench_item_for(m["name"], field, by_slug, by_norm) or {}
             coding = it.get("benchmarks", {}).get("coding", {}) or {}
             agentic = it.get("benchmarks", {}).get("agentic", {}) or {}
             if field == "codingIndex":
                 score = coding.get("aaCodingIndex")
+            elif field == "bugHunt":
+                # BenchLM's import of the Bug Hunt board wins where it exists;
+                # the publisher's own leaderboard (bughunt.productcompass.pm)
+                # fills models BenchLM has not imported yet. Both report planted
+                # bugs fixed out of 105, so the values are directly comparable.
+                score = coding.get("bug-hunt-bench")
+                if score is None:
+                    score = BUG_HUNT_FALLBACKS.get(m["name"])
+                if score is None:
+                    # Free/Contributor variants are the same underlying model.
+                    base = re.sub(r"\s+(Contributor\s+Free|Contributor|Free)$", "", m["name"],
+                                  flags=re.IGNORECASE)
+                    score = BUG_HUNT_FALLBACKS.get(base)
             elif field == "terminalBench2":
                 # Official boards first (2.1 preferred over 2.0), then Artificial
                 # Analysis' independent 2.1 run to fill models no board has scored.
@@ -971,6 +984,34 @@ def merge_benchmarks(models, bench_items, dry_run=False):
 # index vs Qwen3.8 Max 67.7 swePro / 86.6 Terminal-Bench 2.1 / 56.6 DeepSWE).
 BENCH_SLUG_OVERRIDES_RELEASED = {
     "Qwen3.8 Max": "qwen3-8-max",
+}
+
+# Bug Hunt Bench scores for models the publisher has evaluated but BenchLM has
+# not imported yet: {name: planted bugs fixed (out of 105)}. These are fallbacks
+# only — a BenchLM value (coding["bug-hunt-bench"]) always wins once it exists.
+# Source: https://bughunt.productcompass.pm/ (best non-superseded configuration
+# per model; blind-graded across 105 bugs planted in two production TypeScript
+# repos, 23 of which no model has fixed). The publisher's "DeepSeek V4.1 Flash
+# 1017" harness run (42.7) is a different build/agent and is not used; BenchLM
+# keeps the 39.1 Claude Code run. Values are a count, not a percentage: the
+# ranking converts p = fixed / 105 * 100 before the logit.
+BUG_HUNT_FALLBACKS = {
+    "Claude Fable 5": 29,      # publisher "Fable 5" (Claude Code, max)
+    "Claude Opus 4.8": 15,     # publisher "Opus 4.8" (Claude Code, max)
+    "Claude Sonnet 5": 9,      # publisher "Sonnet 5" (Claude Code, high)
+    "Claude Haiku 4.5": 1.5,   # publisher "Haiku 4.5" (Claude Code, default)
+    "GPT-6 Sol": 29.3,         # Codex CLI, max
+    "GPT 5.6 Terra": 32,       # Codex CLI, max
+    "GPT 5.6 Luna": 31.3,      # Codex CLI, max
+    "Gemini 3.7 Flash": 22,    # Gemini CLI, high
+    "Qwen3.8 Flash": 26,       # Claude Code / Alibaba API, max
+    "MiMo V2.6 Flash": 23.3,   # Claude Code / OpenRouter, default
+    "Mistral Large 4": 15,     # Claude Code / OpenRouter, high
+    "Hy4 Preview": 18,         # Claude Code / OpenRouter, default
+    "DeepSeek V4 Pro": 16,     # Claude Code / DeepSeek API, max
+    "DeepSeek V4 Flash": 14,   # Claude Code / OpenRouter, default
+    "Grok 4.5": 17,            # Grok Build CLI (ACP), high
+    "Muse Spark 1.2": 17,      # Claude Code / Meta API, xhigh
 }
 
 # Hardcoded SWE-bench Pro scores not tracked by BenchLM, sourced from Scale AI's
@@ -1061,7 +1102,7 @@ def inherit_benchmarks(models, bench_items, dry_run=False):
         coding = it.get("benchmarks", {}).get("coding", {}) or {}
         # Fields BenchLM lacks (e.g. codingIndex from the OpenRouter snapshot) are
         # filled from the counterpart's own row; existing values are never overwritten.
-        for field in ("codingIndex", "swePro", "terminalBench2", "terminalBench4", "deepSwe"):
+        for field in ("codingIndex", "swePro", "bugHunt", "terminalBench2", "terminalBench4", "deepSwe"):
             if m.get(field) is not None:
                 continue
             val = next((r.get(field) for r in rows_by_name.get(counterpart, [])
@@ -1074,6 +1115,7 @@ def inherit_benchmarks(models, bench_items, dry_run=False):
         pairs = [
             ("codingIndex", coding.get("aaCodingIndex")),
             ("swePro", coding.get("swePro")),
+            ("bugHunt", coding.get("bug-hunt-bench")),
             ("deepSwe", coding.get("deepSwe")),
             ("terminalBench2", (coding.get("terminalBench21") if coding.get("terminalBench21") is not None
                                else agentic.get("terminalBench21") if agentic.get("terminalBench21") is not None
@@ -1147,9 +1189,10 @@ UNCERTAIN_BENCH_OVERRIDES = {
 _BENCH_FIELD_PREDS = {
     "codingIndex": ("context",),
     "swePro": ("codingIndex", "context"),
-    "terminalBench2": ("swePro", "codingIndex", "context"),
-    "terminalBench4": ("terminalBench2", "swePro", "codingIndex", "context"),
-    "deepSwe": ("terminalBench4", "terminalBench2", "swePro", "codingIndex", "context"),
+    "bugHunt": ("swePro", "codingIndex", "context"),
+    "terminalBench2": ("bugHunt", "swePro", "codingIndex", "context"),
+    "terminalBench4": ("terminalBench2", "bugHunt", "swePro", "codingIndex", "context"),
+    "deepSwe": ("terminalBench4", "terminalBench2", "bugHunt", "swePro", "codingIndex", "context"),
 }
 
 def _set_bench_field(m, field, val):
@@ -1191,7 +1234,7 @@ def cross_copy_benchmarks(models, dry_run=False):
     for rows in groups.values():
         if len(rows) < 2:
             continue
-        for field in ("codingIndex", "swePro", "terminalBench2", "terminalBench4", "deepSwe"):
+        for field in ("codingIndex", "swePro", "bugHunt", "terminalBench2", "terminalBench4", "deepSwe"):
             have = [m for m in rows if m.get(field) is not None]
             if not have or len(have) == len(rows):
                 continue
@@ -1311,6 +1354,7 @@ BENCH_WEIGHTS = {
     "deepSwe":        1.5,  # Contamination-free long-horizon repo benchmark
     "swePro":         1.0,  # Standard reference coding benchmark
     "codingIndex":    1.0,  # Standard reference coding index
+    "bugHunt":        1.0,  # 2026 blind-graded real-bug repair (single publisher, TS-only)
     "terminalBench2": 0.5,  # Legacy early-2026 suite, largely saturated
 }
 
@@ -1327,7 +1371,9 @@ def compute_model_ranks(models, dry_run=False):
     2. Log-Odds Transformation: Raw percentage scores p in (0, 100) are mapped to
        log-odds l = ln(p / (100 - p)) (Item Response Theory logistic link, clamped
        to [0.5, 99.5]%), eliminating ceiling compression on saturated suites
-       (e.g. Terminal-Bench 2, AA Coding Index) and floor skew.
+       (e.g. Terminal-Bench 2, AA Coding Index) and floor skew. Bug Hunt stores
+       planted bugs fixed out of 105 (a count, not a percentage) and is converted
+       to p = fixed / 105 * 100 first.
     3. 2-Parameter Mean-Sigma Anchored Equating: Cutting-edge suites (Terminal-Bench 4,
        DeepSWE) evaluate narrower, higher-ability frontier cohorts than broad suites.
        Reliability-weighted Mean-Sigma equating across multi-suite bridge models
@@ -1335,8 +1381,9 @@ def compute_model_ranks(models, dry_run=False):
        a_f so Z_cal = (l - b_f) / a_f aligns every suite to a global N(0, 1) skill scale.
     4. Suite Weights & Conservative Bayesian Skill (Lower Confidence Bound):
        Suites are weighted by rigor and recency (Terminal-Bench 4: 1.5x, DeepSWE: 1.5x,
-       SWE-bench Pro: 1.0x, AA Coding Index: 1.0x, Terminal-Bench 2: 0.5x). Each model's
-       rating uses TrueSkill-style conservative posterior skill R = mu_post - kappa * sigma_post
+       SWE-bench Pro: 1.0x, AA Coding Index: 1.0x, Bug Hunt: 1.0x, Terminal-Bench 2: 0.5x).
+       Each model's rating uses TrueSkill-style conservative posterior skill
+       R = mu_post - kappa * sigma_post
        (lambda = 0.35, kappa = 0.75), where mu_post = sum(w_f * Z_cal) / (sum(w_f) + lambda)
        and sigma_post = 1 / sqrt(sum(w_f) + lambda). Unlike symmetric shrinkage toward 0,
        conservative LCB penalizes sparse single-suite coverage across the entire table
@@ -1346,9 +1393,11 @@ def compute_model_ranks(models, dry_run=False):
        OpenRouter builds) are scored from their own benchmarks against the canonical scale;
        models with no benchmark scores receive None.
     """
-    bench_fields = ("codingIndex", "swePro", "terminalBench2", "terminalBench4", "deepSwe")
+    bench_fields = ("codingIndex", "swePro", "bugHunt", "terminalBench2", "terminalBench4", "deepSwe")
     LAMBDA_PRIOR = 0.35
     KAPPA_LCB = 0.75
+    # Bug Hunt reports planted bugs fixed out of 105; every other suite is a %.
+    BUG_HUNT_TOTAL = 105.0
 
     def parse_score(v):
         if v is None:
@@ -1377,6 +1426,12 @@ def compute_model_ranks(models, dry_run=False):
         clamped = max(0.5, min(99.5, float(p))) / 100.0
         return math.log(clamped / (1.0 - clamped))
 
+    def pct(field, value):
+        """Put a suite's raw cell on the shared 0-100 percentage scale."""
+        if field == "bugHunt":
+            return float(value) / BUG_HUNT_TOTAL * 100.0
+        return value
+
     # Build canonical benchmark profiles (Zen/Go and active rows take precedence over
     # 1-decimal OpenRouter snapshots; '?' uncertain values excluded from calibration).
     cal_scores = {}
@@ -1395,7 +1450,7 @@ def compute_model_ranks(models, dry_run=False):
             if not uncertain:
                 cal_scores.setdefault(cid, {}).setdefault(f, val)
 
-    l_cal = {cid: {f: logit(v) for f, v in sc.items()} for cid, sc in cal_scores.items() if sc}
+    l_cal = {cid: {f: logit(pct(f, v)) for f, v in sc.items()} for cid, sc in cal_scores.items() if sc}
     if not l_cal:
         return []
 
@@ -1451,7 +1506,7 @@ def compute_model_ranks(models, dry_run=False):
 
     def conservative_rating(sc):
         w_sum = sum(BENCH_WEIGHTS.get(f, 1.0) for f in sc)
-        z_sum = sum(BENCH_WEIGHTS.get(f, 1.0) * ((logit(sc[f]) - b_loc[f]) / a_scale[f]) for f in sc)
+        z_sum = sum(BENCH_WEIGHTS.get(f, 1.0) * ((logit(pct(f, sc[f])) - b_loc[f]) / a_scale[f]) for f in sc)
         denom = w_sum + LAMBDA_PRIOR
         return (z_sum / denom) - (KAPPA_LCB / math.sqrt(denom))
 
