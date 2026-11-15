@@ -95,6 +95,8 @@
   }
   /* Card expand toggle: only rendered/visible in the narrow-screen card layout */
   .card-toggle { display: none; }
+  /* Collapsed-card header price: only rendered/visible in the card layout */
+  .card-price { display: none; }
   .footer { color: #666; font-size: 0.75rem; margin-top: 1rem; }
   td a { color: #60a5fa; text-decoration: none; }
   td a:hover { text-decoration: underline; }
@@ -229,6 +231,16 @@
       background: transparent; color: inherit; font: inherit; font-size: 0.7rem; line-height: 1; cursor: pointer;
     }
     td[data-label="Model"] .card-toggle:hover { background: rgba(128,128,128,0.15); }
+    /* Output price, right-justified in the header, just left of the chevron */
+    td[data-label="Model"] .card-price {
+      display: inline-block; flex: 0 0 auto; margin-left: auto; padding-left: 0.5rem;
+      text-align: right; font-weight: 600; white-space: nowrap;
+      font-variant-numeric: tabular-nums; opacity: 0.85;
+    }
+    /* Expanded cards already list the Output row, so drop the header copy */
+    tbody tr.expanded td[data-label="Model"] .card-price { display: none; }
+    /* The (New) badge is noise on a card header: it keeps working in the table */
+    .new-badge { display: none; }
     tbody tr.expanded td[data-label="Rank"], tbody tr.expanded td[data-label="Model"] { border-bottom: 1px solid #ccc; padding-bottom: 0.35rem; }
     /* Collapsed card: rank + model name + platform badge only; tap the header to expand */
     tbody tr:not(.expanded) td:not([data-label="Model"]):not([data-label="Rank"]) { display: none; }
@@ -803,9 +815,14 @@ function render() {
       : escapeHtml(m.name)) + zenBadge + goBadge + orBadge + naBadge + newBadge;
     const stealthAnchor = /^(big pickle)/i.test(m.name) ? '#big-pickle-note' : (/^(omen alpha)/i.test(m.name) ? '#omen-alpha-note' : null);
     const noteLink = stealthAnchor ? ` <a href="${stealthAnchor}" title="Stealth-model note — see below" style="font-size:0.75em;opacity:0.65;text-decoration:none">ⓘ</a>` : '';
+    // Output price echoed in the card header (narrow layout only, via CSS); hidden
+    // when the Output column is switched off, like the column's own cell.
+    const cardPrice = colVisibility.outputCost
+      ? `<span class="card-price" title="Output price per 1M tokens">${fmtCost(m.outputCost)}</span>`
+      : '';
     const cells = [];
     if (colVisibility.rank)            cells.push(`<td class="num rank" data-label="Rank">${fmtRank(m.rank)}</td>`);
-    if (colVisibility.name)            cells.push(`<td data-label="Model"><span class="card-head">${nameHtml}${noteLink}</span><button type="button" class="card-toggle" aria-expanded="${isOpen ? 'true' : 'false'}" aria-label="${isOpen ? 'Hide' : 'Show'} details for ${escapeHtml(m.name)}" title="${isOpen ? 'Hide' : 'Show'} details">${isOpen ? '▾' : '▸'}</button></td>`);
+    if (colVisibility.name)            cells.push(`<td data-label="Model"><span class="card-head">${nameHtml}${noteLink}</span>${cardPrice}<button type="button" class="card-toggle" aria-expanded="${isOpen ? 'true' : 'false'}" aria-label="${isOpen ? 'Hide' : 'Show'} details for ${escapeHtml(m.name)}" title="${isOpen ? 'Hide' : 'Show'} details">${isOpen ? '▾' : '▸'}</button></td>`);
     if (colVisibility.params)          cells.push(`<td data-label="Params">${fmtParams(m.params)}</td>`);
     if (colVisibility.context)         cells.push(`<td data-label="Context">${escapeHtml(m.context)}</td>`);
     if (colVisibility.codingIndex)     cells.push(`<td class="num" data-label="AA Coding Index">${fmtScore(m.codingIndex)}</td>`);

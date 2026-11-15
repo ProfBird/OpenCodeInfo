@@ -30,7 +30,7 @@ A small static web page that displays **all OpenCode Zen models** (coding benchm
 - Filter by **Min AA index**, **Min SWE-bench Pro**, **Min Bug Hunt (0–105)**, **Min FrontierCode 2.0**, **Min Terminal-Bench 2**, **Min Terminal-Bench 4**, **Min DeepSWE**, and **Max output price ($/1M)** — same order as the columns.
 - **Reset** clears all filters, restores the default column set, and re-sorts by **Rank** (ascending).
 - Default view: sorted by **Rank**; AA Coding Index, SWE-bench Pro, Terminal-Bench 2, Input, Cached Read, and Go Limits are hidden until enabled under **choose columns**.
-- On narrow screens each model becomes a compact card showing only its name and platform badge; tap the header (or the ▸ button) to expand rank, benchmarks, and output cost.
+- On narrow screens each model becomes a compact card showing only its rank, name and platform badge — plus its output price, right-justified in the header next to the expand chevron. The green **(New)** badge is suppressed in this card layout (it still shows in the table). Tap the header (or the chevron) to expand benchmarks and all costs.
 - Models with no benchmark score (`—`) sort to the bottom when sorting by benchmark.
 
 ## Composite Ranking & Benchmark Methodology
