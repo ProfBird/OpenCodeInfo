@@ -448,9 +448,9 @@
       "terminalBench2": 82.7,
       "terminalBench4": 31.2,
       "deepSwe": 54.4,
-      "inputCost": 0.06,
-      "outputCost": 0.18,
-      "cachedReadCost": 0.015,
+      "inputCost": 0.0434,
+      "outputCost": 0.3,
+      "cachedReadCost": 0.035,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731"
     },
