@@ -25,6 +25,21 @@
   .subtitle a { color: #60a5fa; text-decoration: none; }
   .subtitle a:hover { text-decoration: underline; }
   .subtitle a:visited { color: #93c5fd; }
+  /* Intro: a one-line lead, then short bulleted "how to read this" lists rated
+     a notch below the table so the eye lands on the data first. */
+  .intro { color: #555; font-size: 0.82rem; line-height: 1.5; margin: 0 0 1.25rem; }
+  .intro .subtitle { color: inherit; font-size: 0.88rem; margin: 0 0 0.4rem; }
+  .intro h2 {
+    font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em;
+    opacity: 0.75; margin: 0.85rem 0 0.2rem;
+  }
+  .intro ul { margin: 0; padding-left: 1.1rem; }
+  .intro li { margin: 0.12rem 0; }
+  .intro p { margin: 0.3rem 0; }
+  .intro a { color: #60a5fa; text-decoration: none; }
+  .intro a:hover { text-decoration: underline; }
+  .intro a:visited { color: #93c5fd; }
+  @media (prefers-color-scheme: dark) { .intro { color: #a3b1c6; } }
   .toolbar { margin-bottom: 1rem; }
   .toolbar-row { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; }
   .toolbar-row + .toolbar-row { margin-top: 0.6rem; }
@@ -251,7 +266,31 @@
 <body>
   <h1>OpenCode Zen &amp; Go, OpenRouter — Model Benchmarks &amp; Cost</h1>
   <p class="toplinks"><a href="https://opencode.ai/zen" target="_blank" rel="noopener noreferrer">OpenCode Zen</a> · <a href="https://opencode.ai/docs/go" target="_blank" rel="noopener noreferrer">OpenCode Go</a> · <a href="https://openrouter.ai/models?categories=programming" target="_blank" rel="noopener noreferrer">OpenRouter</a></p>
-  <p class="subtitle"><strong>OpenCode</strong> provides the Zen pay-as-you-go catalog and the $10/mo <strong>Go</strong> plan; <strong>OpenRouter</strong> is a third-party model provider — its rows carry OpenRouter's own pricing and context, which can differ from the same model's Zen/Go twins, and OpenRouter adds a 5.5% charge on top of the listed price. The default <strong>Best Price per Model</strong> view lists each model once, on whichever platform charges least for output, and adds its free tier where it has one — so a model carried by two or three of the platforms is compared rather than repeated. Switch the <strong>Plan</strong> filter to show all rows, recently added (<strong>New</strong>) models, models available on Zen pay-as-you-go, the Go plan subset, or OpenRouter programming-category models. Every model is badged: <strong>(Zen)</strong> = Zen pay-as-you-go only, <strong>(Go)</strong> = on the Go plan, <strong>(Go · Zen)</strong> = also on Zen pay-as-you-go at the same price, <strong>(OpenRouter)</strong> = OpenRouter row. A model the two plans price differently is listed twice instead, once as (Go) and once as (Zen), each row showing that plan's own price. Costs are USD per 1M tokens. <strong>Rank</strong> is an objective composite calculated across 7 benchmark suites: <a href="https://www.tbench.ai/" target="_blank" rel="noopener noreferrer">Terminal-Bench 4 &amp; 2</a>, <a href="https://deepswe.datacurve.ai/" target="_blank" rel="noopener noreferrer">DeepSWE</a>, <a href="https://labs.scale.com/leaderboard/swe_bench_pro_public" target="_blank" rel="noopener noreferrer">SWE-bench Pro</a>, <a href="https://bughunt.productcompass.pm/" target="_blank" rel="noopener noreferrer">Bug Hunt</a>, <a href="https://cognition.com/frontiercode" target="_blank" rel="noopener noreferrer">FrontierCode 2.0</a>, and the <a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener noreferrer">AA Coding Index</a> via log-odds latent skill with 2-parameter Mean-Sigma cohort equating and conservative Bayesian lower-confidence-bound (LCB) weighting. Click any column header or sort button to sort; selecting a new column keeps the previous sort as the tiebreaker for equal values.</p>
+  <div class="intro">
+    <p class="subtitle"><strong>OpenCode</strong> sells access to these models two ways — the <strong>Zen</strong> pay-as-you-go catalog and the $10/mo <strong>Go</strong> plan — and <strong>OpenRouter</strong> is a third-party provider reselling the same models on its own terms. This page compares all three on benchmark scores and token cost.</p>
+
+    <h2>Where each row comes from</h2>
+    <ul>
+      <li><strong>(Zen)</strong> — OpenCode pay-as-you-go, billed per token at the listed rate.</li>
+      <li><strong>(Go)</strong> — included in the $10/mo Go plan; the usage included per period is listed under <em>Go Limits</em>.</li>
+      <li><strong>(Go · Zen)</strong> — on the Go plan <em>and</em> on Zen pay-as-you-go at the same price, so one row covers both.</li>
+      <li><strong>(OpenRouter)</strong> — OpenRouter's own pricing and context window, which can differ from the same model's Zen/Go twins; OpenRouter adds a 5.5% charge on top of the listed price.</li>
+      <li>A model the two OpenCode plans price differently is listed twice instead — once as (Go), once as (Zen) — each row at its own plan's price.</li>
+      <li>A <strong>(New)</strong> badge marks a row added to this page within the last month; on narrow screens it is left out of the card header to keep it short.</li>
+    </ul>
+
+    <h2>Reading the table</h2>
+    <ul>
+      <li><strong>Best Price per Model</strong> (the default) lists each model once, on whichever platform charges least for <em>output</em>, plus its free tier where it has one — so a model carried by two or three platforms is compared rather than repeated.</li>
+      <li>The <strong>Plan</strong> filter shows all rows, newly added (<strong>New</strong>) models, models available on Zen pay-as-you-go, the Go-plan subset, OpenRouter programming-category models, or free models.</li>
+      <li>Click a column header or its ⇅ button to sort; choosing a new column keeps the previous sort as the tiebreaker, and missing scores (—) sort last.</li>
+      <li>The benchmark columns — AA Coding Index, SWE-bench Pro, Bug Hunt, FrontierCode 2.0, Terminal-Bench 2 &amp; 4 and DeepSWE — each link to their own leaderboard from the header.</li>
+      <li>All prices are USD per 1M tokens. On narrow screens each model collapses to a card: tap it to expand its scores and costs.</li>
+    </ul>
+
+    <h2>What Rank measures</h2>
+    <p><strong>Rank</strong> is an objective composite calculated across 7 benchmark suites — <a href="https://www.tbench.ai/" target="_blank" rel="noopener noreferrer">Terminal-Bench 4 &amp; 2</a>, <a href="https://deepswe.datacurve.ai/" target="_blank" rel="noopener noreferrer">DeepSWE</a>, <a href="https://labs.scale.com/leaderboard/swe_bench_pro_public" target="_blank" rel="noopener noreferrer">SWE-bench Pro</a>, <a href="https://bughunt.productcompass.pm/" target="_blank" rel="noopener noreferrer">Bug Hunt</a>, <a href="https://cognition.com/frontiercode" target="_blank" rel="noopener noreferrer">FrontierCode 2.0</a> and the <a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener noreferrer">AA Coding Index</a> — using a log-odds latent-skill model with 2-parameter Mean-Sigma cohort equating and conservative Bayesian lower-confidence-bound (LCB) weighting. A rank resting only on inferred scores carries a trailing “?”.</p>
+  </div>
 
   <div class="toolbar">
     <div class="toolbar-row toolbar-actions">
