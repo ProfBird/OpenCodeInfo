@@ -391,6 +391,13 @@ def price_cell(s):
     """Text of a pricing cell; discounted cells ("<del>$1.36</del> $0.68") keep the current price."""
     return strip_tags(re.sub(r'<del>.*?</del>', '', s, flags=re.DOTALL))
 
+# An above-threshold context tier in a pricing row's name: "(> 512K tokens)",
+# "(over 200K)", "(≥ 1M tokens)". Such a row prices only the context above that
+# threshold, so it must never overwrite the model's headline rate (which used to
+# happen for any threshold not starting with "2", e.g. MiniMax M3's "> 512K" and
+# Claude Haiku 5.5's "> 100K"). Base tiers (≤, <, "up to") are kept.
+TIER_SURCHARGE = re.compile(r'(?:>=|>|≥|over|above|beyond)\s*\d', re.IGNORECASE)
+
 def extract_pricing_table(html_text: str, is_go: bool = False):
     """Parse pricing table. Zen: 5 cols, Go: 6 cols (sixth = Usage / Monthly limit)."""
     if is_go:
@@ -420,7 +427,11 @@ def extract_pricing_table(html_text: str, is_go: bool = False):
         base = model.split("(")[0].strip()
         if not model:
             continue
-        if ("Peak" in model and "Off-Peak" not in model) or "> 2" in model:
+        # Peak/Off-Peak and context-tier rows list the same model more than once
+        # and all strip to one base name, so the last row written would win.
+        # Keep the headline rate: the Off-Peak row, and the base context tier
+        # ("≤ 512K tokens") rather than the surcharge above it ("> 512K tokens").
+        if ("Peak" in model and "Off-Peak" not in model) or TIER_SURCHARGE.search(model):
             continue
         pricing[normalize(base)] = (parse_price(price_cell(row[1])), parse_price(price_cell(row[2])), parse_price(price_cell(row[3])))
     return pricing
