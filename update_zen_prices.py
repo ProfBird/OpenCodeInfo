@@ -659,7 +659,7 @@ def sync_openrouter(models, or_models, dry_run=False, today=None):
                 existing["name"] = name
                 by_name[normalize(name)] = existing
         if existing is None:
-            row = {"name": name, "codingIndex": None, "swePro": None,
+            row = {"name": name, "rank": None, "codingIndex": None, "swePro": None,
                    "terminalBench2": None, "terminalBench4": None, "deepSwe": None}
             row.update(row_data)
             _insert_after(row, "addedOn", today.isoformat(), "hfUrl")
@@ -750,6 +750,7 @@ def reconcile(data, desired, zen_pricing, go_pricing, go_usage, md, dry_run=Fals
         if existing is None:
             row = {
                 "name": d["name"],
+                "rank": None,
                 "codingIndex": None,
                 "inputCost": price[0] if price else d["inputCost"],
                 "outputCost": price[1] if price else d["outputCost"],
@@ -883,6 +884,8 @@ def merge_benchmarks(models, bench_items, dry_run=False):
     changed = []
     for m in models:
         for field in BENCH_FIELDS:
+            if field in BENCH_VALUE_OVERRIDES.get(m["name"], {}) and BENCH_VALUE_OVERRIDES[m["name"]][field] is None:
+                continue
             it = bench_item_for(m["name"], field, by_slug, by_norm)
             if not it:
                 continue
@@ -936,13 +939,17 @@ SWE_PRO_OVERRIDES = {
     "Hy3": 57.9,
 }
 
-# Hardcoded scores for other benchmark fields BenchLM lacks: {name: {field: score}}.
+# Hardcoded scores for other benchmark fields BenchLM lacks or that need suppression: {name: {field: score}}.
 BENCH_VALUE_OVERRIDES = {
     # Recursive self-reported on the RecursiveSI/flint model card (Terminus 2 harness,
     # avg pass@1 over >=5 attempts; web-retrieved solutions counted as failures).
     # Its "SWE-bench Pro v2" 89.7 is a different benchmark from Scale's SWE-bench Pro,
     # so swePro stays null.
     "Flint 40B Free": {"terminalBench2": 54.9},
+    # Artificial Analysis / BenchLM lists an outlier aaTerminalBench4 score of 3.0%
+    # (failed agentic environment harness, 2/66 tasks resolved). Excluded until
+    # an accurate, representative evaluation is published.
+    "Beam Free": {"terminalBench4": None},
 }
 
 # Free-tier variants publish no benchmark runs of their own; they serve the same
@@ -1033,7 +1040,14 @@ def apply_bench_overrides(models, dry_run=False):
                 m["swePro"] = score
     for m in models:
         for field, score in BENCH_VALUE_OVERRIDES.get(m["name"], {}).items():
-            old_num = _bench_num(m.get(field))
+            old = m.get(field)
+            if score is None:
+                if old is not None:
+                    changed.append((field, m["name"], old, None))
+                    if not dry_run:
+                        m[field] = None
+                continue
+            old_num = _bench_num(old)
             if old_num is None or abs(old_num - score) > 1e-9:
                 changed.append((field, m["name"], m.get(field), score))
                 if not dry_run:
@@ -1217,6 +1231,146 @@ def apply_na_flags(models, md, mdgo, catalog_ids=(), dry_run=False, today=None):
             m.pop("naSince", None)
     return changed
 
+# Benchmark weights for transitive ranking: higher weight for modern/rigorous suites,
+# lower weight for older/saturated suites (which serve primarily as graph anchors).
+BENCH_WEIGHTS = {
+    "terminalBench4": 1.5,  # Modern uncontaminated agentic terminal benchmark
+    "deepSwe":        1.5,  # Contamination-free long-horizon repo benchmark
+    "swePro":         1.0,  # Standard reference coding benchmark
+    "codingIndex":    1.0,  # Standard reference coding index
+    "terminalBench2": 0.5,  # Legacy early-2026 suite, largely saturated
+}
+
+def compute_model_ranks(models, dry_run=False):
+    """Compute global ranking across all benchmarks using transitive harmonic ranking.
+
+    1. For each benchmark, rank all models that have a score and assign normalized
+       relative percentiles in [0, 1] (using fractional tie-breaking).
+    2. Construct a pairwise comparison graph where edges represent shared benchmarks
+       between model pairs with edge weight = sum of benchmark weights.
+    3. Solve the harmonic potential / HodgeRank system iteratively: models evaluated
+       on disjoint benchmark sets are ranked indirectly through transitive paths
+       spanning common bridge models.
+    4. Assign integer competition ranks (1..N, with tied scores sharing ranks) to
+       benchmark-evaluated models, and None to models with no benchmark data.
+    """
+    bench_fields = ("codingIndex", "swePro", "terminalBench2", "terminalBench4", "deepSwe")
+
+    def parse_score(v):
+        if v is None:
+            return None
+        if isinstance(v, (int, float)):
+            return float(v)
+        if isinstance(v, str):
+            s = v.rstrip("?").strip()
+            try:
+                return float(s)
+            except ValueError:
+                return None
+        return None
+
+    # Collect benchmarks per unique model name (twins share benchmark scores)
+    unique_models = {}
+    for m in models:
+        name = m["name"]
+        if name not in unique_models:
+            scores = {f: parse_score(m.get(f)) for f in bench_fields if parse_score(m.get(f)) is not None}
+            if scores:
+                unique_models[name] = scores
+
+    model_names = sorted(unique_models.keys())
+    if not model_names:
+        return []
+
+    # 1. Within-benchmark percentiles with fractional tie handling
+    bench_percentiles = {f: {} for f in bench_fields}
+    for f in bench_fields:
+        scores = [(name, unique_models[name][f]) for name in model_names if f in unique_models[name]]
+        if not scores:
+            continue
+        scores.sort(key=lambda x: x[1])
+        M = len(scores)
+        if M == 1:
+            bench_percentiles[f][scores[0][0]] = 0.5
+        else:
+            idx = 0
+            while idx < M:
+                val = scores[idx][1]
+                end = idx + 1
+                while end < M and abs(scores[end][1] - val) < 1e-6:
+                    end += 1
+                avg_idx = (idx + end - 1) / 2.0
+                pct = avg_idx / (M - 1)
+                for i in range(idx, end):
+                    bench_percentiles[f][scores[i][0]] = pct
+                idx = end
+
+    # 2. Pairwise comparison graph with benchmark prestige weights
+    neighbors = {name: {} for name in model_names}
+    for i, u in enumerate(model_names):
+        for j in range(i + 1, len(model_names)):
+            v = model_names[j]
+            common = [f for f in bench_fields if f in unique_models[u] and f in unique_models[v]]
+            if not common:
+                continue
+            w_common = sum(BENCH_WEIGHTS.get(f, 1.0) for f in common)
+            diff = sum(BENCH_WEIGHTS.get(f, 1.0) * (bench_percentiles[f][u] - bench_percentiles[f][v]) for f in common) / w_common
+            neighbors[u][v] = (w_common, diff)
+            neighbors[v][u] = (w_common, -diff)
+
+    # 3. Solve harmonic potential iteratively
+    # Initial estimate: weighted average benchmark percentile
+    R = {}
+    for name in model_names:
+        present = [f for f in bench_fields if f in bench_percentiles and name in bench_percentiles[f]]
+        w_sum = sum(BENCH_WEIGHTS.get(f, 1.0) for f in present)
+        weighted_pct = sum(BENCH_WEIGHTS.get(f, 1.0) * bench_percentiles[f][name] for f in present)
+        R[name] = weighted_pct / w_sum if w_sum > 0 else 0.5
+
+    for _ in range(500):
+        new_R = {}
+        for u in model_names:
+            if not neighbors[u]:
+                new_R[u] = R[u]
+                continue
+            total_w = sum(w for w, _ in neighbors[u].values())
+            weighted_sum = sum(w * (R[v] + diff) for v, (w, diff) in neighbors[u].items())
+            new_R[u] = weighted_sum / total_w
+        mean_val = sum(new_R.values()) / len(new_R)
+        new_R = {name: val - mean_val for name, val in new_R.items()}
+        max_diff = max(abs(new_R[name] - R[name]) for name in model_names)
+        R = new_R
+        if max_diff < 1e-6:
+            break
+
+    # 4. Standard competition ranking
+    sorted_ranked = sorted(model_names, key=lambda name: R[name], reverse=True)
+    ranks = {}
+    curr_rank = 1
+    prev_score = None
+    for idx, name in enumerate(sorted_ranked):
+        score = R[name]
+        if prev_score is not None and abs(score - prev_score) < 1e-5:
+            ranks[name] = curr_rank
+        else:
+            curr_rank = idx + 1
+            ranks[name] = curr_rank
+            prev_score = score
+
+    # Apply to model dicts
+    changed = []
+    for m in models:
+        new_rank = ranks.get(m["name"])
+        old_rank = m.get("rank")
+        if old_rank != new_rank:
+            changed.append((m["name"], old_rank, new_rank))
+            if not dry_run:
+                if "rank" in m:
+                    m["rank"] = new_rank
+                else:
+                    _insert_after(m, "rank", new_rank, "name")
+    return changed
+
 def update_checked_date(index_path: Path, today) -> bool:
     """Refresh the 'Checked <date>.' footer note in the web page. Returns True if changed."""
     try:
@@ -1299,6 +1453,7 @@ def main():
     bench_changed += cross_copy_benchmarks(data["models"], dry_run=args.dry_run)
     na_changed = apply_na_flags(data["models"], md, mdgo, catalog_ids=list(zen_ids) + list(go_ids), dry_run=args.dry_run, today=run_today)
     new_expired = prune_new_flags(data["models"], run_today, dry_run=args.dry_run)
+    rank_changed = compute_model_ranks(data["models"], dry_run=args.dry_run)
 
     if changed:
         print(f"\n{len(changed)} price/plan update(s):" + (" (dry-run)" if args.dry_run else ""), file=sys.stderr)
@@ -1308,6 +1463,12 @@ def main():
         print(f"\n{len(bench_changed)} benchmark update(s):" + (" (dry-run)" if args.dry_run else ""), file=sys.stderr)
         for field, name, old, new in bench_changed:
             print(f"  {field:10} {name:34} {old} -> {new}", file=sys.stderr)
+    if rank_changed:
+        print(f"\n{len(rank_changed)} rank update(s):" + (" (dry-run)" if args.dry_run else ""), file=sys.stderr)
+        for name, old, new in rank_changed[:10]:
+            print(f"  {'rank':10} {name:34} {old} -> {new}", file=sys.stderr)
+        if len(rank_changed) > 10:
+            print(f"  ... and {len(rank_changed) - 10} more", file=sys.stderr)
     if na_changed:
         print(f"\n{len(na_changed)} availability update(s):" + (" (dry-run)" if args.dry_run else ""), file=sys.stderr)
         for name, kind in na_changed:
@@ -1321,10 +1482,10 @@ def main():
         print(f"\n{len(new_expired)} New badge(s) expired:" + (" (dry-run)" if args.dry_run else ""), file=sys.stderr)
         for name in new_expired:
             print(f"  - {name:34} (addedOn dropped)", file=sys.stderr)
-    if not (changed or added or bench_changed or na_changed or new_expired):
+    if not (changed or added or bench_changed or na_changed or new_expired or rank_changed):
         print("\nCatalog, prices and benchmarks in sync (no changes).", file=sys.stderr)
 
-    if not args.dry_run and (changed or added or bench_changed or na_changed or new_expired):
+    if not args.dry_run and (changed or added or bench_changed or na_changed or new_expired or rank_changed):
         today = date.today().isoformat()
         data["source"] = f"OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved {today}"
         data["goSource"] = f"OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved {today}"
@@ -1333,6 +1494,7 @@ def main():
         data["benchmarkTerminal4"] = f"Terminal-Bench 4 (Laude Institute), via {DEFAULT_BENCHLM_URL}, retrieved {today}"
         data.pop("benchmarkTerminal", None)
         data["benchmarkDeepSwe"] = f"DeepSWE (Datacurve), via {DEFAULT_BENCHLM_URL}, retrieved {today}"
+        data["rankingSource"] = f"Composite transitive harmonic pairwise ranking across benchmarks, computed {today}"
         args.output.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         print(f"\nWrote {args.output}", file=sys.stderr)
     elif args.dry_run:
