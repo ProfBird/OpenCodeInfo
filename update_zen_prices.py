@@ -1067,10 +1067,14 @@ BENCH_SLUG_OVERRIDES_RELEASED = {
 # only — a BenchLM value (coding["bug-hunt-bench"]) always wins once it exists.
 # Source: https://bughunt.productcompass.pm/ (best non-superseded configuration
 # per model; blind-graded across 105 bugs planted in two production TypeScript
-# repos, 23 of which no model has fixed). The publisher's "DeepSeek V4.1 Flash
-# 1017" harness run (42.7) is a different build/agent and is not used; BenchLM
-# keeps the 39.1 Claude Code run. Values are a count, not a percentage: the
-# ranking converts p = fixed / 105 * 100 before the logit.
+# repos, 23 of which no model has fixed). For DeepSeek V4.1 Flash the publisher
+# ran the same 1017 build under several agents; its best non-superseded run
+# (42.7, DeepSeek Harness, DeepSeek's own first-party agent) is not used because
+# BenchLM already carries 39.1 for that build (Claude Code / DeepSeek API, max
+# effort, mean of 7 runs, 2026-10-18), and a BenchLM value always wins. Both are
+# the 1017 build Zen and Go serve, not different builds; the pre-1017 September
+# build scored 21.7 (Claude Code, max, mean of 3). Values are a count, not a
+# percentage: the ranking converts p = fixed / 105 * 100 before the logit.
 BUG_HUNT_FALLBACKS = {
     "Claude Fable 5": 29,      # publisher "Fable 5" (Claude Code, max)
     "Claude Opus 4.8": 15,     # publisher "Opus 4.8" (Claude Code, max)
