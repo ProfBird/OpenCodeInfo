@@ -1243,16 +1243,23 @@ BENCH_WEIGHTS = {
 
 def compute_model_ranks(models, dry_run=False):
     """Compute global ranking across all benchmarks using standardized multi-suite skill
-    with Bayesian coverage weighting.
+    with benchmark cohort calibration (anchored equating) and Bayesian coverage weighting.
 
     1. For each benchmark, standardize raw scores into z-scores (mean 0, std 1) across
-       all evaluated models, putting all benchmarks on an identical, scale-free metric.
-    2. Apply benchmark weights reflecting recency and rigor (Terminal-Bench 4: 1.5×,
+       all evaluated models.
+    2. Benchmark Cohort Calibration (Anchored Equating): Cutting-edge benchmarks
+       (Terminal-Bench 4, DeepSWE) were only evaluated on high-capability frontier models,
+       while older suites (Terminal-Bench 2, AA Coding Index) evaluate the broader catalog.
+       Uncalibrated z-scores heavily penalize models participating in elite suites compared
+       to models that skip them. Iterative anchored calibration estimates a latent cohort
+       ability offset for each benchmark using bridge models evaluated across multiple suites,
+       placing all benchmarks onto a unified global scale.
+    3. Apply benchmark weights reflecting recency and rigor (Terminal-Bench 4: 1.5×,
        DeepSWE: 1.5×, SWE-bench Pro: 1.0×, AA Coding Index: 1.0×, Terminal-Bench 2: 0.5×).
-    3. Apply Bayesian coverage weighting (shrinkage towards population mean) to reward
-       broad multi-suite consistency and avoid 'one-hit-wonder' selection bias from models
-       evaluated on only a single test.
-    4. Assign integer competition ranks (1..N, with tied scores sharing ranks) to
+    4. Apply Bayesian coverage weighting (shrinkage towards population mean, lambda=0.6)
+       to reward broad multi-suite consistency and avoid 'one-hit-wonder' selection bias
+       from models evaluated on only a single test.
+    5. Assign integer competition ranks (1..N, with tied scores sharing ranks) to
        benchmark-evaluated models, and None to models with no benchmark data.
     """
     bench_fields = ("codingIndex", "swePro", "terminalBench2", "terminalBench4", "deepSwe")
@@ -1295,19 +1302,47 @@ def compute_model_ranks(models, dry_run=False):
         std_v = (var_v ** 0.5) if var_v > 1e-9 else 1.0
         bench_z[f] = {name: (val - mean_v) / std_v for name, val in scores}
 
-    # 2. Bayesian coverage weighting:
-    # A model evaluated on multiple diverse suites provides high statistical certainty.
-    # Models evaluated on only 1 test have higher uncertainty and receive shrinkage
-    # towards the baseline mean, preventing sparse 'one-hit-wonders' from vaulting to #1.
-    LAMBDA_PRIOR = 0.5  # Bayesian prior shrinkage for missing benchmark coverage
+    # 2. Benchmark Cohort Calibration (Anchored Equating):
+    # Tests like TB4 and DeepSWE have a higher-ability evaluating cohort than broad tests like TB2.
+    # Iteratively estimate the cohort ability offset for each benchmark using bridge models.
+    LAMBDA_PRIOR = 0.6  # Bayesian prior shrinkage for missing benchmark coverage
+    cohort_offsets = {f: 0.0 for f in bench_fields}
 
+    for _ in range(10):
+        # Current ratings with cohort offsets
+        ratings = {}
+        for name in model_names:
+            present = [f for f in bench_fields if f in bench_z and name in bench_z[f]]
+            w_sum = sum(BENCH_WEIGHTS.get(f, 1.0) for f in present)
+            weighted_z = sum(BENCH_WEIGHTS.get(f, 1.0) * (bench_z[f][name] + cohort_offsets[f]) for f in present)
+            ratings[name] = weighted_z / (w_sum + LAMBDA_PRIOR)
+
+        # Estimate benchmark cohort offset from performance on other benchmarks
+        new_offsets = {}
+        for f in bench_fields:
+            cohort_models = [name for name in model_names if f in bench_z and name in bench_z[f]]
+            other_skills = []
+            for name in cohort_models:
+                other_benches = [b for b in bench_fields if b != f and b in bench_z and name in bench_z[b]]
+                if other_benches:
+                    w_sum = sum(BENCH_WEIGHTS.get(b, 1.0) for b in other_benches)
+                    weighted_z = sum(BENCH_WEIGHTS.get(b, 1.0) * (bench_z[b][name] + cohort_offsets[b]) for b in other_benches)
+                    other_skills.append(weighted_z / (w_sum + LAMBDA_PRIOR))
+            new_offsets[f] = (sum(other_skills) / len(other_skills)) if other_skills else 0.0
+
+        # Center offsets so the global average offset is 0.0
+        avg_offset = sum(new_offsets.values()) / len(new_offsets)
+        for f in bench_fields:
+            cohort_offsets[f] = new_offsets[f] - avg_offset
+
+    # Compute final calibrated ratings
     ratings = {}
     for name in model_names:
         present = [f for f in bench_fields if f in bench_z and name in bench_z[f]]
         if not present:
             continue
         w_sum = sum(BENCH_WEIGHTS.get(f, 1.0) for f in present)
-        weighted_z = sum(BENCH_WEIGHTS.get(f, 1.0) * bench_z[f][name] for f in present)
+        weighted_z = sum(BENCH_WEIGHTS.get(f, 1.0) * (bench_z[f][name] + cohort_offsets[f]) for f in present)
         ratings[name] = weighted_z / (w_sum + LAMBDA_PRIOR)
 
     # 3. Standard competition ranking

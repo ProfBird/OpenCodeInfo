@@ -35,26 +35,36 @@ A small static web page that displays **all OpenCode Zen models** (coding benchm
 
 The site computes an automatic, objective composite rank across all evaluated models whenever new benchmarks or models are added.
 
-### Ranking Algorithm: Standardized Multi-Suite Skill with Bayesian Coverage
+### Ranking Algorithm: Standardized Multi-Suite Skill with Cohort Calibration & Bayesian Coverage
 
-Raw percentage scores from different coding benchmarks cannot be directly averaged or compared. Different benchmarks exhibit vastly different difficulty curves, scales, and score distributions: for example, resolving 67% of tasks on **Terminal-Bench 4** is state-of-the-art frontier performance (#1 in the catalog), whereas 67% on **Terminal-Bench 2** is mid-tier. Averaging raw percentages would heavily bias rankings toward older or easier benchmarks and distort cross-suite comparisons.
+Raw percentage scores from different coding benchmarks cannot be directly averaged or compared. Different benchmarks exhibit vastly different difficulty curves, scales, and score distributions: for example, resolving 67% of tasks on **Terminal-Bench 4** is state-of-the-art frontier performance (#1 in the catalog), whereas 67% on **Terminal-Bench 2** is mid-tier.
 
-To solve this, the ranking pipeline uses **Standardized Multi-Suite Skill (Z-score normalization) with Bayesian Coverage Weighting**:
+Furthermore, naive z-score normalization suffers from **cohort selection bias**: cutting-edge benchmarks like **Terminal-Bench 4** and **DeepSWE** were designed in late 2026 and have only evaluated high-capability frontier models (models tested on TB4 average 85.8% on TB2, compared to the catalog average of 75.2%). Comparing a lightweight or mid-tier model against frontier giants on TB4 yields a negative z-score, while older models that never participated in TB4 escape the comparison entirely.
 
-1. **Standardized Z-Scores:** For each benchmark suite $f$, the pipeline computes the mean $\mu_f$ and sample standard deviation $\sigma_f$ across all models evaluated on that suite. Each model's raw score $x_{m,f}$ is converted to a standardized z-score:
-   $$Z_{m,f} = \frac{x_{m,f} - \mu_f}{\sigma_f}$$
-   This transforms every benchmark onto a common zero-mean, unit-variance scale where $+1.0$ represents exactly one standard deviation above the catalog average on that specific benchmark, regardless of task difficulty.
+To provide fair, accurate, and contamination-resistant rankings across the entire catalog, the ranking pipeline uses **Standardized Multi-Suite Skill with Benchmark Cohort Calibration (Anchored Equating) and Bayesian Coverage Weighting**:
 
-2. **Suite Weighting:** Each suite is assigned an explicit importance weight $w_f$ reflecting test recency, evaluation rigor, and resistance to contamination (see [Suite Weighting Rationale](#suite-weighting-rationale) below).
+1. **Standardized Raw Z-Scores:** For each benchmark suite $f$, the pipeline computes the sample mean $\mu_f$ and standard deviation $\sigma_f$ across all models evaluated on that suite, converting raw scores $x_{m,f}$ to standard units:
+   $$Z_{m,f}^{\text{raw}} = \frac{x_{m,f} - \mu_f}{\sigma_f}$$
 
-3. **Bayesian Coverage Shrinkage ($\lambda_{\text{prior}} = 0.5$):**
-   Simply calculating a weighted average of available z-scores introduces severe selection bias ("one-hit wonder" syndrome) — a model evaluated on only a single benchmark where it happened to perform well would leapfrog comprehensively evaluated frontier models that have proven themselves across 3, 4, or 5 rigorous suites.
+2. **Benchmark Cohort Calibration (Anchored Equating):**
+   Because different benchmarks evaluate non-equivalent cohorts, tests taken by elite models have higher raw sample means than broad tests taken across the whole catalog.
    
-   To ensure statistical confidence, each model's composite score $R_m$ incorporates a Bayesian shrinkage prior $\lambda_{\text{prior}} = 0.5$ (equivalent to pulling a model's composite score toward the catalog average $Z = 0$ by the weight of half a suite):
-   $$R_m = \frac{\sum_{f \in \mathcal{F}_m} w_f \cdot Z_{m,f}}{\sum_{f \in \mathcal{F}_m} w_f + \lambda_{\text{prior}}}$$
+   To align all benchmarks onto a unified global baseline, the pipeline uses "bridge models" (models evaluated across multiple suites) to iteratively estimate the latent cohort ability offset $C_f$ for each benchmark:
+   $$C_f = \frac{1}{|M_f|} \sum_{m \in M_f} \hat{R}_m^{(-f)} - \bar{C}$$
+   Where $\hat{R}_m^{(-f)}$ is model $m$'s composite performance across all suites *other* than $f$, and $\bar{C}$ centers the offsets. Calibrated z-scores are then computed as:
+   $$Z_{m,f}^{\text{calibrated}} = Z_{m,f}^{\text{raw}} + C_f$$
+   This prevents participation penalties: scoring 18.2% on TB4 is recognized as a respectable result on a frontier benchmark rather than penalized as a failure.
+
+3. **Suite Weighting:** Each suite is assigned an explicit importance weight $w_f$ reflecting test recency, evaluation rigor, and resistance to contamination (see [Suite Weighting Rationale](#suite-weighting-rationale) below).
+
+4. **Bayesian Coverage Shrinkage ($\lambda_{\text{prior}} = 0.6$):**
+   Simply calculating a weighted average of available scores introduces severe selection bias ("one-hit wonder" syndrome) — a model evaluated on only a single benchmark where it happened to perform well would leapfrog comprehensively evaluated frontier models that have proven themselves across 3, 4, or 5 rigorous suites.
+   
+   To enforce statistical confidence, each model's composite score $R_m$ incorporates a Bayesian shrinkage prior $\lambda_{\text{prior}} = 0.6$ (pulling uncertain scores toward the catalog baseline $Z = 0$):
+   $$R_m = \frac{\sum_{f \in \mathcal{F}_m} w_f \cdot Z_{m,f}^{\text{calibrated}}}{\sum_{f \in \mathcal{F}_m} w_f + \lambda_{\text{prior}}}$$
    Where $\mathcal{F}_m$ is the set of benchmark suites on which model $m$ has a verified score. This shrinkage smoothly discounts sparse, single-test evaluations while rewarding models that demonstrate sustained, reproducible excellence across diverse testing methodologies.
 
-4. **Competition Ranking:** Models are sorted by descending composite score $R_m$ and assigned standard competition ranks ($1, 2, 2, 4\dots$). Models without any published benchmark evaluations receive `—` and sort to the bottom.
+5. **Competition Ranking:** Models are sorted by descending composite score $R_m$ and assigned standard competition ranks ($1, 2, 2, 4\dots$). Models without any published benchmark evaluations receive `—` and sort to the bottom.
 
 ---
 
