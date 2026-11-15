@@ -188,8 +188,7 @@
       "outputCost": 0.5,
       "cachedReadCost": 0.01,
       "plan": "openrouter",
-      "hfUrl": "https://openrouter.ai/anthropic/claude-haiku-5.5",
-      "addedOn": "2026-11-15"
+      "hfUrl": "https://openrouter.ai/anthropic/claude-haiku-5.5"
     },
     {
       "name": "Claude Opus 4.5",
@@ -334,8 +333,7 @@
       "outputCost": 20.0,
       "cachedReadCost": 0.2,
       "plan": "openrouter",
-      "hfUrl": "https://openrouter.ai/anthropic/claude-opus-5.5",
-      "addedOn": "2026-11-15"
+      "hfUrl": "https://openrouter.ai/anthropic/claude-opus-5.5"
     },
     {
       "name": "Claude Sonnet 4",
@@ -445,8 +443,7 @@
       "outputCost": 10.0,
       "cachedReadCost": 0.1,
       "plan": "openrouter",
-      "hfUrl": "https://openrouter.ai/anthropic/claude-sonnet-5.5",
-      "addedOn": "2026-11-15"
+      "hfUrl": "https://openrouter.ai/anthropic/claude-sonnet-5.5"
     },
     {
       "name": "Crouton Alpha Free",
@@ -930,8 +927,7 @@
       "outputCost": 4.125,
       "cachedReadCost": 0.0825,
       "plan": "openrouter",
-      "hfUrl": "https://openrouter.ai/google/gemini-3.8-flash",
-      "addedOn": "2026-11-15"
+      "hfUrl": "https://openrouter.ai/google/gemini-3.8-flash"
     },
     {
       "name": "Gemini 4 Argon",
@@ -968,8 +964,7 @@
       "outputCost": 10.0,
       "cachedReadCost": 0.1,
       "plan": "openrouter",
-      "hfUrl": "https://openrouter.ai/google/gemini-4-argon",
-      "addedOn": "2026-11-15"
+      "hfUrl": "https://openrouter.ai/google/gemini-4-argon"
     },
     {
       "name": "Gemini 4 Argon Contributor",
@@ -1057,8 +1052,7 @@
       "outputCost": 1.25,
       "cachedReadCost": 0.075,
       "plan": "openrouter",
-      "hfUrl": "https://openrouter.ai/z-ai/glm-5.3-flashx",
-      "addedOn": "2026-11-15"
+      "hfUrl": "https://openrouter.ai/z-ai/glm-5.3-flashx"
     },
     {
       "name": "GLM-5",
@@ -1576,8 +1570,7 @@
       "outputCost": 50.0,
       "cachedReadCost": 1.0,
       "plan": "openrouter",
-      "hfUrl": "https://openrouter.ai/openai/gpt-6-astra",
-      "addedOn": "2026-11-15"
+      "hfUrl": "https://openrouter.ai/openai/gpt-6-astra"
     },
     {
       "name": "GPT-6 Luna",
@@ -1614,8 +1607,7 @@
       "outputCost": 0.5,
       "cachedReadCost": 0.01,
       "plan": "openrouter",
-      "hfUrl": "https://openrouter.ai/openai/gpt-6-luna",
-      "addedOn": "2026-11-15"
+      "hfUrl": "https://openrouter.ai/openai/gpt-6-luna"
     },
     {
       "name": "GPT-6 Sol",
@@ -1666,8 +1658,7 @@
       "outputCost": 10.0,
       "cachedReadCost": 0.1,
       "plan": "openrouter",
-      "hfUrl": "https://openrouter.ai/openai/gpt-6.1-sol",
-      "addedOn": "2026-11-15"
+      "hfUrl": "https://openrouter.ai/openai/gpt-6.1-sol"
     },
     {
       "name": "GPT-6.1 Terra",
@@ -1789,8 +1780,7 @@
       "outputCost": 6.0,
       "cachedReadCost": 0.5,
       "plan": "openrouter",
-      "hfUrl": "https://openrouter.ai/x-ai/grok-4.7",
-      "addedOn": "2026-11-15"
+      "hfUrl": "https://openrouter.ai/x-ai/grok-4.7"
     },
     {
       "name": "Grok Build 0.1",
@@ -2331,8 +2321,7 @@
       "outputCost": 0.28,
       "cachedReadCost": 0.0028,
       "plan": "openrouter",
-      "hfUrl": "https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Flash-RL",
-      "addedOn": "2026-11-15"
+      "hfUrl": "https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Flash-RL"
     },
     {
       "name": "MiMo V2.6 Pro",
@@ -2367,8 +2356,7 @@
       "outputCost": 0.87,
       "cachedReadCost": 0.0036,
       "plan": "openrouter",
-      "hfUrl": "https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Pro-RL",
-      "addedOn": "2026-11-15"
+      "hfUrl": "https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Pro-RL"
     },
     {
       "name": "MiMo-V2 Omni",
@@ -2766,8 +2754,7 @@
       "outputCost": 0.2,
       "cachedReadCost": 0.002,
       "plan": "openrouter",
-      "hfUrl": "https://openrouter.ai/meta/muse-spark-1.3-contributor",
-      "addedOn": "2026-11-15"
+      "hfUrl": "https://openrouter.ai/meta/muse-spark-1.3-contributor"
     },
     {
       "name": "Muse Spark 1.3 Free",
@@ -2822,8 +2809,7 @@
       "outputCost": 20.0,
       "cachedReadCost": 0.2,
       "plan": "openrouter",
-      "hfUrl": "https://openrouter.ai/meta/muse-wonder",
-      "addedOn": "2026-11-15"
+      "hfUrl": "https://openrouter.ai/meta/muse-wonder"
     },
     {
       "name": "Nemotron 3 Ultra Free",
@@ -2914,8 +2900,7 @@
       "outputCost": 0.0,
       "cachedReadCost": 0,
       "plan": "openrouter",
-      "hfUrl": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-BF16",
-      "addedOn": "2026-11-15"
+      "hfUrl": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-BF16"
     },
     {
       "name": "Omen Alpha",
@@ -3161,8 +3146,7 @@
       "outputCost": 0.2,
       "cachedReadCost": 0.005,
       "plan": "openrouter",
-      "hfUrl": "https://openrouter.ai/upstage/solar-mini4",
-      "addedOn": "2026-11-15"
+      "hfUrl": "https://openrouter.ai/upstage/solar-mini4"
     },
     {
       "name": "Solar Pro 4",
@@ -3241,8 +3225,7 @@
       "outputCost": 2.7,
       "cachedReadCost": 0.1,
       "plan": "openrouter",
-      "hfUrl": "https://huggingface.co/stepfun-ai/Step-5-Preview",
-      "addedOn": "2026-11-15"
+      "hfUrl": "https://huggingface.co/stepfun-ai/Step-5-Preview"
     },
     {
       "name": "Step 5 Preview Free",
