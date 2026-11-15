@@ -1,0 +1,40 @@
+  /* Styles for docs/notes.html — the methods/notes page split off index.html.
+     Kept separate from index.html's inline sheet (that page carries the table
+     and its filter UI); these are the reading styles both pages share. */
+  :root { color-scheme: light dark; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    margin: 0;
+    padding: 2rem;
+    max-width: 900px;
+    margin-inline: auto;
+    line-height: 1.55;
+  }
+  h1 { font-size: 1.35rem; margin-bottom: 0.35rem; }
+  .lede { color: #555; font-size: 0.85rem; margin: 0 0 0.75rem; }
+  .backlink { font-size: 0.85rem; margin: 0 0 1.25rem; }
+  a { color: #60a5fa; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  a:visited { color: #93c5fd; }
+  h2 { font-size: 1rem; margin: 1.6rem 0 0.4rem; }
+  /* Benchmark / data notes */
+  .note { font-size: 0.85rem; margin: 0.7rem 0; }
+  .note strong { color: inherit; }
+  .notes { background: rgba(128,128,128,0.08); border: 1px solid #ccc; border-radius: 8px; padding: 1rem 1.25rem; margin-top: 1.75rem; font-size: 0.85rem; }
+  .notes h2 { font-size: 0.95rem; margin: 0 0 0.65rem 0; }
+  .notes h3 { font-size: 0.85rem; margin: 1rem 0 0.3rem 0; }
+  .notes p { margin: 0.45rem 0; }
+  .notes code { font-size: 0.82rem; }
+  .footer { color: #666; font-size: 0.75rem; margin-top: 1rem; }
+  /* Highlight the entry a #...-note link jumps to */
+  :target { background: rgba(96,165,250,0.14); border-radius: 6px; }
+  @media (prefers-color-scheme: dark) {
+    .lede { color: #a3b1c6; }
+    .footer { color: #94a3b8; }
+    .notes { border-color: #334155; }
+  }
+  @media (max-width: 760px) {
+    body { padding: 1rem 0.85rem; }
+    h1 { font-size: 1.15rem; }
+    .note, .notes { font-size: 0.82rem; }
+  }

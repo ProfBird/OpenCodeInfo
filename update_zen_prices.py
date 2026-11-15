@@ -99,7 +99,8 @@ DISPLAY_NAME = {
 }
 
 # Known model-card links (HF if a card exists, else BenchLM specs, else manufacturer;
-# stealth models with no real model-info page link to their notes anchor in docs/index.html).
+# stealth models with no real model-info page link to their notes anchor, which the page
+# resolves against docs/notes.html — the "#..." values below are cross-page anchors).
 KNOWN_URLS = {
     # open weights -> Hugging Face
     "deepseek-v4-flash": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash",
