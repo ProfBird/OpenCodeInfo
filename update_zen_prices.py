@@ -1669,6 +1669,113 @@ BENCH_WEIGHTS = {
     "terminalBench2": 0.5,  # Legacy early-2026 suite, largely saturated
 }
 
+BENCH_FIELDS = ("codingIndex", "swePro", "bugHunt", "frontierCode2", "terminalBench2", "terminalBench4", "deepSwe")
+
+
+def _parse_bench_score(v):
+    """(value, uncertain) for a benchmark cell; a trailing '?' marks an inferred score."""
+    if v is None:
+        return None, False
+    if isinstance(v, (int, float)):
+        return float(v), False
+    if isinstance(v, str):
+        uncertain = "?" in v
+        s = v.rstrip("?").strip()
+        try:
+            return float(s), uncertain
+        except ValueError:
+            return None, False
+    return None, False
+
+
+def _canonical_bench_id(name):
+    """Canonical model identity shared by a model's Free/Contributor/OpenRouter/dated
+    twins and its BENCH_INHERIT_FROM aliases, so they rank as one model."""
+    cur = name
+    visited = set()
+    while cur in BENCH_INHERIT_FROM and cur not in visited:
+        visited.add(cur)
+        cur = BENCH_INHERIT_FROM[cur]
+    cur = re.sub(r"\s+(Contributor\s+Free|Contributor|Free)$", "", cur, flags=re.IGNORECASE)
+    # OpenRouter exposes dated builds of a model that is already listed under its
+    # bare name ("DeepSeek V4 Pro 0813" vs "DeepSeek V4 Pro"). They are the same
+    # underlying model, so they share a canonical identity: otherwise the dated
+    # build double-counts its scores during calibration and consumes a rank slot.
+    # A dated build whose scores really differ still gets its own rating via the
+    # `diverges` branch in compute_model_ranks, so merging the identity is safe.
+    cur = re.sub(r"\s+\d{4}$", "", cur)
+    return normalize(cur)
+
+
+def _canonical_profiles(models):
+    """Per canonical model: {field: value} and {field: uncertain}. Zen/Go and active
+    rows take precedence over 1-decimal OpenRouter snapshots, and a confirmed value
+    always wins over an uncertain ('?') one for the same canonical field."""
+    canon_scores, canon_uncertain = {}, {}
+    ordered = sorted(models, key=lambda r: (r.get("plan") == "openrouter", bool(r.get("na")), r["name"]))
+    for m in ordered:
+        cid = _canonical_bench_id(m["name"])
+        for f in BENCH_FIELDS:
+            val, uncertain = _parse_bench_score(m.get(f))
+            if val is None:
+                continue
+            prof = canon_scores.setdefault(cid, {})
+            unc = canon_uncertain.setdefault(cid, {})
+            if f not in prof or (unc.get(f) and not uncertain):
+                prof[f] = val
+                unc[f] = uncertain
+    return canon_scores, canon_uncertain
+
+
+def compute_bench_ranks(models, dry_run=False):
+    """Per-benchmark ranks, stored per row as `benchRanks` ({field: rank}).
+
+    Each suite is ranked on its own, higher score = better, with standard competition
+    ranking (ties share a rank, the next rank skips). Like the composite rank, the
+    cohort is canonical models, so a model's Free/Contributor/OpenRouter/dated twins
+    count once and share a rank. A row's rank is 1 + the number of canonical models
+    with a strictly higher confirmed score; a row whose value differs from its
+    canonical value by more than 0.1 (a build-divergent OpenRouter row) is placed by
+    its own value, while rounded twins (74.76 vs 74.8) take the canonical value.
+    Identity-inferred ('?') scores do not count against anyone; a row's own '?' score
+    is placed the same way and its rank carries the trailing '?'. Rows with no
+    benchmark scores carry no `benchRanks` key.
+    """
+    canon_scores, canon_uncertain = _canonical_profiles(models)
+    confirmed = {f: sorted((sc[f] for cid, sc in canon_scores.items()
+                            if f in sc and not canon_uncertain[cid][f]), reverse=True)
+                 for f in BENCH_FIELDS}
+
+    def place(f, v):
+        return 1 + sum(1 for x in confirmed[f] if x > v + 1e-9)
+
+    changed = []
+    for m in models:
+        cid = _canonical_bench_id(m["name"])
+        base = canon_scores.get(cid, {})
+        ranks = {}
+        for f in BENCH_FIELDS:
+            val, uncertain = _parse_bench_score(m.get(f))
+            if val is None:
+                continue
+            if f in base and abs(val - base[f]) <= 0.1:
+                val = base[f]
+            r = place(f, val)
+            ranks[f] = f"{r}?" if uncertain else r
+        old = m.get("benchRanks")
+        new = ranks or None
+        if old != new:
+            changed.append((m["name"], old, new))
+            if not dry_run:
+                if new is None:
+                    m.pop("benchRanks", None)
+                elif "benchRanks" in m:
+                    m["benchRanks"] = new
+                else:
+                    _insert_after(m, "benchRanks", new, "rank")
+    return changed
+
+
 def compute_model_ranks(models, dry_run=False):
     """Compute global ranking across all benchmarks via log-odds latent skill with
     2-parameter Mean-Sigma anchored equating and conservative Bayesian skill (LCB).
@@ -1713,41 +1820,14 @@ def compute_model_ranks(models, dry_run=False):
        OpenRouter builds) are scored from their own benchmarks against the canonical scale
        and clamped to 1..K; models with no benchmark scores receive None.
     """
-    bench_fields = ("codingIndex", "swePro", "bugHunt", "frontierCode2", "terminalBench2", "terminalBench4", "deepSwe")
+    bench_fields = BENCH_FIELDS
     LAMBDA_PRIOR = 0.35
     KAPPA_LCB = 0.75
     # Bug Hunt reports planted bugs fixed out of 105; every other suite is a %.
     BUG_HUNT_TOTAL = 105.0
 
-    def parse_score(v):
-        if v is None:
-            return None, False
-        if isinstance(v, (int, float)):
-            return float(v), False
-        if isinstance(v, str):
-            uncertain = "?" in v
-            s = v.rstrip("?").strip()
-            try:
-                return float(s), uncertain
-            except ValueError:
-                return None, False
-        return None, False
-
-    def canonical_id(name):
-        cur = name
-        visited = set()
-        while cur in BENCH_INHERIT_FROM and cur not in visited:
-            visited.add(cur)
-            cur = BENCH_INHERIT_FROM[cur]
-        cur = re.sub(r"\s+(Contributor\s+Free|Contributor|Free)$", "", cur, flags=re.IGNORECASE)
-        # OpenRouter exposes dated builds of a model that is already listed under its
-        # bare name ("DeepSeek V4 Pro 0813" vs "DeepSeek V4 Pro"). They are the same
-        # underlying model, so they share a canonical identity: otherwise the dated
-        # build double-counts its scores during calibration and consumes a rank slot.
-        # A dated build whose scores really differ still gets its own rating via the
-        # `diverges` branch below, so merging the identity is safe either way.
-        cur = re.sub(r"\s+\d{4}$", "", cur)
-        return normalize(cur)
+    parse_score = _parse_bench_score
+    canonical_id = _canonical_bench_id
 
     def logit(p):
         clamped = max(0.5, min(99.5, float(p))) / 100.0
@@ -1960,7 +2040,21 @@ def main():
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--verbose", action="store_true")
     parser.add_argument("--no-sync", action="store_true", help="Only update prices of existing models")
+    parser.add_argument("--ranks-only", action="store_true",
+                        help="Recompute the combined and per-benchmark ranks from the existing file; no network")
     args = parser.parse_args()
+
+    if args.ranks_only:
+        data = json.loads(args.output.read_text(encoding="utf-8"))
+        rank_changed = compute_model_ranks(data["models"], dry_run=args.dry_run)
+        bench_rank_changed = compute_bench_ranks(data["models"], dry_run=args.dry_run)
+        tag = " (dry-run)" if args.dry_run else ""
+        print(f"{len(rank_changed)} rank update(s), {len(bench_rank_changed)} per-benchmark rank update(s){tag}",
+              file=sys.stderr)
+        if (rank_changed or bench_rank_changed) and not args.dry_run:
+            args.output.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+            print(f"Wrote {args.output}", file=sys.stderr)
+        return
 
     try:
         zen_ids = [d["id"] for d in fetch_json(args.zen_api_url)["data"]]
@@ -2028,6 +2122,8 @@ def main():
                                 dry_run=args.dry_run, today=run_today)
     new_expired = prune_new_flags(data["models"], run_today, dry_run=args.dry_run)
     rank_changed = compute_model_ranks(data["models"], dry_run=args.dry_run)
+    # Every run, so the per-suite ranks follow any change to the model list or scores.
+    rank_changed += compute_bench_ranks(data["models"], dry_run=args.dry_run)
 
     if changed:
         print(f"\n{len(changed)} price/plan update(s):" + (" (dry-run)" if args.dry_run else ""), file=sys.stderr)

@@ -106,6 +106,10 @@
   th[data-key="rank"], td[data-label="Rank"] { text-align: right; font-weight: 600; width: 3.5rem; }
   tbody tr:hover { background: rgba(128,128,128,0.12); }
   .num { font-variant-numeric: tabular-nums; }
+  /* Per-benchmark rank before a score ("1) 92.4"): dimmed, right-aligned in a fixed
+     slot so the scores below one another stay aligned */
+  .bench-rank { display: inline-block; min-width: 2.4em; text-align: right; opacity: 0.55; font-size: 0.9em; }
+  td.num { white-space: nowrap; }
   .na { color: #999; }
   .new-badge { color: green; }
   .sortbtn {
@@ -239,6 +243,8 @@
     .toolbar-row { gap: 0.5rem; }
     .toolbar input { width: 3rem; }
     #mobileSort { display: flex; }
+    /* Per-benchmark ranks are a wide-table feature */
+    .bench-rank { display: none; }
     table, tbody { display: block; }
     thead { display: none; }
     table { font-size: 0.85rem; }
@@ -543,6 +549,20 @@ function fmtScore(v) {
   if (v === null || v === undefined) return '<span class="na">—</span>';
   if (typeof v === 'number') return v.toFixed(1);
   return escapeHtml(String(v));
+}
+
+// Benchmark cell: the row's rank on that suite (benchRanks, computed by
+// update_zen_prices.py over canonical models) before the score, e.g. "1) 92.4".
+// The rank prefix shows in the wide table only; the card layout hides it.
+function fmtBench(m, field) {
+  const v = m[field];
+  const r = m.benchRanks ? m.benchRanks[field] : null;
+  if (v === null || v === undefined || r === null || r === undefined) return fmtScore(v);
+  const rs = String(r);
+  const tip = rs.endsWith('?')
+    ? 'Inferred rank on this benchmark: the score is unconfirmed (?)'
+    : `Rank ${rs} on this benchmark`;
+  return `<span class="bench-rank" title="${tip}">${escapeHtml(rs)})</span> ${fmtScore(v)}`;
 }
 
 // Numeric value of a score/params cell; tolerates a trailing "?" (uncertain values).
@@ -868,13 +888,13 @@ function render() {
     if (colVisibility.name)            cells.push(`<td data-label="Model"><span class="card-head">${nameHtml}${noteLink}</span>${cardPrice}<button type="button" class="card-toggle" aria-expanded="${isOpen ? 'true' : 'false'}" aria-label="${isOpen ? 'Hide' : 'Show'} details for ${escapeHtml(m.name)}" title="${isOpen ? 'Hide' : 'Show'} details">${isOpen ? '▾' : '▸'}</button></td>`);
     if (colVisibility.params)          cells.push(`<td data-label="Params">${fmtParams(m.params)}</td>`);
     if (colVisibility.context)         cells.push(`<td data-label="Context">${escapeHtml(m.context)}</td>`);
-    if (colVisibility.codingIndex)     cells.push(`<td class="num" data-label="AA Coding Index">${fmtScore(m.codingIndex)}</td>`);
-    if (colVisibility.swePro)          cells.push(`<td class="num" data-label="SWE-bench Pro">${fmtScore(m.swePro)}</td>`);
-    if (colVisibility.bugHunt)         cells.push(`<td class="num" data-label="Bug Hunt">${fmtScore(m.bugHunt)}</td>`);
-    if (colVisibility.frontierCode2)   cells.push(`<td class="num" data-label="FrontierCode 2.0">${fmtScore(m.frontierCode2)}</td>`);
-    if (colVisibility.terminalBench2)  cells.push(`<td class="num" data-label="Terminal-Bench 2">${fmtScore(m.terminalBench2)}</td>`);
-    if (colVisibility.terminalBench4)  cells.push(`<td class="num" data-label="Terminal-Bench 4">${fmtScore(m.terminalBench4)}</td>`);
-    if (colVisibility.deepSwe)         cells.push(`<td class="num" data-label="DeepSWE">${fmtScore(m.deepSwe)}</td>`);
+    if (colVisibility.codingIndex)     cells.push(`<td class="num" data-label="AA Coding Index">${fmtBench(m, 'codingIndex')}</td>`);
+    if (colVisibility.swePro)          cells.push(`<td class="num" data-label="SWE-bench Pro">${fmtBench(m, 'swePro')}</td>`);
+    if (colVisibility.bugHunt)         cells.push(`<td class="num" data-label="Bug Hunt">${fmtBench(m, 'bugHunt')}</td>`);
+    if (colVisibility.frontierCode2)   cells.push(`<td class="num" data-label="FrontierCode 2.0">${fmtBench(m, 'frontierCode2')}</td>`);
+    if (colVisibility.terminalBench2)  cells.push(`<td class="num" data-label="Terminal-Bench 2">${fmtBench(m, 'terminalBench2')}</td>`);
+    if (colVisibility.terminalBench4)  cells.push(`<td class="num" data-label="Terminal-Bench 4">${fmtBench(m, 'terminalBench4')}</td>`);
+    if (colVisibility.deepSwe)         cells.push(`<td class="num" data-label="DeepSWE">${fmtBench(m, 'deepSwe')}</td>`);
     if (colVisibility.inputCost)       cells.push(`<td class="num" data-label="Input ($/1M)">${fmtCost(m.inputCost)}</td>`);
     if (colVisibility.cachedReadCost)  cells.push(`<td class="num" data-label="Cached Read ($/1M)">${fmtCost(m.cachedReadCost)}</td>`);
     if (colVisibility.outputCost)      cells.push(`<td class="num" data-label="Output ($/1M)">${fmtCost(m.outputCost)}</td>`);
