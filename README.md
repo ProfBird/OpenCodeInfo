@@ -57,10 +57,10 @@ To provide fair, accurate, and contamination-resistant rankings across the entir
 
 3. **Suite Weighting:** Each suite is assigned an explicit importance weight $w_f$ reflecting test recency, evaluation rigor, and resistance to contamination (see [Suite Weighting Rationale](#suite-weighting-rationale) below).
 
-4. **Bayesian Coverage Shrinkage ($\lambda_{\text{prior}} = 0.6$):**
+4. **Bayesian Coverage Shrinkage ($\lambda_{\text{prior}} = 0.75$):**
    Simply calculating a weighted average of available scores introduces severe selection bias ("one-hit wonder" syndrome) — a model evaluated on only a single benchmark where it happened to perform well would leapfrog comprehensively evaluated frontier models that have proven themselves across 3, 4, or 5 rigorous suites.
    
-   To enforce statistical confidence, each model's composite score $R_m$ incorporates a Bayesian shrinkage prior $\lambda_{\text{prior}} = 0.6$ (pulling uncertain scores toward the catalog baseline $Z = 0$):
+   To enforce statistical confidence, each model's composite score $R_m$ incorporates a Bayesian shrinkage prior $\lambda_{\text{prior}} = 0.75$ (pulling uncertain scores toward the catalog baseline $Z = 0$):
    $$R_m = \frac{\sum_{f \in \mathcal{F}_m} w_f \cdot Z_{m,f}^{\text{calibrated}}}{\sum_{f \in \mathcal{F}_m} w_f + \lambda_{\text{prior}}}$$
    Where $\mathcal{F}_m$ is the set of benchmark suites on which model $m$ has a verified score. This shrinkage smoothly discounts sparse, single-test evaluations while rewarding models that demonstrate sustained, reproducible excellence across diverse testing methodologies.
 

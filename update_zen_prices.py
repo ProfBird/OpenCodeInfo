@@ -1272,7 +1272,7 @@ def compute_model_ranks(models, dry_run=False):
        placing all benchmarks onto a unified global scale.
     3. Apply benchmark weights reflecting recency and rigor (Terminal-Bench 4: 1.5×,
        DeepSWE: 1.5×, SWE-bench Pro: 1.0×, AA Coding Index: 1.0×, Terminal-Bench 2: 0.5×).
-    4. Apply Bayesian coverage weighting (shrinkage towards population mean, lambda=0.6)
+    4. Apply Bayesian coverage weighting (shrinkage towards population mean, lambda=0.75)
        to reward broad multi-suite consistency and avoid 'one-hit-wonder' selection bias
        from models evaluated on only a single test.
     5. Assign integer competition ranks (1..N, with tied scores sharing ranks) to
@@ -1321,7 +1321,7 @@ def compute_model_ranks(models, dry_run=False):
     # 2. Benchmark Cohort Calibration (Anchored Equating):
     # Tests like TB4 and DeepSWE have a higher-ability evaluating cohort than broad tests like TB2.
     # Iteratively estimate the cohort ability offset for each benchmark using bridge models.
-    LAMBDA_PRIOR = 0.6  # Bayesian prior shrinkage for missing benchmark coverage
+    LAMBDA_PRIOR = 0.75  # Bayesian prior shrinkage for missing benchmark coverage
     cohort_offsets = {f: 0.0 for f in bench_fields}
 
     for _ in range(10):
