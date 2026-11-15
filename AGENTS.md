@@ -46,5 +46,6 @@ Each entry: `name`, `rank` (composite benchmark rank 1–K calculated via log-od
 
 ## Web page (docs/index.html)
 - Columns: Rank, Model, Params, Context, AA Coding Index, SWE-bench Pro, Bug Hunt, Terminal-Bench 2, Terminal-Bench 4, DeepSWE, Output ($/1M).
+- Default view: sorted by Rank (ascending); AA Coding Index, Terminal-Bench 2, Input ($/1M), Cached Read ($/1M), and Go Limits ($) are hidden by default (`defaultVisible: false` in `COLUMNS`) and enabled via choose columns.
 - Filters: Plan (All Models / New Models = added within the last month, same window as the green (New) badge / Zen Models = on Zen pay-as-you-go, incl. Go-plan models marked `alsoOnZen` / Go Plan Models / OpenRouter Models / Free Models = $0 input and output price) + "Available only" checkbox (hides `na` models), Min AA index, Min SWE-bench Pro, Min Bug Hunt (0–105), Min Terminal-Bench 2, Min Terminal-Bench 4, Min DeepSWE, Max output ($/1M) — same order as the columns; Reset clears all.
 - Click the sort button (⇅) or column header to sort; `null` scores/params sort last and render as "—". Selecting a new sort column keeps the previous sort as the secondary (tiebreaker) sort; Reset clears it. Benchmark header names link to the originator's page.
