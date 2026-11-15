@@ -48,7 +48,7 @@ Furthermore, naive linear z-scores suffer from three distinct distortions:
 
 To provide fair, monotonic, and clone-invariant rankings across the entire catalog, `compute_model_ranks` uses **Log-Odds Latent Skill (Item Response Theory) with 2-Parameter Mean-Sigma Anchored Equating and Conservative Bayesian Lower-Confidence-Bound (LCB) Weighting**:
 
-1. **Canonical Model Deduplication:** Free tiers, Contributor tiers, OpenRouter twins, and `BENCH_INHERIT_FROM` aliases representing the same underlying model are collapsed into a single canonical identity during calibration and rank numbering (and unconfirmed `?` proxy scores are excluded from parameter fitting), preventing duplicate rows from skewing suite statistics or creating artificial rank gaps.
+1. **Canonical Model Deduplication:** Free tiers, Contributor tiers, OpenRouter twins, dated OpenRouter builds of a model already listed under its bare name (`DeepSeek V4 Pro 0813` → `DeepSeek V4 Pro`), and `BENCH_INHERIT_FROM` aliases representing the same underlying model are collapsed into a single canonical identity during calibration and rank numbering (unconfirmed `?` proxy scores are excluded from parameter fitting, and a confirmed value always wins over an uncertain one for the same canonical field), preventing duplicate rows from skewing suite statistics or creating artificial rank gaps.
 
 2. **Log-Odds (IRT Logistic) Transformation:** For each suite $f$, raw percentage pass rates $p_{m,f} \in (0, 100)$ (clamped to $[0.5, 99.5]$) are mapped to log-odds:
    $$\ell_{m,f} = \ln\left(\frac{p_{m,f}}{100 - p_{m,f}}\right)$$
@@ -58,14 +58,16 @@ To provide fair, monotonic, and clone-invariant rankings across the entire catal
    Using reliability-weighted multi-suite "bridge models" (models evaluated on suite $f$ plus at least one other suite), the pipeline iteratively estimates both suite **location/difficulty** $b_f$ and **scale/discrimination** $a_f$ so that calibrated skill scores match the bridge cohort's leave-one-out latent skill mean and standard deviation on a global $\mathcal{N}(0, 1)$ scale:
    $$a_f = \frac{\sigma_{\ell \mid B_f}}{\sigma_{\hat{\theta}^{(-f)} \mid B_f}}, \qquad b_f = \mu_{\ell \mid B_f} - a_f \mu_{\hat{\theta}^{(-f)} \mid B_f}, \qquad Z_{m,f}^{\text{cal}} = \frac{\ell_{m,f} - b_f}{a_f}$$
 
+   Three guards keep a thin suite from acquiring a degenerate scale: $a_f$ is bounded to $[0.4, 4.0]$ (the live suites fit 0.56–1.90), a suite needs at least 3 bridge models before its scale is re-fit (a 2-point Mean-Sigma fit is exactly determined and swings with either point), and a suite with fewer than 2 confirmed values takes its moments from every score on that suite rather than from an unequated raw log-odds scale. Without them, a suite whose handful of values happen to coincide would divide by $\sigma \approx 0$ and amplify every later score on it tenfold.
+
 4. **Suite Weighting:** Each suite is assigned an explicit importance weight $w_f$ reflecting test recency, evaluation rigor, and resistance to contamination (see [Suite Weighting Rationale](#suite-weighting-rationale) below).
 
 5. **Conservative Bayesian Skill (TrueSkill LCB, $\lambda = 0.35, \kappa = 0.75$):**
    Each model's posterior mean $\mu_m$ and posterior uncertainty $\sigma_m$ are combined into a TrueSkill-style conservative lower confidence bound:
    $$\mu_m = \frac{\sum_{f \in \mathcal{F}_m} w_f \cdot Z_{m,f}^{\text{cal}}}{\sum_{f \in \mathcal{F}_m} w_f + \lambda}, \qquad \sigma_m = \frac{1}{\sqrt{\sum_{f \in \mathcal{F}_m} w_f + \lambda}}, \qquad R_m = \mu_m - \kappa \cdot \sigma_m$$
-   Because $-\kappa \sigma_m$ penalizes high uncertainty regardless of sign, sparse single-benchmark models cannot leapfrog proven multi-suite frontier models at the top *or* get pulled artificially upward toward the average in the lower half of the table.
+   Because $-\kappa \sigma_m$ penalizes high uncertainty regardless of sign, sparse single-benchmark models cannot leapfrog proven multi-suite frontier models at the top *or* get pulled artificially upward toward the average in the lower half of the table. Note that $\sigma_m$ depends only on how much suite weight a model has accumulated (its coverage) — a model's dispersion *across* suites does not enter the penalty.
 
-6. **Competition Ranking:** Canonical models are sorted by descending conservative rating $R_m$ and assigned standard competition ranks ($1, 2, 2, 4\dots$). Any row whose benchmark profile materially diverges from its canonical twin (e.g. an older build on OpenRouter) is scored from its own benchmarks against the canonical scale. Models without published benchmarks receive `—` and sort to the bottom.
+6. **Competition Ranking:** Canonical models are sorted by descending conservative rating $R_m$ and assigned standard competition ranks ($1, 2, 2, 4\dots$). Any row whose benchmark profile materially diverges from its canonical twin (e.g. an older build on OpenRouter) is scored from its own benchmarks against the canonical scale, clamped to the canonical range $1..K$. A rank computed only from unconfirmed, identity-inferred scores carries a trailing `?` (e.g. `#89?`), matching the convention the score cells use. Models without published benchmarks receive `—` and sort to the bottom.
 
 ---
 

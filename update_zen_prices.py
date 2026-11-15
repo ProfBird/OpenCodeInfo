@@ -1442,11 +1442,13 @@ def compute_model_ranks(models, dry_run=False):
     2-parameter Mean-Sigma anchored equating and conservative Bayesian skill (LCB).
 
     1. Canonical Deduplication: Variants serving the same underlying model (Free,
-       Contributor, OpenRouter twins, and BENCH_INHERIT_FROM aliases) are grouped
-       into canonical model identities so duplicate rows neither skew suite
-       statistics nor create competition-rank gaps. Unconfirmed ('?') scores are
-       excluded when fitting suite parameters so they cannot distort calibration,
-       then evaluated afterward on the calibrated scale.
+       Contributor, OpenRouter twins, dated OpenRouter builds such as "... 0813", and
+       BENCH_INHERIT_FROM aliases) are grouped into canonical model identities so
+       duplicate rows neither skew suite statistics nor create competition-rank gaps.
+       Unconfirmed ('?') scores are excluded when fitting suite parameters so they
+       cannot distort calibration, then evaluated afterward on the calibrated scale;
+       a confirmed value always wins over an uncertain one for the same canonical
+       field, and a rank resting only on uncertain scores is itself marked '?'.
     2. Log-Odds Transformation: Raw percentage scores p in (0, 100) are mapped to
        log-odds l = ln(p / (100 - p)) (Item Response Theory logistic link, clamped
        to [0.5, 99.5]%), eliminating ceiling compression on saturated suites
@@ -1458,6 +1460,10 @@ def compute_model_ranks(models, dry_run=False):
        Reliability-weighted Mean-Sigma equating across multi-suite bridge models
        iteratively estimates both suite difficulty/location b_f and discrimination/scale
        a_f so Z_cal = (l - b_f) / a_f aligns every suite to a global N(0, 1) skill scale.
+       A suite needs 3 bridge models before its scale is re-fit (2 points determine a
+       Mean-Sigma fit exactly and swing wildly), a_f is bounded to [0.4, 4.0], and a
+       suite with fewer than 2 confirmed values takes its moments from every score on
+       that suite rather than from a raw, unequated log-odds scale.
     4. Suite Weights & Conservative Bayesian Skill (Lower Confidence Bound):
        Suites are weighted by rigor and recency (Terminal-Bench 4: 1.5x, DeepSWE: 1.5x,
        SWE-bench Pro: 1.0x, AA Coding Index: 1.0x, Bug Hunt: 1.0x, FrontierCode 2.0: 0.5x,
@@ -1468,11 +1474,12 @@ def compute_model_ranks(models, dry_run=False):
        (lambda = 0.35, kappa = 0.75), where mu_post = sum(w_f * Z_cal) / (sum(w_f) + lambda)
        and sigma_post = 1 / sqrt(sum(w_f) + lambda). Unlike symmetric shrinkage toward 0,
        conservative LCB penalizes sparse single-suite coverage across the entire table
-       without pulling weak single-suite models upward toward the mean.
+       without pulling weak single-suite models upward toward the mean. The penalty is a
+       function of total suite weight (coverage), not of a model's dispersion across suites.
     5. Competition Ranking: Canonical models receive standard competition ranks (1..K);
        rows whose benchmarks materially diverge from their canonical twin (e.g. distinct
-       OpenRouter builds) are scored from their own benchmarks against the canonical scale;
-       models with no benchmark scores receive None.
+       OpenRouter builds) are scored from their own benchmarks against the canonical scale
+       and clamped to 1..K; models with no benchmark scores receive None.
     """
     bench_fields = ("codingIndex", "swePro", "bugHunt", "frontierCode2", "terminalBench2", "terminalBench4", "deepSwe")
     LAMBDA_PRIOR = 0.35
@@ -1501,6 +1508,13 @@ def compute_model_ranks(models, dry_run=False):
             visited.add(cur)
             cur = BENCH_INHERIT_FROM[cur]
         cur = re.sub(r"\s+(Contributor\s+Free|Contributor|Free)$", "", cur, flags=re.IGNORECASE)
+        # OpenRouter exposes dated builds of a model that is already listed under its
+        # bare name ("DeepSeek V4 Pro 0813" vs "DeepSeek V4 Pro"). They are the same
+        # underlying model, so they share a canonical identity: otherwise the dated
+        # build double-counts its scores during calibration and consumes a rank slot.
+        # A dated build whose scores really differ still gets its own rating via the
+        # `diverges` branch below, so merging the identity is safe either way.
+        cur = re.sub(r"\s+\d{4}$", "", cur)
         return normalize(cur)
 
     def logit(p):
@@ -1515,8 +1529,12 @@ def compute_model_ranks(models, dry_run=False):
 
     # Build canonical benchmark profiles (Zen/Go and active rows take precedence over
     # 1-decimal OpenRouter snapshots; '?' uncertain values excluded from calibration).
+    # A confirmed value always wins over an uncertain one for the same canonical field,
+    # whichever row carries it, so a rating and its calibration never disagree about
+    # which cell they are reading.
     cal_scores = {}
     canon_scores = {}
+    canon_uncertain = {}
     ordered_rows = sorted(
         models,
         key=lambda r: (r.get("plan") == "openrouter", bool(r.get("na")), r["name"]),
@@ -1527,26 +1545,47 @@ def compute_model_ranks(models, dry_run=False):
             val, uncertain = parse_score(m.get(f))
             if val is None:
                 continue
-            canon_scores.setdefault(cid, {}).setdefault(f, val)
+            prof = canon_scores.setdefault(cid, {})
+            unc = canon_uncertain.setdefault(cid, {})
+            if f not in prof or (unc.get(f) and not uncertain):
+                prof[f] = val
+                unc[f] = uncertain
             if not uncertain:
                 cal_scores.setdefault(cid, {}).setdefault(f, val)
 
     l_cal = {cid: {f: logit(pct(f, v)) for f, v in sc.items()} for cid, sc in cal_scores.items() if sc}
-    if not l_cal:
+    # Every score on the table, uncertain ones included: the fallback pool used to place
+    # a suite that has too few confirmed values to anchor its own location and scale.
+    l_all = {cid: {f: logit(pct(f, v)) for f, v in sc.items()} for cid, sc in canon_scores.items() if sc}
+    if not l_all:
         return []
+    if not l_cal:
+        l_cal = l_all
 
-    # Initialize suite location (b_f) and scale (a_f) in log-odds space
+    # Initialize suite location (b_f) and scale (a_f) in log-odds space.
+    # Observed a_f across the live suites runs 0.56-1.90, so A_FLOOR/A_CAP sit well
+    # outside that band: they only catch degenerate fits (a suite whose handful of
+    # values happen to coincide, which would otherwise divide by ~0 and amplify every
+    # later score on that suite by 10x or more).
+    A_FLOOR, A_CAP = 0.4, 4.0
+    MIN_MOMENT_N = 2    # values needed before a suite's own spread is trusted
+    MIN_BRIDGE_N = 3    # bridge models needed to re-fit location AND scale
     a_scale = {}
     b_loc = {}
     for f in bench_fields:
         xs = [l_cal[c][f] for c in l_cal if f in l_cal[c]]
+        if len(xs) < MIN_MOMENT_N:
+            # Too few confirmed values to estimate a spread: widen the pool to every
+            # score on the suite (uncertain ones included) rather than fall back to a
+            # raw log-odds scale, which has no relation to the latent N(0, 1) scale.
+            xs = [l_all[c][f] for c in l_all if f in l_all[c]]
         if not xs:
             a_scale[f], b_loc[f] = 1.0, 0.0
             continue
         mu = sum(xs) / len(xs)
         var = sum((x - mu) ** 2 for x in xs) / len(xs)
         b_loc[f] = mu
-        a_scale[f] = max(var ** 0.5, 0.1)
+        a_scale[f] = min(max(var ** 0.5, A_FLOOR), A_CAP)
 
     # Iterative reliability-weighted Mean-Sigma Anchored Equating across bridge models
     for _ in range(40):
@@ -1573,7 +1612,10 @@ def compute_model_ranks(models, dry_run=False):
                 t_other = (t_other - t_mu) / t_sd
                 rel = w_other / (w_other + 1.0)
                 bridge.append((rel, t_other, ls[f]))
-            if len(bridge) < 2:
+            # Mean-Sigma over two bridge models is exactly determined and swings wildly
+            # with either one, so a thin suite keeps its own moments until a third
+            # bridge model makes the fit identifiable.
+            if len(bridge) < MIN_BRIDGE_N:
                 new_a[f], new_b[f] = a_scale[f], b_loc[f]
                 continue
             w_tot = sum(w for w, _, _ in bridge)
@@ -1581,7 +1623,7 @@ def compute_model_ranks(models, dry_run=False):
             my = sum(w * ly for w, _, ly in bridge) / w_tot
             sx = (sum(w * (tx - mx) ** 2 for w, tx, _ in bridge) / w_tot) ** 0.5
             sy = (sum(w * (ly - my) ** 2 for w, _, ly in bridge) / w_tot) ** 0.5
-            new_a[f] = max(sy / max(sx, 0.1), 0.1)
+            new_a[f] = min(max(sy / max(sx, 0.25), A_FLOOR), A_CAP)
             new_b[f] = my - new_a[f] * mx
         a_scale, b_loc = new_a, new_b
 
@@ -1606,13 +1648,16 @@ def compute_model_ranks(models, dry_run=False):
             prev_score = score
 
     # Assign ranks to every row (ensuring unranked rows also carry explicit "rank": None)
+    n_canon = len(sorted_cids)
     changed = []
     for m in models:
         row_sc = {}
+        row_unc = {}
         for f in bench_fields:
-            val, _ = parse_score(m.get(f))
+            val, uncertain = parse_score(m.get(f))
             if val is not None:
                 row_sc[f] = val
+                row_unc[f] = uncertain
         if not row_sc:
             new_rank = None
         else:
@@ -1623,15 +1668,32 @@ def compute_model_ranks(models, dry_run=False):
             diverges = any(f in base_sc and abs(row_sc[f] - base_sc[f]) > 0.1 for f in row_sc)
             if diverges:
                 r_row = conservative_rating(row_sc)
-                new_rank = 1 + sum(1 for c in sorted_cids if canon_ratings[c] > r_row + 1e-5)
+                # Clamped to the canonical cohort: a divergent row rated below every
+                # canonical model would otherwise be handed rank K + 1.
+                new_rank = min(1 + sum(1 for c in sorted_cids if canon_ratings[c] > r_row + 1e-5),
+                               n_canon)
+                rated, rated_unc = row_sc, row_unc
             else:
                 new_rank = canon_ranks.get(cid)
+                # The rating came from the canonical profile, so that profile - not this
+                # row's subset of it - decides whether the rank rests on inferred scores.
+                rated = base_sc or row_sc
+                rated_unc = canon_uncertain.get(cid) or row_unc
+            # A rank resting only on identity-inferred ('?') scores is itself inferred:
+            # it carries the same trailing '?' the score cells use, which the page
+            # renders verbatim and sorts numerically.
+            if new_rank is not None and rated and all(rated_unc.get(f) for f in rated):
+                new_rank = f"{new_rank}?"
 
         has_rank_key = "rank" in m
         old_rank = m.get("rank")
         if old_rank != new_rank or not has_rank_key:
             if old_rank != new_rank:
                 changed.append((m["name"], old_rank, new_rank))
+            else:
+                # Key absent but value already correct: still a file change, so it has
+                # to be reported or main() may skip the write and lose the insertion.
+                changed.append((m["name"], "(absent)", new_rank))
             if not dry_run:
                 if has_rank_key:
                     m["rank"] = new_rank
