@@ -600,6 +600,10 @@ OPENROUTER_DISPLAY = {
     "deepseek/deepseek-v4-flash": "DeepSeek V4 Flash",
     "deepseek/deepseek-v4-flash-0731": "DeepSeek V4 Flash 0731",
     "deepseek/deepseek-v4-flash-vision-exp": "DeepSeek V4 Flash Vision Exp",
+    # Same name as the Zen/Go rows, so the three are twins (cross_copy_benchmarks
+    # keeps their scores identical). The undated deepseek/deepseek-v4.1-flash is
+    # the earlier September build and deliberately gets no row.
+    "deepseek/deepseek-v4.1-flash-1017": "DeepSeek V4.1 Flash 1017",
     "deepseek/deepseek-v4-pro": "DeepSeek V4 Pro",
     "deepseek/deepseek-v4-pro-0813": "DeepSeek V4 Pro 0813",
     "google/gemini-3.6-flash": "Gemini 3.6 Flash",
@@ -639,6 +643,7 @@ OPENROUTER_PARAMS = {
     "deepseek/deepseek-v4-flash": "284B",
     "deepseek/deepseek-v4-flash-0731": "284B",
     "deepseek/deepseek-v4-flash-vision-exp": "284B",
+    "deepseek/deepseek-v4.1-flash-1017": "763B",
     "deepseek/deepseek-v4-pro": "1.6T",
     "deepseek/deepseek-v4-pro-0813": "1.6T",
     "google/gemini-3.6-flash": "500B",

@@ -606,6 +606,25 @@
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash"
     },
     {
+      "name": "DeepSeek V4.1 Flash 1017",
+      "rank": 11,
+      "codingIndex": null,
+      "swePro": null,
+      "bugHunt": 39.1,
+      "frontierCode2": 19.3,
+      "terminalBench2": 90.6,
+      "terminalBench4": 42.3,
+      "deepSwe": 77,
+      "params": "763B",
+      "context": "1M",
+      "inputCost": 0.02,
+      "outputCost": 0.108,
+      "cachedReadCost": 0.007,
+      "plan": "openrouter",
+      "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017",
+      "addedOn": "2026-11-15"
+    },
+    {
       "name": "DeepSeek V4.1 Flash 1017 Free",
       "rank": 11,
       "codingIndex": null,
