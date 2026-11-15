@@ -9,7 +9,7 @@ Sources:
   Go pricing:  https://opencode.ai/docs/go                 (Go plan pricing table)
   Context/cost: https://models.dev/api.json                (opencode provider: context + cost)
   SWE-bench Pro: https://benchlm.ai/data/models.json       (per-model benchmarks.coding.swePro)
-  Terminal-Bench: https://benchlm.ai/data/models.json      (per-model benchmarks.coding.terminalBench21 / terminalBench2)
+  Terminal-Bench: https://benchlm.ai/data/models.json      (per-model benchmarks.coding/agentic.terminalBench21 / terminalBench41)
   DeepSWE:       https://benchlm.ai/data/models.json       (per-model benchmarks.coding.deepSwe)
 
 Every model in models.json carries a "plan" field: "go" for models on the Go
@@ -232,6 +232,7 @@ BENCH_SLUG_OVERRIDES = {
     "Nemotron 3 Ultra Free": "nemotron-3-ultra",
     "Nemotron 3.5 Lightning Free": "nemotron-3-5-lightning-30b-a3b-nvfp4",
     "Gemini 3.5 Flash Lite": "gemini-3-5-flash-lite",
+    "Gemini 4 Argon Contributor": "gemini-4-argon",
     "GPT 5.6 Sol": "gpt-5-6-sol",
     "GPT 5.6 Terra": "gpt-5-6-terra",
     "GPT 5.6 Luna": "gpt-5-6-luna",
@@ -659,7 +660,7 @@ def sync_openrouter(models, or_models, dry_run=False, today=None):
                 by_name[normalize(name)] = existing
         if existing is None:
             row = {"name": name, "codingIndex": None, "swePro": None,
-                   "terminalBench": None, "deepSwe": None}
+                   "terminalBench2": None, "terminalBench4": None, "deepSwe": None}
             row.update(row_data)
             _insert_after(row, "addedOn", today.isoformat(), "hfUrl")
             added.append((name, oid))
@@ -840,13 +841,13 @@ def bench_slug_for(name: str) -> str:
     return id_from_name(name)
 
 # BenchLM coding benchmark fields merged into each model (null if unpublished).
-BENCH_FIELDS = ("swePro", "terminalBench", "deepSwe")
+BENCH_FIELDS = ("swePro", "terminalBench2", "terminalBench4", "deepSwe")
 
 def bench_item_for(model_name, field, by_slug, by_norm):
     """Resolve the BenchLM item for a model+field (per-field slug overrides)."""
     if field == "deepSwe":
         slug = BENCH_SLUG_OVERRIDES_DEEPSWE.get(model_name) or bench_slug_for(model_name)
-    elif field == "terminalBench":
+    elif field in ("terminalBench", "terminalBench2", "terminalBench4"):
         slug = BENCH_SLUG_OVERRIDES_TERMINAL.get(model_name) or bench_slug_for(model_name)
     else:
         slug = bench_slug_for(model_name)
@@ -872,6 +873,13 @@ def merge_benchmarks(models, bench_items, dry_run=False):
         by_slug[it.get("slug")] = it
         by_norm[normalize(it.get("model"))] = it
 
+    # Migrate legacy single-column terminalBench to terminalBench2
+    for m in models:
+        if "terminalBench" in m:
+            legacy_tb = m.pop("terminalBench")
+            if "terminalBench2" not in m:
+                _set_bench_field(m, "terminalBench2", legacy_tb)
+
     changed = []
     for m in models:
         for field in BENCH_FIELDS:
@@ -879,11 +887,20 @@ def merge_benchmarks(models, bench_items, dry_run=False):
             if not it:
                 continue
             coding = it.get("benchmarks", {}).get("coding", {}) or {}
-            if field == "terminalBench":
+            agentic = it.get("benchmarks", {}).get("agentic", {}) or {}
+            if field == "terminalBench2":
                 # prefer the newer Terminal-Bench 2.1, fall back to 2.0
-                score = coding.get("terminalBench21")
-                if score is None:
-                    score = coding.get("terminalBench2")
+                score = (coding.get("terminalBench21") if coding.get("terminalBench21") is not None
+                         else agentic.get("terminalBench21") if agentic.get("terminalBench21") is not None
+                         else coding.get("terminalBench2") if coding.get("terminalBench2") is not None
+                         else agentic.get("terminalBench2"))
+            elif field == "terminalBench4":
+                # prefer Terminal-Bench 4.1, fall back to 4.0, then AA Terminal-Bench 4.0
+                score = (coding.get("terminalBench41") if coding.get("terminalBench41") is not None
+                         else agentic.get("terminalBench41") if agentic.get("terminalBench41") is not None
+                         else coding.get("terminalBench4") if coding.get("terminalBench4") is not None
+                         else agentic.get("terminalBench4") if agentic.get("terminalBench4") is not None
+                         else agentic.get("aaTerminalBench4"))
             else:
                 score = coding.get(field)
             if score is None:
@@ -893,7 +910,7 @@ def merge_benchmarks(models, bench_items, dry_run=False):
             if old_num is None or abs(old_num - score) > 1e-9:
                 changed.append((field, m["name"], old, score))
                 if not dry_run:
-                    m[field] = score
+                    _set_bench_field(m, field, score)
     return changed
 
 # DeepSWE-specific BenchLM slug overrides. Some models' published DeepSWE lives
@@ -925,7 +942,7 @@ BENCH_VALUE_OVERRIDES = {
     # avg pass@1 over >=5 attempts; web-retrieved solutions counted as failures).
     # Its "SWE-bench Pro v2" 89.7 is a different benchmark from Scale's SWE-bench Pro,
     # so swePro stays null.
-    "Flint 40B Free": {"terminalBench": 54.9},
+    "Flint 40B Free": {"terminalBench2": 54.9},
 }
 
 # Free-tier variants publish no benchmark runs of their own; they serve the same
@@ -966,7 +983,7 @@ def inherit_benchmarks(models, bench_items, dry_run=False):
         coding = it.get("benchmarks", {}).get("coding", {}) or {}
         # Fields BenchLM lacks (e.g. codingIndex from the OpenRouter snapshot) are
         # filled from the counterpart's own row; existing values are never overwritten.
-        for field in ("codingIndex", "swePro", "terminalBench", "deepSwe"):
+        for field in ("codingIndex", "swePro", "terminalBench2", "terminalBench4", "deepSwe"):
             if m.get(field) is not None:
                 continue
             val = next((r.get(field) for r in rows_by_name.get(counterpart, [])
@@ -975,11 +992,20 @@ def inherit_benchmarks(models, bench_items, dry_run=False):
                 changed.append((field, m["name"], None, val))
                 if not dry_run:
                     _set_bench_field(m, field, val)
+        agentic = it.get("benchmarks", {}).get("agentic", {}) or {}
         pairs = [
             ("codingIndex", coding.get("aaCodingIndex")),
             ("swePro", coding.get("swePro")),
             ("deepSwe", coding.get("deepSwe")),
-            ("terminalBench", coding.get("terminalBench21") if coding.get("terminalBench21") is not None else coding.get("terminalBench2")),
+            ("terminalBench2", (coding.get("terminalBench21") if coding.get("terminalBench21") is not None
+                               else agentic.get("terminalBench21") if agentic.get("terminalBench21") is not None
+                               else coding.get("terminalBench2") if coding.get("terminalBench2") is not None
+                               else agentic.get("terminalBench2"))),
+            ("terminalBench4", (coding.get("terminalBench41") if coding.get("terminalBench41") is not None
+                               else agentic.get("terminalBench41") if agentic.get("terminalBench41") is not None
+                               else coding.get("terminalBench4") if coding.get("terminalBench4") is not None
+                               else agentic.get("terminalBench4") if agentic.get("terminalBench4") is not None
+                               else agentic.get("aaTerminalBench4"))),
         ]
         for field, score in pairs:
             if score is None:
@@ -1026,7 +1052,7 @@ UNCERTAIN_BENCH_OVERRIDES = {
         # Terminal-Bench v2.1 49.4% — Artificial Analysis's own independent run,
         # embedded in https://artificialanalysis.ai/models/glm-4-6-reasoning
         # (terminalbenchV21 = 0.4944; AA displays it rounded as 49%).
-        "terminalBench": "49.4?",
+        "terminalBench2": "49.4?",
     },
 }
 
@@ -1034,8 +1060,9 @@ UNCERTAIN_BENCH_OVERRIDES = {
 _BENCH_FIELD_PREDS = {
     "codingIndex": ("context",),
     "swePro": ("codingIndex", "context"),
-    "terminalBench": ("swePro", "codingIndex", "context"),
-    "deepSwe": ("terminalBench", "swePro", "codingIndex", "context"),
+    "terminalBench2": ("swePro", "codingIndex", "context"),
+    "terminalBench4": ("terminalBench2", "swePro", "codingIndex", "context"),
+    "deepSwe": ("terminalBench4", "terminalBench2", "swePro", "codingIndex", "context"),
 }
 
 def _set_bench_field(m, field, val):
@@ -1077,7 +1104,7 @@ def cross_copy_benchmarks(models, dry_run=False):
     for rows in groups.values():
         if len(rows) < 2:
             continue
-        for field in ("codingIndex", "swePro", "terminalBench", "deepSwe"):
+        for field in ("codingIndex", "swePro", "terminalBench2", "terminalBench4", "deepSwe"):
             have = [m for m in rows if m.get(field) is not None]
             if not have or len(have) == len(rows):
                 continue
@@ -1302,7 +1329,9 @@ def main():
         data["source"] = f"OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved {today}"
         data["goSource"] = f"OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved {today}"
         data["benchmarkPro"] = f"SWE-bench Pro (Scale AI), via {DEFAULT_BENCHLM_URL}, retrieved {today}"
-        data["benchmarkTerminal"] = f"Terminal-Bench (Laude Institute), via {DEFAULT_BENCHLM_URL}, retrieved {today}"
+        data["benchmarkTerminal2"] = f"Terminal-Bench 2 (Laude Institute), via {DEFAULT_BENCHLM_URL}, retrieved {today}"
+        data["benchmarkTerminal4"] = f"Terminal-Bench 4 (Laude Institute), via {DEFAULT_BENCHLM_URL}, retrieved {today}"
+        data.pop("benchmarkTerminal", None)
         data["benchmarkDeepSwe"] = f"DeepSWE (Datacurve), via {DEFAULT_BENCHLM_URL}, retrieved {today}"
         args.output.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         print(f"\nWrote {args.output}", file=sys.stderr)
