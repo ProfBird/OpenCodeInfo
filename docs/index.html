@@ -368,7 +368,7 @@
 
       <label id="mobileSort">Sort
         <select id="sortSelect">
-          <option value="name">Model</option>
+          <option value="name">Model Name</option>
           <option value="rank">Combined Rank</option>
           <option value="params">Params</option>
           <option value="context">Context</option>
@@ -394,7 +394,7 @@
     <thead>
       <tr id="theadRow">
         <th data-key="rank" title="Composite coding benchmark rank across all 7 benchmark suites via log-odds latent skill with 2-parameter Mean-Sigma equating and conservative Bayesian LCB">Rank</th>
-        <th data-key="name">Model</th>
+        <th data-key="name">Model Name</th>
         <th data-key="params">Params</th>
         <th data-key="context">Context</th>
         <th data-key="codingIndex" style="display:none;"><a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener noreferrer">AA Coding<br>Index</a></th>
@@ -467,7 +467,7 @@ let secondarySort = null; // { key, dir } — previous primary, used as tiebreak
 /* ── Column definitions (all selectable) ── */
 const COLUMNS = [
   { key: 'rank',            label: 'Combined Rank',     shortLabel: 'Rank',             hint: 'composite',     defaultDir:  1, defaultVisible: true },
-  { key: 'name',            label: 'Model',              shortLabel: 'Model',            hint: 'model name',    defaultDir:  1, defaultVisible: true },
+  { key: 'name',            label: 'Model Name',         shortLabel: 'Model Name',       hint: 'model name',    defaultDir:  1, defaultVisible: true },
   { key: 'params',          label: 'Params',             shortLabel: 'Params',           hint: 'parameters',    defaultDir: -1, defaultVisible: true },
   { key: 'context',         label: 'Context',            shortLabel: 'Context',          hint: 'context window', defaultDir: -1, defaultVisible: true },
   { key: 'codingIndex',     label: 'AA Coding Index',    shortLabel: 'AA index',         hint: 'AA index',      defaultDir: -1, defaultVisible: false },
