@@ -17,7 +17,7 @@ A small static web page that displays **all OpenCode Zen models** (coding benchm
 1. Start a local server (required because browsers block `fetch` on `file://`):
 
    ```bash
-   cd docs && python -m http.server
+   cd docs && python3 -m http.server
    ```
 
 2. Open <http://localhost:8000/>.
@@ -112,12 +112,12 @@ The relative weights assigned to each suite reflect a deliberate trade-off betwe
 ## Updating the data
 
 ```bash
-python update_zen_prices.py --output docs/models.json  # fetch + update in place
-python update_zen_prices.py --dry-run --output docs/models.json # preview changes without writing
-python update_zen_prices.py --no-sync --output docs/models.json # only refresh prices of existing models
-python update_zen_prices.py --verbose --output docs/models.json # show parsed sources and per-model changes
-python prune_na_models.py --output docs/models.json    # remove models N.A. for over 6 months
-python prune_na_models.py --dry-run --output docs/models.json   # preview the prune without writing
+python3 update_zen_prices.py --output docs/models.json  # fetch + update in place
+python3 update_zen_prices.py --dry-run --output docs/models.json # preview changes without writing
+python3 update_zen_prices.py --no-sync --output docs/models.json # only refresh prices of existing models
+python3 update_zen_prices.py --verbose --output docs/models.json # show parsed sources and per-model changes
+python3 prune_na_models.py --output docs/models.json    # remove models N.A. for over 6 months
+python3 prune_na_models.py --dry-run --output docs/models.json   # preview the prune without writing
 ```
 
 The GitHub Actions workflow runs the same command on a daily schedule and pushes any changes.

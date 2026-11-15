@@ -3,11 +3,11 @@
 Static site + refresh script for OpenCode Zen model pricing, composite ranking, AA Coding Index, SWE-bench Pro, Bug Hunt, FrontierCode 2.0, Terminal-Bench 2, Terminal-Bench 4, and DeepSWE.
 
 ## Commands
-- Serve the page:            `python -m http.server` → http://localhost:8000/docs/index.html
-- Update data:               `python update_zen_prices.py --output docs/models.json`   (adds models, refreshes prices + rankings + SWE-bench Pro + Bug Hunt + FrontierCode 2.0 + Terminal-Bench 2/4 + DeepSWE; flags N.A., never removes)
-- Prune stale N.A. models:   `python prune_na_models.py --output docs/models.json`     (removes models N.A. for over 6 months; `--dry-run` to preview)
-- Preview changes:           `python update_zen_prices.py --dry-run --output docs/models.json`
-- Prices only, no sync:      `python update_zen_prices.py --no-sync --output docs/models.json`
+- Serve the page:            `python3 -m http.server` → http://localhost:8000/docs/index.html
+- Update data:               `python3 update_zen_prices.py --output docs/models.json`   (adds models, refreshes prices + rankings + SWE-bench Pro + Bug Hunt + FrontierCode 2.0 + Terminal-Bench 2/4 + DeepSWE; flags N.A., never removes)
+- Prune stale N.A. models:   `python3 prune_na_models.py --output docs/models.json`     (removes models N.A. for over 6 months; `--dry-run` to preview)
+- Preview changes:           `python3 update_zen_prices.py --dry-run --output docs/models.json`
+- Prices only, no sync:      `python3 update_zen_prices.py --no-sync --output docs/models.json`
 - Validate data file:        `python3 -m json.tool docs/models.json`
 
 ## Files
@@ -45,6 +45,7 @@ Each entry: `name`, `rank` (composite benchmark rank 1–K calculated via log-od
 - New models: `reconcile`/`sync_openrouter` stamp new rows with `addedOn` (ISO date); the page shows a green "(New)" badge (tooltip = added date, e.g. "Added Sep 2, 2026") while under one calendar month old. Each run drops `addedOn` flags a month or older (`prune_new_flags`); existing rows never gain the badge retroactively.
 - Every run refreshes the "Checked <date>." footer note in docs/index.html (`update_checked_date`); dry-run never writes.
 - Do NOT hand-edit models.json — run the script.
+- Always dry-run before writing (`--dry-run`), then validate the result, using the commands above.
 
 ## Web page (docs/index.html)
 - Columns: Rank, Model, Params, Context, AA Coding Index, SWE-bench Pro, Bug Hunt, FrontierCode 2.0, Terminal-Bench 2, Terminal-Bench 4, DeepSWE, Output ($/1M).
