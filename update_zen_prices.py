@@ -244,6 +244,8 @@ BENCH_SLUG_OVERRIDES = {
     "Inkling 2 Small Free": "inkling-2-small",
     "Beam Free": "reflection-beam",
     "LongCat 2.5 Free": "longcat-2-5",
+    "Ling 3.1 Flash Free": "ling-3-1-flash",
+    "Muse Ember 1.0": "muse-ember",
     # OpenRouter :free rows (bare display name doesn't match the BenchLM model name)
     "MiniMax M3 Free": "minimax-m3",
     "Inkling Free": "inkling",
@@ -950,6 +952,17 @@ BENCH_VALUE_OVERRIDES = {
     # (failed agentic environment harness, 2/66 tasks resolved). Excluded until
     # an accurate, representative evaluation is published.
     "Beam Free": {"terminalBench4": None},
+    # Terminal-Bench 4.0 evaluations from Vals AI / Artificial Analysis
+    "Qwen3.8 Flash": {"terminalBench4": 25.3},
+    "Qwen3.8 Max": {"terminalBench4": 38.9},
+    "DeepSeek V4 Flash": {"terminalBench4": 31.2},
+    "DeepSeek V4 Pro": {"terminalBench4": 14.1},
+    # Datacurve DeepSWE evaluations
+    "Claude Haiku 5.5": {"deepSwe": 59.9},
+    "Claude Sonnet 5": {"deepSwe": 53.8},
+    "Claude Opus 4.8": {"deepSwe": 59.0},
+    "GLM-5.2": {"deepSwe": 46.2},
+    "Mistral Large 4": {"deepSwe": 61.7},
 }
 
 # Free-tier variants publish no benchmark runs of their own; they serve the same
@@ -965,6 +978,9 @@ BENCH_INHERIT_FROM = {
     "Muse Spark 1.3 Free": "Muse Spark 1.3",
     "GLM-5.3-Flash Free": "GLM-5.3-Flash",
     "DeepSeek V4.1 Flash Free": "Deepseek V4.1 Flash",
+    "MiniMax M3.1 Flash Free": "Minimax M3.1 Flash",
+    "Step 5 Preview Free": "Step 5 Preview",
+    "LongCat 2.5 Preview Free": "LongCat 2.5 Free",
 }
 
 def inherit_benchmarks(models, bench_items, dry_run=False):
