@@ -44,6 +44,9 @@ DEFAULT_GO_API_URL = "https://opencode.ai/zen/go/v1/models"
 DEFAULT_MODELSDEV_URL = "https://models.dev/api.json"
 DEFAULT_BENCHLM_URL = "https://benchlm.ai/data/models.json"
 DEFAULT_OPENROUTER_URL = "https://openrouter.ai/api/v1/models"
+# Ranked top-20 slice of the Programming category — the only part of that
+# category the API exposes. Used by check_openrouter_coverage, not for syncing.
+DEFAULT_OPENROUTER_CATEGORY_URL = "https://openrouter.ai/api/v1/models?category=programming"
 DEFAULT_MODELS_PATH = Path(__file__).with_name("models.json")
 
 # Display-name overrides for models where the registry name is awkward.
@@ -707,6 +710,41 @@ OPENROUTER_PARAMS = {
 # Models without a published AA coding index (Hy3, Hy4 Preview, Claude Fable 5,
 # DeepSeek V4 Flash Vision Exp, Muse Spark 1.2 Contributor, GPT 5.6 Luna Pro,
 # Laguna S 2.1, Qwen3.7 Flash, Qwen3.8 Flash) stay null.
+# Programming-category ids that deliberately get NO row, with the reason.
+# check_openrouter_coverage stays quiet about these, so its warning keeps
+# meaning something; delete an entry and the next run flags that id again.
+OPENROUTER_EXCLUDED = {
+    "deepseek/deepseek-v4.1-flash":
+        "pre-1017 September build: BENCH_SLUG_OVERRIDES' undated alias would hand "
+        "it the 1017 build's scores (Bug Hunt 39.1 vs its own 21.7) and "
+        "canonical_id would merge it into the 1017 rank",
+}
+
+def check_openrouter_coverage(cat_models):
+    """Return [(id, name)] of Programming-category models OPENROUTER_DISPLAY misses.
+
+    OPENROUTER_DISPLAY is an allowlist: sync_openrouter silently drops every
+    catalog id absent from it, so the map grows only by hand and nothing reported
+    when it fell behind — it sat untouched from 2026-09-01 to 2026-11-15 while 28
+    category models arrived, and the hand-maintained coverage count in AGENTS.md
+    drifted with the same blind spot.
+
+    This cannot be a complete check. OpenRouter's UI computes the category
+    client-side and virtualizes the list, and the API exposes only a ranked
+    top-20 slice (`?category=`; `?categories=` is ignored), so a full sweep still
+    means scrolling the page. Anything unmapped within that slice is a certain
+    gap, which is enough for a daily tripwire: it would have caught 13 of the 28.
+    """
+    missing = []
+    for m in cat_models:
+        oid = m.get("id", "")
+        if oid.startswith("~") or ":batch" in oid:
+            continue  # alias and batch variants never get their own row
+        if oid in OPENROUTER_DISPLAY or oid in OPENROUTER_EXCLUDED:
+            continue
+        missing.append((oid, (m.get("name") or oid).split(": ", 1)[-1]))
+    return missing
+
 OPENROUTER_CODING_INDEX = {
     "anthropic/claude-opus-5": 78,
     "anthropic/claude-sonnet-5": 71.5,
@@ -1912,6 +1950,7 @@ def main():
     parser.add_argument("--modelsdev-url", default=DEFAULT_MODELSDEV_URL)
     parser.add_argument("--benchlm-url", default=DEFAULT_BENCHLM_URL)
     parser.add_argument("--openrouter-url", default=DEFAULT_OPENROUTER_URL)
+    parser.add_argument("--openrouter-category-url", default=DEFAULT_OPENROUTER_CATEGORY_URL)
     parser.add_argument("--output", type=Path, default=DEFAULT_MODELS_PATH)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--verbose", action="store_true")
@@ -1963,6 +2002,12 @@ def main():
         or_models = []
         print(f"Warning: could not fetch OpenRouter catalog: {e}", file=sys.stderr)
     or_added, or_changed = sync_openrouter(data["models"], or_models, dry_run=args.dry_run, today=run_today)
+    try:
+        or_category = fetch_json(args.openrouter_category_url)["data"]
+    except Exception as e:
+        or_category = []
+        print(f"Warning: could not fetch OpenRouter category list: {e}", file=sys.stderr)
+    or_gap = check_openrouter_coverage(or_category)
     added = list(added) + or_added
     changed = list(changed) + or_changed
     url_changed = backfill_known_urls(data["models"], dry_run=args.dry_run)
@@ -2010,6 +2055,13 @@ def main():
         print(f"\n{len(new_expired)} New badge(s) expired:" + (" (dry-run)" if args.dry_run else ""), file=sys.stderr)
         for name in new_expired:
             print(f"  - {name:34} (addedOn dropped)", file=sys.stderr)
+    if or_gap:
+        print(f"\n{len(or_gap)} OpenRouter Programming-category model(s) missing from OPENROUTER_DISPLAY:", file=sys.stderr)
+        for oid, name in or_gap:
+            print(f"  ! {name:34} ({oid})", file=sys.stderr)
+        print("    Add to OPENROUTER_DISPLAY (+ OPENROUTER_PARAMS), or to OPENROUTER_EXCLUDED with a reason.", file=sys.stderr)
+        print("    Ranked top-20 API slice only — a full sweep means scrolling the category page (see AGENTS.md).", file=sys.stderr)
+
     if not (changed or added or bench_changed or na_changed or new_expired or rank_changed or url_changed):
         print("\nCatalog, prices and benchmarks in sync (no changes).", file=sys.stderr)
 
