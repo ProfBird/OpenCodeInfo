@@ -225,7 +225,7 @@ BENCH_SLUG_OVERRIDES = {
     "MiMo-V2.5-Pro": "mimo-v2-5-pro",
     "Qwen3.5 Plus": "qwen3-5-plus",
     "Qwen3.6 Plus": "qwen3-6-plus",
-    "Qwen3.8 Max": "qwen3-8-max-preview",
+    "Qwen3.8 Max": "qwen3-8-max",
     "Qwen3.8 Flash": "qwen3-8-flash-next",
     "LongCat-2.0": "longcat-2-0",
     "Grok Build 0.1": "grok-build-0-1",
@@ -879,13 +879,17 @@ BENCH_FIELDS = ("codingIndex", "swePro", "terminalBench2", "terminalBench4", "de
 
 def bench_item_for(model_name, field, by_slug, by_norm):
     """Resolve the BenchLM item for a model+field (per-field slug overrides)."""
-    if field == "deepSwe":
-        slug = BENCH_SLUG_OVERRIDES_DEEPSWE.get(model_name) or bench_slug_for(model_name)
-    elif field in ("terminalBench", "terminalBench2", "terminalBench4"):
-        slug = BENCH_SLUG_OVERRIDES_TERMINAL.get(model_name) or bench_slug_for(model_name)
+    if field in ("swePro", "terminalBench", "terminalBench2", "terminalBench4", "deepSwe"):
+        slug = BENCH_SLUG_OVERRIDES_RELEASED.get(model_name) or bench_slug_for(model_name)
     else:
         slug = bench_slug_for(model_name)
-    return by_slug.get(slug) or by_norm.get(normalize(model_name))
+    # BenchLM spells version slugs both ways ("claude-fable-5-2" vs "claude-fable-5.2"
+    # as derived from the display name), so try the dotted slug, its dash-normalized
+    # form, and finally a normalized display-name match.
+    item = by_slug.get(slug)
+    if not item and "." in slug:
+        item = by_slug.get(slug.replace(".", "-"))
+    return item or by_norm.get(normalize(model_name))
 
 def _bench_num(v):
     """Numeric value of a stored benchmark cell; tolerates strings like '9.67?'."""
@@ -931,11 +935,17 @@ def merge_benchmarks(models, bench_items, dry_run=False):
             if field == "codingIndex":
                 score = coding.get("aaCodingIndex")
             elif field == "terminalBench2":
-                # prefer the newer Terminal-Bench 2.1, fall back to 2.0
+                # Official boards first (2.1 preferred over 2.0), then Artificial
+                # Analysis' independent 2.1 run to fill models no board has scored.
+                # Vals AI's 2.1 mirror is deliberately not used: across the 31 models
+                # both cover it runs a median 11.2 points below the official board
+                # (its own harness, not the vendor agent), so filling only the
+                # board-less models with it would penalise them relative to peers.
                 score = (coding.get("terminalBench21") if coding.get("terminalBench21") is not None
                          else agentic.get("terminalBench21") if agentic.get("terminalBench21") is not None
                          else coding.get("terminalBench2") if coding.get("terminalBench2") is not None
-                         else agentic.get("terminalBench2"))
+                         else agentic.get("terminalBench2") if agentic.get("terminalBench2") is not None
+                         else agentic.get("aaTerminalBench21"))
             elif field == "terminalBench4":
                 # prefer Terminal-Bench 4.1, fall back to 4.0, then AA Terminal-Bench 4.0
                 score = (coding.get("terminalBench41") if coding.get("terminalBench41") is not None
@@ -955,15 +965,11 @@ def merge_benchmarks(models, bench_items, dry_run=False):
                     _set_bench_field(m, field, score)
     return changed
 
-# DeepSWE-specific BenchLM slug overrides. Some models' published DeepSWE lives
-# under a different BenchLM slug than the one used for swePro/terminalBench (e.g.
-# Qwen3.8 Max vs the older "Qwen3.8 Max Preview" build).
-BENCH_SLUG_OVERRIDES_DEEPSWE = {
-    "Qwen3.8 Max": "qwen3-8-max",
-}
-
-# Terminal-Bench-specific BenchLM slug overrides (same rationale as DeepSWE).
-BENCH_SLUG_OVERRIDES_TERMINAL = {
+# Released-build BenchLM slug overrides. Some rows publish their measured AA Coding
+# Index on a preview snapshot but report swePro/Terminal-Bench/DeepSWE for the final
+# build, which BenchLM tracks under its own slug (e.g. Qwen3.8 Max Preview 71.8 AA
+# index vs Qwen3.8 Max 67.7 swePro / 86.6 Terminal-Bench 2.1 / 56.6 DeepSWE).
+BENCH_SLUG_OVERRIDES_RELEASED = {
     "Qwen3.8 Max": "qwen3-8-max",
 }
 
@@ -996,6 +1002,16 @@ BENCH_VALUE_OVERRIDES = {
     "DeepSeek V4 Flash 0731": {"terminalBench4": 31.2},
     "DeepSeek V4 Pro": {"terminalBench4": 14.1},
     "DeepSeek V4 Pro 0813": {"terminalBench4": 14.1},
+    # Kimi K3's only Terminal-Bench 4 run is the official tbench.ai 4.0 board entry
+    # (Moonshot AI via Claude Code, max reasoning, 22.42%); Vals' 4.0 mirror agrees
+    # at 17.2%. Its Terminal-Bench 2.1 score (88.3) is a different suite.
+    "Kimi K3": {"terminalBench4": 22.4},
+    # Vals AI Terminal-Bench 4.0 mirror only (no official-board or AA run exists).
+    # These preview/early builds score far below their later siblings on 4.0
+    # (Muse Spark 1.3 14.9 official, Hy4 44.4).
+    "Hy4 Preview": {"terminalBench4": 8.1},
+    "Muse Spark 1.2": {"terminalBench4": 6.1},
+    "Muse Spark 1.2 Contributor": {"terminalBench4": 6.1},
     # Datacurve DeepSWE evaluations
     "Claude Haiku 5.5": {"deepSwe": 59.9},
     "Claude Sonnet 5": {"deepSwe": 53.8},
