@@ -239,7 +239,7 @@
 <body>
   <h1>OpenCode Zen &amp; Go, OpenRouter — Model Benchmarks &amp; Cost</h1>
   <p class="toplinks"><a href="https://opencode.ai/zen" target="_blank" rel="noopener noreferrer">OpenCode Zen</a> · <a href="https://opencode.ai/docs/go" target="_blank" rel="noopener noreferrer">OpenCode Go</a> · <a href="https://openrouter.ai/models?categories=programming" target="_blank" rel="noopener noreferrer">OpenRouter</a></p>
-  <p class="subtitle"><strong>OpenCode</strong> provides the Zen pay-as-you-go catalog and the $10/mo <strong>Go</strong> plan; <strong>OpenRouter</strong> is a third-party model provider — its rows carry OpenRouter's own pricing and context, which can differ from the same model's Zen/Go twins, and OpenRouter adds a 5.5% charge on top of the listed price. Use the <strong>Plan</strong> filter to show all models, recently added (<strong>New</strong>) models, models available on Zen pay-as-you-go, the Go plan subset, or OpenRouter programming-category models. Every model is badged: <strong>(Zen)</strong> = Zen pay-as-you-go only, <strong>(Go)</strong> = on the Go plan, <strong>(Go · Zen)</strong> = also on Zen pay-as-you-go at the same price, <strong>(OpenRouter)</strong> = OpenRouter row. A model the two plans price differently is listed twice instead, once as (Go) and once as (Zen), each row showing that plan's own price. Costs are USD per 1M tokens. <strong>Rank</strong> is an objective composite calculated across 7 benchmark suites: <a href="https://www.tbench.ai/" target="_blank" rel="noopener noreferrer">Terminal-Bench 4 &amp; 2</a>, <a href="https://deepswe.datacurve.ai/" target="_blank" rel="noopener noreferrer">DeepSWE</a>, <a href="https://labs.scale.com/leaderboard/swe_bench_pro_public" target="_blank" rel="noopener noreferrer">SWE-bench Pro</a>, <a href="https://bughunt.productcompass.pm/" target="_blank" rel="noopener noreferrer">Bug Hunt</a>, <a href="https://cognition.com/frontiercode" target="_blank" rel="noopener noreferrer">FrontierCode 2.0</a>, and the <a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener noreferrer">AA Coding Index</a> via log-odds latent skill with 2-parameter Mean-Sigma cohort equating and conservative Bayesian lower-confidence-bound (LCB) weighting. Click any column header or sort button to sort; selecting a new column keeps the previous sort as the tiebreaker for equal values.</p>
+  <p class="subtitle"><strong>OpenCode</strong> provides the Zen pay-as-you-go catalog and the $10/mo <strong>Go</strong> plan; <strong>OpenRouter</strong> is a third-party model provider — its rows carry OpenRouter's own pricing and context, which can differ from the same model's Zen/Go twins, and OpenRouter adds a 5.5% charge on top of the listed price. The default <strong>Best Price per Model</strong> view lists each model once, on whichever platform charges least for output, and adds its free tier where it has one — so a model carried by two or three of the platforms is compared rather than repeated. Switch the <strong>Plan</strong> filter to show all rows, recently added (<strong>New</strong>) models, models available on Zen pay-as-you-go, the Go plan subset, or OpenRouter programming-category models. Every model is badged: <strong>(Zen)</strong> = Zen pay-as-you-go only, <strong>(Go)</strong> = on the Go plan, <strong>(Go · Zen)</strong> = also on Zen pay-as-you-go at the same price, <strong>(OpenRouter)</strong> = OpenRouter row. A model the two plans price differently is listed twice instead, once as (Go) and once as (Zen), each row showing that plan's own price. Costs are USD per 1M tokens. <strong>Rank</strong> is an objective composite calculated across 7 benchmark suites: <a href="https://www.tbench.ai/" target="_blank" rel="noopener noreferrer">Terminal-Bench 4 &amp; 2</a>, <a href="https://deepswe.datacurve.ai/" target="_blank" rel="noopener noreferrer">DeepSWE</a>, <a href="https://labs.scale.com/leaderboard/swe_bench_pro_public" target="_blank" rel="noopener noreferrer">SWE-bench Pro</a>, <a href="https://bughunt.productcompass.pm/" target="_blank" rel="noopener noreferrer">Bug Hunt</a>, <a href="https://cognition.com/frontiercode" target="_blank" rel="noopener noreferrer">FrontierCode 2.0</a>, and the <a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener noreferrer">AA Coding Index</a> via log-odds latent skill with 2-parameter Mean-Sigma cohort equating and conservative Bayesian lower-confidence-bound (LCB) weighting. Click any column header or sort button to sort; selecting a new column keeps the previous sort as the tiebreaker for equal values.</p>
 
   <div class="toolbar">
     <div class="toolbar-row toolbar-actions">
@@ -258,7 +258,7 @@
             <div class="filter-section">
               <p class="filter-section-title">Plan &amp; Availability</p>
               <div style="display:flex; flex-direction:column; gap:0.65rem;">
-                <label style="flex-direction:row; justify-content:space-between;">Plan <select id="planFilter"><option value="all">All Models</option><option value="new">New Models</option><option value="zen">Zen Models</option><option value="go">Go Plan Models</option><option value="openrouter">OpenRouter Models</option><option value="free">Free Models</option></select></label>
+                <label style="flex-direction:row; justify-content:space-between;">Plan <select id="planFilter"><option value="best" selected title="One row per model: the cheapest by output price, plus its free tier where it has one">Best Price per Model</option><option value="all">All Models</option><option value="new">New Models</option><option value="zen">Zen Models</option><option value="go">Go Plan Models</option><option value="openrouter">OpenRouter Models</option><option value="free">Free Models</option></select></label>
                 <label class="avail-check" title="Show models marked (N.A.) — no longer selectable in OpenCode's model picker" style="flex-direction:row !important; align-items:center !important;"><input type="checkbox" id="deprecatedFilter"> Show deprecated models</label>
               </div>
             </div>
@@ -592,7 +592,8 @@ function updateColsBadge() {
 function updateFilterBadge() {
   const { plan, showDeprecated, maxOut, maxIn, maxCached, minGoUsage, minAA, minSWE, minBugHunt, minFrontierCode, minTerminal2, minTerminal4, minDeepSwe } = getFilters();
   let n = 0;
-  if (plan !== 'all') n++;
+  if (plan !== 'best') n++;  // 'best' is the default view, so it is not a filter
+
   if (showDeprecated) n++;
   if (minAA !== null) n++;
   if (minSWE !== null) n++;
@@ -649,6 +650,61 @@ function getFilters() {
     minTerminal4: Number.isFinite(minTerminal4) ? minTerminal4 : null,
     minDeepSwe: Number.isFinite(minDeepSwe) ? minDeepSwe : null
   };
+}
+
+/* ── "Best Price per Model" grouping ───────────────────────────────────────
+   Rows for one model are grouped by a canonical name: the Free / Contributor
+   suffix and a trailing 4-digit build label are dropped, mirroring
+   canonical_id() in update_zen_prices.py so this grouping matches the Rank
+   column's own notion of one model. The page cannot see that script's
+   BENCH_INHERIT_FROM aliases, so a free variant listed under a different name
+   (Ox Alpha Free = GLM-5.3-Flash) stays its own group.
+
+   "Cheapest" is lowest OUTPUT price, then input, then cached read. Output leads
+   because it dominates agentic coding cost and it is the cost column the table
+   shows by default; it also avoids keeping a row that is cheapest on input
+   alone (DeepSeek V4 Pro 0813 at $0.111 in / $4.44 out). Equal prices break to
+   the larger context, which is what separates two $0 rows of the same model. */
+function canonicalModel(name) {
+  return (name || '')
+    .replace(/\s+(Contributor\s+Free|Contributor|Free)$/i, '')
+    .replace(/\s+\d{4}$/, '')
+    .toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+function isFreeRow(m) { return m.inputCost === 0 && m.outputCost === 0; }
+
+function ctxTokens(ctx) {
+  const m = /^([\d.]+)\s*([KMB]?)/i.exec(ctx || '');
+  if (!m) return 0;
+  const mult = { K: 1e3, M: 1e6, B: 1e9 }[(m[2] || '').toUpperCase()] || 1;
+  return parseFloat(m[1]) * mult;
+}
+
+function cheaper(a, b) {
+  const num = v => (v === null || v === undefined) ? Infinity : v;
+  for (const f of ['outputCost', 'inputCost', 'cachedReadCost']) {
+    const d = num(a[f]) - num(b[f]);
+    if (d !== 0) return d < 0 ? a : b;
+  }
+  return ctxTokens(b.context) > ctxTokens(a.context) ? b : a;
+}
+
+function collapseToBestPrice(rows) {
+  const groups = new Map();
+  for (const m of rows) {
+    const k = canonicalModel(m.name);
+    if (!groups.has(k)) groups.set(k, []);
+    groups.get(k).push(m);
+  }
+  const out = [];
+  for (const rowsOfModel of groups.values()) {
+    const free = rowsOfModel.filter(isFreeRow);
+    const paid = rowsOfModel.filter(m => !isFreeRow(m));
+    if (paid.length) out.push(paid.reduce(cheaper));
+    if (free.length) out.push(free.reduce(cheaper));
+  }
+  return out;
 }
 
 function render() {
@@ -708,7 +764,11 @@ function render() {
     }
     return true;
   });
-  const sorted = [...filtered].sort((a, b) => {
+  // "Best Price per Model" runs AFTER the other filters, so the row it keeps is
+  // the cheapest of what is actually on show — otherwise a hidden (N.A.) or
+  // filtered-out row could win and take the whole model off the page with it.
+  const shown = plan === 'best' ? collapseToBestPrice(filtered) : filtered;
+  const sorted = [...shown].sort((a, b) => {
     const r = cmpKey(sortKey, a, b);
     if (r !== 0) {
       if (sortMissing(sortKey, a) || sortMissing(sortKey, b)) return r; // missing always last
@@ -871,7 +931,7 @@ document.getElementById('colsClose')?.addEventListener('click', () => closePopov
 document.getElementById('filterDone')?.addEventListener('click', () => closePopovers(true));
 document.getElementById('colsDone')?.addEventListener('click', () => closePopovers(true));
 document.getElementById('filterClear')?.addEventListener('click', () => {
-  document.getElementById('planFilter').value = 'all';
+  document.getElementById('planFilter').value = 'best';
   document.getElementById('deprecatedFilter').checked = false;  // restore default
   FILTER_INPUT_IDS.forEach(id => {
     const el = document.getElementById(id);
@@ -925,7 +985,7 @@ FILTER_INPUT_IDS.forEach(id => {
 });
 document.getElementById('sortSelect').addEventListener('change', e => setSort(e.target.value));
 document.getElementById('reset').addEventListener('click', () => {
-  document.getElementById('planFilter').value = 'all';
+  document.getElementById('planFilter').value = 'best';
   document.getElementById('deprecatedFilter').checked = false;  // restore default
   FILTER_INPUT_IDS.forEach(id => {
     const el = document.getElementById(id);
