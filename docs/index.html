@@ -273,8 +273,6 @@
     }
     /* Expanded cards already list the Output row, so drop the header copy */
     tbody tr.expanded td[data-label="Model"] .card-price { display: none; }
-    /* The (New) badge is noise on a card header: it keeps working in the table */
-    .new-badge { display: none; }
     tbody tr.expanded td[data-label="Model"] { border-bottom: 1px solid #ccc; padding-bottom: 0.35rem; margin-bottom: 0.15rem; }
     tbody tr.expanded td[data-label="Rank"] { padding-bottom: 0.35rem; margin-bottom: 0.15rem; }
     /* Collapsed card: rank + model name + platform badge only; tap the header to expand */
@@ -423,7 +421,7 @@
       <li><strong>(Go · Zen)</strong> — on the Go plan <em>and</em> on Zen pay-as-you-go at the same price, so one row covers both.</li>
       <li><strong>(OpenRouter)</strong> — OpenRouter's own pricing and context window, which can differ from the same model's Zen/Go twins; OpenRouter adds a 5.5% charge on top of the listed price.</li>
       <li>A model the two OpenCode plans price differently is listed twice instead — once as (Go), once as (Zen) — each row at its own plan's price.</li>
-      <li>A <strong>(New)</strong> badge marks a row added to this page within the last month; on narrow screens it is left out of the card header to keep it short.</li>
+      <li>A <strong>(New)</strong> badge marks a row added to this page within the last month; on narrow screens it appears in the card header, after the provider badge.</li>
     </ul>
 
     <h2>Reading the table</h2>
