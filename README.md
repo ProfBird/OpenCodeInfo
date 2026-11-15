@@ -31,25 +31,64 @@ A small static web page that displays **all OpenCode Zen models** (coding benchm
 - **Reset** clears all filters and restores the default (alphabetical) order.
 - Models with no benchmark score (`—`) sort to the bottom when sorting by benchmark.
 
-## Ranking
+## Composite Ranking & Benchmark Methodology
 
-Composite ranking across all 5 benchmark suites (AA Coding Index, SWE-bench Pro, Terminal-Bench 2, Terminal-Bench 4, and DeepSWE) calculated via transitive harmonic pairwise ranking (HodgeRank). Suite weights reflect test recency and rigor (Terminal-Bench 4: 1.5×, DeepSWE: 1.5×, SWE-bench Pro: 1.0×, AA Coding Index: 1.0×, Terminal-Bench 2: 0.5×). Models are first ranked within each suite (using fractional tie percentiles), pairwise comparison graphs are formed with edge weights matching the sum of shared benchmark weights, and a harmonic potential solver calculates latent skill ratings so models evaluated on disjoint benchmark suites are ranked transitively through bridge models. Standard competition ranking assigns integer ranks (1..N) to all benchmarked models; unranked models receive `—`.
+The site computes an automatic, objective composite rank across all evaluated models whenever new benchmarks or models are added.
 
-## SWE-bench Pro
+### Ranking Algorithm: Standardized Multi-Suite Skill with Bayesian Coverage
 
-Scale AI's contamination-resistant coding benchmark (1,865 tasks, standardized harness), mirrored from BenchLM. Scores are % of tasks resolved. OpenAI's July 2026 audit found ~30% of its public tasks broken, so treat values as directional.
+Raw percentage scores from different coding benchmarks cannot be directly averaged or compared. Different benchmarks exhibit vastly different difficulty curves, scales, and score distributions: for example, resolving 67% of tasks on **Terminal-Bench 4** is state-of-the-art frontier performance (#1 in the catalog), whereas 67% on **Terminal-Bench 2** is mid-tier. Averaging raw percentages would heavily bias rankings toward older or easier benchmarks and distort cross-suite comparisons.
 
-## Terminal-Bench 2
+To solve this, the ranking pipeline uses **Standardized Multi-Suite Skill (Z-score normalization) with Bayesian Coverage Weighting**:
 
-Laude Institute's agentic terminal & CLI coding benchmark (89 tasks, v2.1 / v2.0), mirrored from BenchLM. Scores are % of tasks resolved. Note: TB2 scores are not comparable to TB4 scores.
+1. **Standardized Z-Scores:** For each benchmark suite $f$, the pipeline computes the mean $\mu_f$ and sample standard deviation $\sigma_f$ across all models evaluated on that suite. Each model's raw score $x_{m,f}$ is converted to a standardized z-score:
+   $$Z_{m,f} = \frac{x_{m,f} - \mu_f}{\sigma_f}$$
+   This transforms every benchmark onto a common zero-mean, unit-variance scale where $+1.0$ represents exactly one standard deviation above the catalog average on that specific benchmark, regardless of task difficulty.
 
-## Terminal-Bench 4
+2. **Suite Weighting:** Each suite is assigned an explicit importance weight $w_f$ reflecting test recency, evaluation rigor, and resistance to contamination (see [Suite Weighting Rationale](#suite-weighting-rationale) below).
 
-Laude Institute's redesigned agentic terminal coding benchmark (66 tasks, v4.1 / v4.0 / AA), built to evaluate long-horizon reasoning and robustness against distribution shifts and dataset contamination. Scores across models are substantially lower (e.g. Gemini 3.8 Flash drops from 89.4% on TB2 to 18.2% on TB4) and are not comparable to TB2.
+3. **Bayesian Coverage Shrinkage ($\lambda_{\text{prior}} = 0.5$):**
+   Simply calculating a weighted average of available z-scores introduces severe selection bias ("one-hit wonder" syndrome) — a model evaluated on only a single benchmark where it happened to perform well would leapfrog comprehensively evaluated frontier models that have proven themselves across 3, 4, or 5 rigorous suites.
+   
+   To ensure statistical confidence, each model's composite score $R_m$ incorporates a Bayesian shrinkage prior $\lambda_{\text{prior}} = 0.5$ (equivalent to pulling a model's composite score toward the catalog average $Z = 0$ by the weight of half a suite):
+   $$R_m = \frac{\sum_{f \in \mathcal{F}_m} w_f \cdot Z_{m,f}}{\sum_{f \in \mathcal{F}_m} w_f + \lambda_{\text{prior}}}$$
+   Where $\mathcal{F}_m$ is the set of benchmark suites on which model $m$ has a verified score. This shrinkage smoothly discounts sparse, single-test evaluations while rewarding models that demonstrate sustained, reproducible excellence across diverse testing methodologies.
 
-## DeepSWE
+4. **Competition Ranking:** Models are sorted by descending composite score $R_m$ and assigned standard competition ranks ($1, 2, 2, 4\dots$). Models without any published benchmark evaluations receive `—` and sort to the bottom.
 
-Datacurve's contamination-free long-horizon repository benchmark (113 tasks across 91 repos), pass@1, mirrored from BenchLM. Only models with a published score are shown.
+---
+
+### Benchmark Selection Rationale
+
+The catalog spans over 175 models across OpenCode Zen, the Go plan, and OpenRouter. To provide meaningful comparisons across this broad spectrum, the benchmark suite must strike a balance between **modern technical rigor** for frontier models and **wide catalog coverage** across commercial and open-weight models alike.
+
+The five selected benchmarks are:
+
+- **Terminal-Bench 4 (Laude Institute, v4.1 / v4.0 / AA):** Redesigned in late 2026 to evaluate long-horizon agentic reasoning, multi-turn terminal command execution, and live debugging under distribution shifts. Crucially, tasks are engineered to resist data leakage and memorization.
+- **DeepSWE (Datacurve):** Contamination-free long-horizon software engineering benchmark testing pass@1 code generation and bug fixes across 113 realistic tasks spanning 91 distinct open-source codebases. Evaluates real-world repo-level comprehension, dependency navigation, and multi-file editing.
+- **SWE-bench Pro (Scale AI):** Industry-standard repository problem-solving benchmark (1,865 standardized tasks with human-verified gold patches). Serves as a primary reference point across enterprise coding models.
+- **AA Coding Index (Artificial Analysis):** Broad multi-dimensional coding index snapshot combining code generation, code repair, and language proficiency into a standardized composite metric.
+- **Terminal-Bench 2 (Laude Institute, v2.1 / v2.0):** Established 89-task CLI benchmark. While partially saturated by frontier models, it offers the highest evaluation density across older, smaller, and open-weight models, acting as a crucial bridge connecting diverse models into the comparison pool.
+
+#### Why Newer Niche Benchmarks Were Excluded
+
+Recent specialized benchmarks (such as Vals Index, KingBench 4, FrontierCode 2.0, or FrontierSWE v2) provide interesting frontier data points but currently only evaluate 10–25 flagship models. Including them would leave 75–85% of the 175-model catalog blank, fragmenting the interface without providing comparative value for the broader catalog. The 5 selected suites represent the optimal intersection of high evaluation rigor and broad cross-model coverage (evaluating 58 to 92 models per suite).
+
+---
+
+### Suite Weighting Rationale
+
+The relative weights assigned to each suite reflect a deliberate trade-off between anti-contamination rigor, task complexity, and measurement reliability:
+
+| Benchmark | Weight | Primary Rationale |
+| :--- | :---: | :--- |
+| **Terminal-Bench 4** | **1.5×** | **Highest rigor & anti-contamination.** Evaluates multi-turn CLI agent execution in interactive environments. Redesigned specifically to prevent benchmark gaming and memorization. |
+| **DeepSWE** | **1.5×** | **Highest real-world repo depth.** 91 distinct repositories ensure test variety without reliance on a single project structure; zero contamination pass@1 evaluation. |
+| **SWE-bench Pro** | **1.0×** | **Standard reference baseline.** Essential multi-repo benchmark, but downweighted from 1.5× due to independent audits (e.g. OpenAI's July 2026 study) identifying ~30% task flakiness or broken test environments in the public dataset. |
+| **AA Coding Index** | **1.0×** | **Broad multi-skill composite.** Well-calibrated across a wide range of model families, but relies more heavily on curated/synthetic tasks rather than full agentic repository environments. |
+| **Terminal-Bench 2** | **0.5×** | **Statistical anchor.** Early-2026 suite with ceiling saturation among frontier models. Retained at 0.5× so it grounds older and open-weight models in the global ranking without distorting the standings of top-tier models. |
+
+---
 
 ## Updating the data
 

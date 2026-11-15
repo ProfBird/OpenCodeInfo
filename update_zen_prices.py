@@ -1231,8 +1231,8 @@ def apply_na_flags(models, md, mdgo, catalog_ids=(), dry_run=False, today=None):
             m.pop("naSince", None)
     return changed
 
-# Benchmark weights for transitive ranking: higher weight for modern/rigorous suites,
-# lower weight for older/saturated suites (which serve primarily as graph anchors).
+# Benchmark weights for ranking: higher weight for modern/rigorous suites,
+# lower weight for older/saturated suites (which serve primarily as anchors).
 BENCH_WEIGHTS = {
     "terminalBench4": 1.5,  # Modern uncontaminated agentic terminal benchmark
     "deepSwe":        1.5,  # Contamination-free long-horizon repo benchmark
@@ -1242,15 +1242,16 @@ BENCH_WEIGHTS = {
 }
 
 def compute_model_ranks(models, dry_run=False):
-    """Compute global ranking across all benchmarks using transitive harmonic ranking.
+    """Compute global ranking across all benchmarks using standardized multi-suite skill
+    with Bayesian coverage weighting.
 
-    1. For each benchmark, rank all models that have a score and assign normalized
-       relative percentiles in [0, 1] (using fractional tie-breaking).
-    2. Construct a pairwise comparison graph where edges represent shared benchmarks
-       between model pairs with edge weight = sum of benchmark weights.
-    3. Solve the harmonic potential / HodgeRank system iteratively: models evaluated
-       on disjoint benchmark sets are ranked indirectly through transitive paths
-       spanning common bridge models.
+    1. For each benchmark, standardize raw scores into z-scores (mean 0, std 1) across
+       all evaluated models, putting all benchmarks on an identical, scale-free metric.
+    2. Apply benchmark weights reflecting recency and rigor (Terminal-Bench 4: 1.5×,
+       DeepSWE: 1.5×, SWE-bench Pro: 1.0×, AA Coding Index: 1.0×, Terminal-Bench 2: 0.5×).
+    3. Apply Bayesian coverage weighting (shrinkage towards population mean) to reward
+       broad multi-suite consistency and avoid 'one-hit-wonder' selection bias from models
+       evaluated on only a single test.
     4. Assign integer competition ranks (1..N, with tied scores sharing ranks) to
        benchmark-evaluated models, and None to models with no benchmark data.
     """
@@ -1282,74 +1283,40 @@ def compute_model_ranks(models, dry_run=False):
     if not model_names:
         return []
 
-    # 1. Within-benchmark percentiles with fractional tie handling
-    bench_percentiles = {f: {} for f in bench_fields}
+    # 1. Standardize each benchmark to Z-scores (mean 0, std 1)
+    bench_z = {}
     for f in bench_fields:
         scores = [(name, unique_models[name][f]) for name in model_names if f in unique_models[name]]
         if not scores:
             continue
-        scores.sort(key=lambda x: x[1])
-        M = len(scores)
-        if M == 1:
-            bench_percentiles[f][scores[0][0]] = 0.5
-        else:
-            idx = 0
-            while idx < M:
-                val = scores[idx][1]
-                end = idx + 1
-                while end < M and abs(scores[end][1] - val) < 1e-6:
-                    end += 1
-                avg_idx = (idx + end - 1) / 2.0
-                pct = avg_idx / (M - 1)
-                for i in range(idx, end):
-                    bench_percentiles[f][scores[i][0]] = pct
-                idx = end
+        vals = [s[1] for s in scores]
+        mean_v = sum(vals) / len(vals)
+        var_v = sum((x - mean_v) ** 2 for x in vals) / len(vals)
+        std_v = (var_v ** 0.5) if var_v > 1e-9 else 1.0
+        bench_z[f] = {name: (val - mean_v) / std_v for name, val in scores}
 
-    # 2. Pairwise comparison graph with benchmark prestige weights
-    neighbors = {name: {} for name in model_names}
-    for i, u in enumerate(model_names):
-        for j in range(i + 1, len(model_names)):
-            v = model_names[j]
-            common = [f for f in bench_fields if f in unique_models[u] and f in unique_models[v]]
-            if not common:
-                continue
-            w_common = sum(BENCH_WEIGHTS.get(f, 1.0) for f in common)
-            diff = sum(BENCH_WEIGHTS.get(f, 1.0) * (bench_percentiles[f][u] - bench_percentiles[f][v]) for f in common) / w_common
-            neighbors[u][v] = (w_common, diff)
-            neighbors[v][u] = (w_common, -diff)
+    # 2. Bayesian coverage weighting:
+    # A model evaluated on multiple diverse suites provides high statistical certainty.
+    # Models evaluated on only 1 test have higher uncertainty and receive shrinkage
+    # towards the baseline mean, preventing sparse 'one-hit-wonders' from vaulting to #1.
+    LAMBDA_PRIOR = 0.5  # Bayesian prior shrinkage for missing benchmark coverage
 
-    # 3. Solve harmonic potential iteratively
-    # Initial estimate: weighted average benchmark percentile
-    R = {}
+    ratings = {}
     for name in model_names:
-        present = [f for f in bench_fields if f in bench_percentiles and name in bench_percentiles[f]]
+        present = [f for f in bench_fields if f in bench_z and name in bench_z[f]]
+        if not present:
+            continue
         w_sum = sum(BENCH_WEIGHTS.get(f, 1.0) for f in present)
-        weighted_pct = sum(BENCH_WEIGHTS.get(f, 1.0) * bench_percentiles[f][name] for f in present)
-        R[name] = weighted_pct / w_sum if w_sum > 0 else 0.5
+        weighted_z = sum(BENCH_WEIGHTS.get(f, 1.0) * bench_z[f][name] for f in present)
+        ratings[name] = weighted_z / (w_sum + LAMBDA_PRIOR)
 
-    for _ in range(500):
-        new_R = {}
-        for u in model_names:
-            if not neighbors[u]:
-                new_R[u] = R[u]
-                continue
-            total_w = sum(w for w, _ in neighbors[u].values())
-            weighted_sum = sum(w * (R[v] + diff) for v, (w, diff) in neighbors[u].items())
-            new_R[u] = weighted_sum / total_w
-        mean_val = sum(new_R.values()) / len(new_R)
-        new_R = {name: val - mean_val for name, val in new_R.items()}
-        max_diff = max(abs(new_R[name] - R[name]) for name in model_names)
-        R = new_R
-        if max_diff < 1e-6:
-            break
-
-    # 4. Standard competition ranking
-    sorted_ranked = sorted(model_names, key=lambda name: R[name], reverse=True)
+    # 3. Standard competition ranking
+    sorted_ranked = sorted(ratings.keys(), key=lambda name: ratings[name], reverse=True)
     ranks = {}
     curr_rank = 1
     prev_score = None
     for idx, name in enumerate(sorted_ranked):
-        score = R[name]
+        score = ratings[name]
         if prev_score is not None and abs(score - prev_score) < 1e-5:
             ranks[name] = curr_rank
         else:
@@ -1494,7 +1461,7 @@ def main():
         data["benchmarkTerminal4"] = f"Terminal-Bench 4 (Laude Institute), via {DEFAULT_BENCHLM_URL}, retrieved {today}"
         data.pop("benchmarkTerminal", None)
         data["benchmarkDeepSwe"] = f"DeepSWE (Datacurve), via {DEFAULT_BENCHLM_URL}, retrieved {today}"
-        data["rankingSource"] = f"Composite transitive harmonic pairwise ranking across benchmarks, computed {today}"
+        data["rankingSource"] = f"Composite standardized multi-suite skill with Bayesian coverage weighting, computed {today}"
         args.output.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         print(f"\nWrote {args.output}", file=sys.stderr)
     elif args.dry_run:
