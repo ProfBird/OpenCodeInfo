@@ -124,6 +124,8 @@ KNOWN_URLS = {
     "hy3-preview": "https://huggingface.co/tencent/HY3-Preview",
     "qwen3.6-plus": "https://huggingface.co/Qwen/Qwen3.6-27B",
     "qwen3.8-max": "https://huggingface.co/Qwen/Qwen3.8-2.4T-A95B",
+    # Qwen4 Max has no HF card yet (Qwen/Qwen4-Max 401s, no Qwen4 repos) -> BenchLM specs
+    "qwen4-max": "https://benchlm.ai/models/qwen4-max",
     "qwen3.8-flash": "https://huggingface.co/Qwen/Qwen3.8-Flash-Next",
     "laguna-s-2.1-free": "https://huggingface.co/poolside/Laguna-S-2.1",
     # free variants -> same model card
@@ -479,7 +481,7 @@ CONTEXT_OVERRIDES = {
     "kimi-k2.5": "256K", "kimi-k2.6": "262K", "kimi-k2.7-code": "262K", "kimi-k3": "1M",
     "minimax-m2.5": "200K", "minimax-m2.7": "205K", "minimax-m3": "1M",
     "qwen3.5-plus": "1M", "qwen3.6-plus": "1M", "qwen3.7-max": "1M",
-    "qwen3.7-plus": "1M", "qwen3.8-max": "1M", "qwen3.8-flash": "1M",
+    "qwen3.7-plus": "1M", "qwen3.8-max": "1M", "qwen3.8-flash": "1M", "qwen4-max": "1M",
     "longcat-2.0": "1M", "mimo-v2.5": "1M", "mimo-v2.5-pro": "1M",
     "mimo-v2-pro": "1M", "mimo-v2-omni": "1M",
     "muse-spark-1.2-contributor": "1M", "ox-alpha-free": "1M",
@@ -649,6 +651,8 @@ OPENROUTER_DISPLAY = {
     "qwen/qwen3.8-27b": "Qwen3.8 27B",
     "qwen/qwen3.8-flash": "Qwen3.8 Flash",
     "qwen/qwen3.8-max": "Qwen3.8 Max",
+    # Qwen4 Max (2026-11-16): same bare name as the Go row, so the two are twins.
+    "qwen/qwen4-max": "Qwen4 Max",
     "thinkingmachines/inkling:free": "Inkling Free",
     "thinkingmachines/inkling-2-small:free": "Inkling 2 Small Free",
     "tencent/hy3": "Hy3",
@@ -1217,7 +1221,11 @@ def merge_benchmarks(models, bench_items, dry_run=False):
             # (with missing values filled by cross_copy_benchmarks).
             if field == "codingIndex" and m.get("plan") == "openrouter":
                 continue
-            if field in BENCH_VALUE_OVERRIDES.get(m["name"], {}) and BENCH_VALUE_OVERRIDES[m["name"]][field] is None:
+            if field in BENCH_VALUE_OVERRIDES.get(m["name"], {}):
+                # A curated override is authoritative: apply_bench_overrides runs after
+                # this pass, so merging the source value here would only make every run
+                # report the same flip-flop (e.g. DeepSeek V4 Pro terminalBench4
+                # 6.7 -> 14.1) without ever persisting it.
                 continue
             it = bench_item_for(m["name"], field, by_slug, by_norm) or {}
             coding = it.get("benchmarks", {}).get("coding", {}) or {}
