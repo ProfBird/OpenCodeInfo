@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-11-15",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-11-16",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-11-15",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-11-16",
   "models": [
     {
       "name": "Beam Free",
@@ -923,9 +923,9 @@
       "deepSwe": 77,
       "params": "763B",
       "context": "1M",
-      "inputCost": 0.3,
-      "outputCost": 1.2,
-      "cachedReadCost": 0.006,
+      "inputCost": 0.15,
+      "outputCost": 0.6,
+      "cachedReadCost": 0.003,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017",
       "addedOn": "2026-11-15"
@@ -1580,7 +1580,6 @@
       "context": "200K",
       "params": "320B",
       "plan": "zen",
-      "addedOn": "2026-10-16",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.3-Flash"
     },
     {
@@ -2467,6 +2466,19 @@
       "addedOn": "2026-11-15"
     },
     {
+      "name": "Hy4 flash Free",
+      "rank": null,
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "go",
+      "alsoOnZen": true,
+      "addedOn": "2026-11-16"
+    },
+    {
       "name": "Hy4 Preview",
       "rank": 45,
       "benchRanks": {
@@ -2907,7 +2919,6 @@
       "plan": "zen",
       "na": true,
       "naSince": "2026-10-17",
-      "addedOn": "2026-10-16",
       "hfUrl": "https://huggingface.co/RecursiveSI/flint"
     },
     {
@@ -3747,7 +3758,6 @@
       "context": "1M",
       "params": "120B",
       "plan": "zen",
-      "addedOn": "2026-10-16",
       "hfUrl": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-BF16",
       "swePro": 51.78,
       "terminalBench2": 66.7,
@@ -4082,32 +4092,8 @@
       "context": "1M",
       "params": null,
       "plan": "go",
-      "hfUrl": "https://benchlm.ai/models/qwen4-max",
-      "addedOn": "2026-11-15",
-      "goUsage": 15.0
-    },
-    {
-      "name": "Qwen4 Max",
-      "rank": 13,
-      "benchRanks": {
-        "terminalBench4": 14,
-        "deepSwe": 4
-      },
-      "codingIndex": null,
-      "swePro": null,
-      "bugHunt": null,
-      "frontierCode2": null,
-      "terminalBench2": null,
-      "terminalBench4": 48.5,
-      "deepSwe": 75.7,
-      "params": null,
-      "context": "1M",
-      "inputCost": 1.5,
-      "outputCost": 4.5,
-      "cachedReadCost": 0.075,
-      "plan": "openrouter",
-      "hfUrl": "https://openrouter.ai/qwen/qwen4-max",
-      "addedOn": "2026-11-15"
+      "goUsage": 15.0,
+      "addedOn": "2026-11-16"
     },
     {
       "name": "Solar Mini 4",
@@ -4192,7 +4178,6 @@
       "context": "1M",
       "params": null,
       "plan": "go",
-      "addedOn": "2026-10-16",
       "deepSwe": 67.7,
       "goUsage": 15.0,
       "hfUrl": "https://benchlm.ai/models/step-5-preview"
@@ -4288,11 +4273,11 @@
       "hfUrl": "https://artificialwatch.com/stealth-models"
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-11-15",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-11-15",
-  "benchmarkTerminal2": "Terminal-Bench 2 (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-15",
-  "benchmarkTerminal4": "Terminal-Bench 4 (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-15",
-  "rankingSource": "Composite log-odds latent skill with 2-parameter Mean-Sigma equating and conservative Bayesian LCB, computed 2026-11-15",
-  "benchmarkBugHunt": "Bug Hunt Bench (Product Compass) planted bugs fixed out of 105, via https://benchlm.ai/data/models.json and https://bughunt.productcompass.pm/data/benchmark.json, retrieved 2026-11-15",
-  "benchmarkFrontierCode2": "FrontierCode 2.0 (Cognition) mergeability score, via https://benchlm.ai/data/models.json, retrieved 2026-11-15"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-11-16",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-11-16",
+  "benchmarkTerminal2": "Terminal-Bench 2 (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-16",
+  "benchmarkTerminal4": "Terminal-Bench 4 (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-16",
+  "rankingSource": "Composite log-odds latent skill with 2-parameter Mean-Sigma equating and conservative Bayesian LCB, computed 2026-11-16",
+  "benchmarkBugHunt": "Bug Hunt Bench (Product Compass) planted bugs fixed out of 105, via https://benchlm.ai/data/models.json and https://bughunt.productcompass.pm/data/benchmark.json, retrieved 2026-11-16",
+  "benchmarkFrontierCode2": "FrontierCode 2.0 (Cognition) mergeability score, via https://benchlm.ai/data/models.json, retrieved 2026-11-16"
 }
