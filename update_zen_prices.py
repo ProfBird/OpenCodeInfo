@@ -544,6 +544,8 @@ PARAM_OVERRIDES = {
     "minimax-m2.5": "230B",
     "minimax-m2.7": "230B",
     "minimax-m3": "428B",
+    "step-5-preview": "600B",  # StepFun: 600B-total / 27B-active MoE (BenchLM model page)
+    "step-5-preview-free": "600B",
     "qwen3.5-plus": "397B",
     "qwen3.6-plus": "27B",
     "qwen3.7-max": "1T",
@@ -693,6 +695,7 @@ OPENROUTER_DISPLAY = {
 
 OPENROUTER_PARAMS = {
     "anthropic/claude-opus-5": "5T",
+    "stepfun/step-5-preview": "600B",
     "anthropic/claude-sonnet-5": "1T",
     "anthropic/claude-fable-5": "10T",
     "deepseek/deepseek-v4-flash": "284B",
