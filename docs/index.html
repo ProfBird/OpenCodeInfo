@@ -95,6 +95,10 @@
     .toolbar select option { background-color: #0f172a; color: #e2e8f0; }
   }
   #mobileSort { display: none; }
+  /* Name search: matching rows are tinted (works in light and dark) */
+  .toolbar input#nameSearch { width: 12rem; max-width: 100%; }
+  #searchStatus { font-size: 0.8rem; opacity: 0.75; }
+  tbody tr.search-hit, tbody tr.search-hit:hover { background: rgba(250,204,21,0.30); box-shadow: inset 3px 0 0 #eab308; }
   table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 0.9rem; }
   th, td { padding: 0.45rem 0.7rem; text-align: right; border-bottom: 1px solid #ccc; }
   th { cursor: pointer; user-select: none; white-space: nowrap; }
@@ -390,6 +394,8 @@
         </select>
       </label>
       <button id="reset">Reset</button>
+      <input type="search" id="nameSearch" placeholder="Search model name" aria-label="Search models by name" autocomplete="off" spellcheck="false">
+      <span id="searchStatus" role="status" aria-live="polite"></span>
     </div>
   </div>
   <div class="popover-backdrop" id="popoverBackdrop" hidden></div>
@@ -783,6 +789,32 @@ function collapseToBestPrice(rows) {
   return out;
 }
 
+// Name search: case-insensitive partial match; also ignores spaces/punctuation
+// so "glm 5.3" finds "GLM-5.3". Searches every model, not just the rows on show.
+let searchTerm = '';
+let searchScrollPending = false;
+const squish = s => String(s).toLowerCase().replace(/[^a-z0-9.]+/g, '');
+function nameMatches(m) {
+  if (!searchTerm) return false;
+  const n = String(m.name).toLowerCase();
+  const t = searchTerm.toLowerCase();
+  return n.includes(t) || squish(n).includes(squish(t));
+}
+function updateSearchStatus(shown) {
+  const el = document.getElementById('searchStatus');
+  if (!searchTerm) { el.textContent = ''; return; }
+  const total = models.filter(nameMatches).length;
+  const hidden = total - shown;
+  el.textContent = total === 0 ? 'No matching models'
+    : `${shown} highlighted` + (hidden > 0 ? ` · ${hidden} more hidden by filters` : '');
+}
+function scrollToFirstHit() {
+  if (!searchScrollPending) return;
+  searchScrollPending = false;
+  const row = document.querySelector('tbody tr.search-hit');
+  if (row) row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
 function render() {
   updateFilterBadge();
   applyColumnVisibility();
@@ -862,6 +894,7 @@ function render() {
   const visibleCount = COLUMNS.filter(c => colVisibility[c.key]).length;
   if (!sorted.length) {
     tbody.innerHTML = `<tr><td colspan="${visibleCount}" class="na">No models match filters.</td></tr>`;
+    updateSearchStatus(0);
     return;
   }
   tbody.innerHTML = sorted.map(m => {
@@ -900,8 +933,11 @@ function render() {
     if (colVisibility.cachedReadCost)  cells.push(`<td class="num" data-label="Cached Read ($/1M)">${fmtCost(m.cachedReadCost)}</td>`);
     if (colVisibility.outputCost)      cells.push(`<td class="num" data-label="Output ($/1M)">${fmtCost(m.outputCost)}</td>`);
     if (colVisibility.goUsage)         cells.push(`<td class="num" data-label="Go Limits ($)">${fmtCost(m.goUsage)}</td>`);
-    return `<tr data-card-key="${escapeHtml(key)}"${isOpen ? ' class="expanded"' : ''}>${cells.join('')}</tr>`;
+    const cls = [isOpen ? 'expanded' : '', nameMatches(m) ? 'search-hit' : ''].filter(Boolean).join(' ');
+    return `<tr data-card-key="${escapeHtml(key)}"${cls ? ` class="${cls}"` : ''}>${cells.join('')}</tr>`;
   }).join('');
+  updateSearchStatus(sorted.filter(nameMatches).length);
+  scrollToFirstHit();
 }
 
 function contextSize(ctx) {
@@ -1065,6 +1101,16 @@ FILTER_INPUT_IDS.forEach(id => {
   document.getElementById(id)?.addEventListener('input', render);
 });
 document.getElementById('sortSelect').addEventListener('change', e => setSort(e.target.value));
+const nameSearchEl = document.getElementById('nameSearch');
+nameSearchEl.addEventListener('input', () => {
+  searchTerm = nameSearchEl.value.trim();
+  searchScrollPending = !!searchTerm;
+  render();
+});
+nameSearchEl.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { nameSearchEl.value = ''; searchTerm = ''; render(); }
+  else if (e.key === 'Enter') { searchScrollPending = true; scrollToFirstHit(); }
+});
 document.getElementById('reset').addEventListener('click', () => {
   document.getElementById('planFilter').value = 'best';
   document.getElementById('deprecatedFilter').checked = false;  // restore default
@@ -1078,6 +1124,7 @@ document.getElementById('reset').addEventListener('click', () => {
   applyColumnVisibility(); updateColsBadge();
   setSort('rank', 1);
   secondarySort = null; // reset clears the tiebreaker too (after setSort re-chains)
+  nameSearchEl.value = ''; searchTerm = '';
   render();
   updateArrows();
 });
