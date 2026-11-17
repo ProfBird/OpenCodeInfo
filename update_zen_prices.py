@@ -544,6 +544,16 @@ PARAM_OVERRIDES = {
     "minimax-m2.5": "230B",
     "minimax-m2.7": "230B",
     "minimax-m3": "428B",
+    # HF safetensors totals (huggingface.co/api/models/<repo>), the same basis as kimi-k3 / mimo-v2.5-pro.
+    "hy4": "770B?",  # final tencent/Hy4 repo 401s; assumed equal to Hy4-preview
+    "kimi-k3.1-pro": "2.8T",  # moonshotai/Kimi-K3.1-Pro: 2.78T
+    "mimo-v2.6-flash": "309B",  # as mimo-v2.6-flash-free
+    "mimo-v2.6-pro": "1.02T",  # XiaomiMiMo/MiMo-V2.6-Pro-RL: 1.024T
+    "minimax-m3.1-flash": "220B",  # MiniMaxAI/MiniMax-M3.1-Flash: 220.5B
+    "minimax-m3.1-flash-free": "220B",
+    "inkling-2-small-free": "594B",  # thinkingmachines/Inkling-2-Small: 594B
+    "step-5-preview": "600B",  # StepFun: 600B-total / 27B-active MoE (BenchLM model page)
+    "step-5-preview-free": "600B",
     "qwen3.5-plus": "397B",
     "qwen3.6-plus": "27B",
     "qwen3.7-max": "1T",
@@ -693,6 +703,14 @@ OPENROUTER_DISPLAY = {
 
 OPENROUTER_PARAMS = {
     "anthropic/claude-opus-5": "5T",
+    "stepfun/step-5-preview": "600B",
+    "tencent/hy4": "770B?",
+    "moonshotai/kimi-k3.1-pro": "2.8T",
+    "xiaomi/mimo-v2.6-flash": "309B",
+    "xiaomi/mimo-v2.6-pro": "1.02T",
+    "minimax/minimax-m3.1-flash": "220B",
+    "thinkingmachines/inkling:free": "952B",  # thinkingmachines/Inkling: 952B
+    "thinkingmachines/inkling-2-small:free": "594B",
     "anthropic/claude-sonnet-5": "1T",
     "anthropic/claude-fable-5": "10T",
     "deepseek/deepseek-v4-flash": "284B",
