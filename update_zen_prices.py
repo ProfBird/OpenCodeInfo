@@ -39,6 +39,7 @@ from datetime import date
 
 DEFAULT_ZEN_URL = "https://opencode.ai/docs/zen"
 DEFAULT_GO_URL = "https://opencode.ai/docs/go"
+DEFAULT_GO_CONSOLE_URL = "https://opencode.ai/console/go"
 DEFAULT_ZEN_API_URL = "https://opencode.ai/zen/v1/models"
 DEFAULT_GO_API_URL = "https://opencode.ai/zen/go/v1/models"
 DEFAULT_MODELSDEV_URL = "https://models.dev/api.json"
@@ -413,7 +414,11 @@ def extract_pricing_table(html_text: str, is_go: bool = False):
         if not m:
             m = re.search(r'<th>Model</th>.*?<th>Cached Write</th><th>[^<]*</th>.*?<tbody>(.*?)</tbody>', html_text, re.DOTALL)
             if not m:
-                raise ValueError("Go pricing table not found")
+                # The Go docs page dropped its token-price table (prices are now "the same
+                # as Zen" and live in models.dev); reconcile falls back to Zen/models.dev.
+                print("Warning: Go pricing table not found; using Zen/models.dev prices",
+                      file=sys.stderr)
+                return {}
         tbody = m.group(1)
         rows = re.findall(r'<tr><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td></tr>', tbody, re.DOTALL)
     else:
@@ -462,6 +467,17 @@ def extract_go_usage(html_text: str):
         if ("Peak" in model and "Off-Peak" not in model) or "> 2" in model:
             continue
         usage[normalize(base)] = parse_price(strip_tags(row[5]))
+    return usage
+
+def extract_go_console_usage(html_text: str):
+    """Monthly limit ($, Go plan) per model from the console Go page (opencode.ai/console/go).
+    Returns dict normalize(display name) -> dollars; {} if the page layout is not recognised."""
+    usage = {}
+    for chunk in html_text.split('data-layer="model-row"')[1:]:
+        name = re.search(r'data-layer="model-name"[^>]*title="([^"]+)"', chunk)
+        lim = re.search(r'data-layer="usage".*?Go:\s*\$([\d,.]+)', chunk, re.DOTALL)
+        if name and lim:
+            usage[normalize(html.unescape(name.group(1)))] = parse_price(lim.group(1))
     return usage
 
 def fmt_ctx(n):
@@ -2038,6 +2054,7 @@ def main():
     parser = argparse.ArgumentParser(description="Update models.json from OpenCode Zen catalog + pricing")
     parser.add_argument("--zen-url", default=DEFAULT_ZEN_URL)
     parser.add_argument("--go-url", default=DEFAULT_GO_URL)
+    parser.add_argument("--go-console-url", default=DEFAULT_GO_CONSOLE_URL)
     parser.add_argument("--zen-api-url", default=DEFAULT_ZEN_API_URL)
     parser.add_argument("--go-api-url", default=DEFAULT_GO_API_URL)
     parser.add_argument("--modelsdev-url", default=DEFAULT_MODELSDEV_URL)
@@ -2075,6 +2092,11 @@ def main():
     zen_pricing = extract_pricing_table(zen_html, is_go=False)
     go_pricing = extract_pricing_table(go_html, is_go=True)
     go_usage = extract_go_usage(go_html)
+    if not go_usage:
+        try:
+            go_usage = extract_go_console_usage(fetch_html(args.go_console_url))
+        except Exception as e:
+            print(f"Warning: could not fetch Go console limits: {e}", file=sys.stderr)
     try:
         mdev = fetch_json(args.modelsdev_url)
         md = mdev.get("opencode", {}).get("models", {})
@@ -2082,6 +2104,13 @@ def main():
     except Exception:
         md = {}
         mdgo = {}
+    if not go_pricing:
+        # No Go price table on the docs page any more: take each Go model's headline
+        # rate from models.dev's `opencode-go` provider (base rates only).
+        for gid in go_ids:
+            c = _base_cost(mdgo, gid)
+            if c and c[0] is not None and c[1] is not None:
+                go_pricing[normalize(gid)] = c
     try:
         bench_items = fetch_json(args.benchlm_url)["items"]
     except Exception as e:
