@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-11-19",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-11-20",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-11-19",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-11-20",
   "models": [
     {
       "name": "Beam Free",
@@ -25,6 +25,20 @@
       "terminalBench2": 80.1,
       "terminalBench4": null,
       "deepSwe": 43.3
+    },
+    {
+      "name": "Bge M3",
+      "rank": null,
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "na": true,
+      "naSince": "2026-11-20",
+      "addedOn": "2026-11-20"
     },
     {
       "name": "Big Pickle",
@@ -598,6 +612,48 @@
       "hfUrl": "https://openrouter.ai/anthropic/claude-sonnet-5.5"
     },
     {
+      "name": "Codestral Embed",
+      "rank": null,
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "na": true,
+      "naSince": "2026-11-20",
+      "addedOn": "2026-11-20"
+    },
+    {
+      "name": "Cohere Embed V5 Fast",
+      "rank": null,
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "na": true,
+      "naSince": "2026-11-20",
+      "addedOn": "2026-11-20"
+    },
+    {
+      "name": "Cohere Embed V5 Pro",
+      "rank": null,
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "na": true,
+      "naSince": "2026-11-20",
+      "addedOn": "2026-11-20"
+    },
+    {
       "name": "Crouton Alpha Free",
       "rank": null,
       "codingIndex": null,
@@ -805,7 +861,7 @@
       "deepSwe": 62.7,
       "inputCost": 0.9,
       "outputCost": 1.5,
-      "cachedReadCost": 0.25,
+      "cachedReadCost": 0.2,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro"
     },
@@ -851,9 +907,9 @@
       "terminalBench2": 87.9,
       "terminalBench4": 14.1,
       "deepSwe": 62.7,
-      "inputCost": 0.111,
-      "outputCost": 4.44,
-      "cachedReadCost": 0.097,
+      "inputCost": 1.32,
+      "outputCost": 3.96,
+      "cachedReadCost": 0.044,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813"
     },
@@ -1398,6 +1454,34 @@
       "addedOn": "2026-11-19"
     },
     {
+      "name": "Gemini Embedding 001",
+      "rank": null,
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "na": true,
+      "naSince": "2026-11-20",
+      "addedOn": "2026-11-20"
+    },
+    {
+      "name": "Gemini Embedding 2",
+      "rank": null,
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "na": true,
+      "naSince": "2026-11-20",
+      "addedOn": "2026-11-20"
+    },
+    {
       "name": "Gemini Nano Banana 2.1",
       "rank": null,
       "codingIndex": null,
@@ -1609,8 +1693,8 @@
       "terminalBench2": 84.3,
       "terminalBench4": 37,
       "deepSwe": 63.4,
-      "inputCost": 0.15,
-      "outputCost": 0.5,
+      "inputCost": 0.0399,
+      "outputCost": 0.0784,
       "cachedReadCost": 0.03,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.3-Flash"
@@ -2729,6 +2813,8 @@
       "context": "1M",
       "params": "594B",
       "plan": "zen",
+      "na": true,
+      "naSince": "2026-11-20",
       "addedOn": "2026-11-07",
       "hfUrl": "https://benchlm.ai/models/inkling-2-small",
       "deepSwe": 72.1
@@ -2881,8 +2967,8 @@
       "terminalBench2": null,
       "deepSwe": null,
       "inputCost": 0.6,
-      "outputCost": 3.5,
-      "cachedReadCost": 0.16,
+      "outputCost": 3.0,
+      "cachedReadCost": 0.12,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/moonshotai/Kimi-K2.7-Code"
     },
@@ -3526,8 +3612,21 @@
       "plan": "zen",
       "na": true,
       "naSince": "2026-11-17",
-      "addedOn": "2026-10-20",
       "hfUrl": "https://huggingface.co/MiniMaxAI/MiniMax-M3.1-Flash"
+    },
+    {
+      "name": "Mistral Embed",
+      "rank": null,
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "na": true,
+      "naSince": "2026-11-20",
+      "addedOn": "2026-11-20"
     },
     {
       "name": "Mistral Large 4",
@@ -4024,6 +4123,20 @@
       "hfUrl": "https://artificialwatch.com/stealth-models"
     },
     {
+      "name": "Qwen3 Embedding 8B",
+      "rank": null,
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "na": true,
+      "naSince": "2026-11-20",
+      "addedOn": "2026-11-20"
+    },
+    {
       "name": "Qwen3.5 Plus",
       "rank": null,
       "params": "397B",
@@ -4430,6 +4543,34 @@
       "hfUrl": "https://opencode.ai/docs/zen"
     },
     {
+      "name": "Text Embedding 3 Large",
+      "rank": null,
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "na": true,
+      "naSince": "2026-11-20",
+      "addedOn": "2026-11-20"
+    },
+    {
+      "name": "Text Embedding 3 Small",
+      "rank": null,
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "na": true,
+      "naSince": "2026-11-20",
+      "addedOn": "2026-11-20"
+    },
+    {
       "name": "Tidepool Alpha Free",
       "rank": null,
       "codingIndex": null,
@@ -4470,13 +4611,41 @@
       "naSince": "2026-09-17",
       "alsoOnZen": true,
       "hfUrl": "https://artificialwatch.com/stealth-models"
+    },
+    {
+      "name": "Voyage 4",
+      "rank": null,
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "na": true,
+      "naSince": "2026-11-20",
+      "addedOn": "2026-11-20"
+    },
+    {
+      "name": "Voyage Code 4",
+      "rank": null,
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "na": true,
+      "naSince": "2026-11-20",
+      "addedOn": "2026-11-20"
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-11-19",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-11-19",
-  "benchmarkTerminal2": "Terminal-Bench 2 (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-19",
-  "benchmarkTerminal4": "Terminal-Bench 4 (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-19",
-  "rankingSource": "Composite log-odds latent skill with 2-parameter Mean-Sigma equating and conservative Bayesian LCB, computed 2026-11-19",
-  "benchmarkBugHunt": "Bug Hunt Bench (Product Compass) planted bugs fixed out of 105, via https://benchlm.ai/data/models.json and https://bughunt.productcompass.pm/data/benchmark.json, retrieved 2026-11-19",
-  "benchmarkFrontierCode2": "FrontierCode 2.0 (Cognition) mergeability score, via https://benchlm.ai/data/models.json, retrieved 2026-11-19"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-11-20",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-11-20",
+  "benchmarkTerminal2": "Terminal-Bench 2 (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-20",
+  "benchmarkTerminal4": "Terminal-Bench 4 (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-20",
+  "rankingSource": "Composite log-odds latent skill with 2-parameter Mean-Sigma equating and conservative Bayesian LCB, computed 2026-11-20",
+  "benchmarkBugHunt": "Bug Hunt Bench (Product Compass) planted bugs fixed out of 105, via https://benchlm.ai/data/models.json and https://bughunt.productcompass.pm/data/benchmark.json, retrieved 2026-11-20",
+  "benchmarkFrontierCode2": "FrontierCode 2.0 (Cognition) mergeability score, via https://benchlm.ai/data/models.json, retrieved 2026-11-20"
 }
