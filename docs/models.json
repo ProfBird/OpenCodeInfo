@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-11-20",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-11-21",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-11-20",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-11-21",
   "models": [
     {
       "name": "Beam Free",
@@ -79,7 +79,7 @@
       "benchRanks": {
         "codingIndex": 7,
         "swePro": 5,
-        "bugHunt": 20,
+        "bugHunt": 21,
         "terminalBench2": 23,
         "terminalBench4": 20
       },
@@ -102,7 +102,7 @@
       "benchRanks": {
         "codingIndex": 7,
         "swePro": 5,
-        "bugHunt": 20,
+        "bugHunt": 21,
         "terminalBench2": 23,
         "terminalBench4": 20
       },
@@ -122,11 +122,11 @@
     },
     {
       "name": "Claude Fable 5.1",
-      "rank": 8,
+      "rank": 9,
       "benchRanks": {
         "codingIndex": 1,
         "swePro": 4,
-        "bugHunt": 8,
+        "bugHunt": 9,
         "frontierCode2": 12,
         "terminalBench2": 2,
         "terminalBench4": 11,
@@ -152,7 +152,7 @@
       "rank": 1,
       "benchRanks": {
         "swePro": 1,
-        "bugHunt": 2,
+        "bugHunt": 3,
         "frontierCode2": 1,
         "terminalBench4": 1,
         "deepSwe": 8
@@ -177,7 +177,7 @@
       "rank": 1,
       "benchRanks": {
         "swePro": 1,
-        "bugHunt": 2,
+        "bugHunt": 3,
         "frontierCode2": 1,
         "terminalBench4": 1,
         "deepSwe": 8
@@ -203,7 +203,7 @@
       "rank": 93,
       "benchRanks": {
         "swePro": 46,
-        "bugHunt": 44
+        "bugHunt": 45
       },
       "params": "100B",
       "context": "200K",
@@ -221,7 +221,7 @@
       "name": "Claude Haiku 5.5",
       "rank": 34,
       "benchRanks": {
-        "bugHunt": 29,
+        "bugHunt": 30,
         "frontierCode2": 14,
         "terminalBench4": 22,
         "deepSwe": 36
@@ -245,7 +245,7 @@
       "name": "Claude Haiku 5.5",
       "rank": 34,
       "benchRanks": {
-        "bugHunt": 29,
+        "bugHunt": 30,
         "frontierCode2": 14,
         "terminalBench4": 22,
         "deepSwe": 36
@@ -326,7 +326,7 @@
       "benchRanks": {
         "codingIndex": 14,
         "swePro": 7,
-        "bugHunt": 39,
+        "bugHunt": 40,
         "frontierCode2": 27,
         "terminalBench2": 36,
         "terminalBench4": 38,
@@ -353,7 +353,7 @@
       "benchRanks": {
         "codingIndex": 2,
         "swePro": 6,
-        "bugHunt": 22,
+        "bugHunt": 23,
         "frontierCode2": 17,
         "terminalBench2": 6,
         "terminalBench4": 14,
@@ -380,7 +380,7 @@
       "benchRanks": {
         "codingIndex": 2,
         "swePro": 6,
-        "bugHunt": 22,
+        "bugHunt": 23,
         "frontierCode2": 17,
         "terminalBench2": 6,
         "terminalBench4": 14,
@@ -420,7 +420,7 @@
       "rank": 2,
       "benchRanks": {
         "swePro": 2,
-        "bugHunt": 10,
+        "bugHunt": 11,
         "frontierCode2": 2,
         "terminalBench4": 1,
         "deepSwe": 9
@@ -445,7 +445,7 @@
       "rank": 2,
       "benchRanks": {
         "swePro": 2,
-        "bugHunt": 10,
+        "bugHunt": 11,
         "frontierCode2": 2,
         "terminalBench4": 1,
         "deepSwe": 9
@@ -517,7 +517,7 @@
       "benchRanks": {
         "codingIndex": 20,
         "swePro": 16,
-        "bugHunt": 43,
+        "bugHunt": 44,
         "terminalBench2": 31,
         "terminalBench4": 51,
         "deepSwe": 43
@@ -542,7 +542,7 @@
       "benchRanks": {
         "codingIndex": 20,
         "swePro": 16,
-        "bugHunt": 43,
+        "bugHunt": 44,
         "terminalBench2": 31,
         "terminalBench4": 51,
         "deepSwe": 43
@@ -563,10 +563,10 @@
     },
     {
       "name": "Claude Sonnet 5.5",
-      "rank": 6,
+      "rank": 7,
       "benchRanks": {
         "swePro": 3,
-        "bugHunt": 5,
+        "bugHunt": 6,
         "frontierCode2": 8,
         "terminalBench4": 4,
         "deepSwe": 17
@@ -588,10 +588,10 @@
     },
     {
       "name": "Claude Sonnet 5.5",
-      "rank": 6,
+      "rank": 7,
       "benchRanks": {
         "swePro": 3,
-        "bugHunt": 5,
+        "bugHunt": 6,
         "frontierCode2": 8,
         "terminalBench4": 4,
         "deepSwe": 17
@@ -689,7 +689,7 @@
       "benchRanks": {
         "codingIndex": 26,
         "swePro": 43,
-        "bugHunt": 42,
+        "bugHunt": 43,
         "terminalBench2": 27,
         "terminalBench4": 32,
         "deepSwe": 42
@@ -716,7 +716,7 @@
       "benchRanks": {
         "codingIndex": 39,
         "swePro": 43,
-        "bugHunt": 42,
+        "bugHunt": 43,
         "terminalBench2": 27,
         "terminalBench4": 32,
         "deepSwe": 42
@@ -752,7 +752,7 @@
       "terminalBench2": 82.7,
       "terminalBench4": 31.2,
       "deepSwe": 54.4,
-      "inputCost": 0.047,
+      "inputCost": 0.0443,
       "outputCost": 0.3,
       "cachedReadCost": 0.035,
       "plan": "openrouter",
@@ -764,7 +764,7 @@
       "benchRanks": {
         "codingIndex": 26,
         "swePro": 43,
-        "bugHunt": 42,
+        "bugHunt": 43,
         "terminalBench2": 27,
         "terminalBench4": 32,
         "deepSwe": 42
@@ -808,9 +808,9 @@
       "swePro": null,
       "terminalBench2": null,
       "deepSwe": null,
-      "inputCost": 0.44,
-      "outputCost": 1.32,
-      "cachedReadCost": 0.014,
+      "inputCost": 0.2156,
+      "outputCost": 0.6468,
+      "cachedReadCost": 0.00686,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-Vision-Exp"
     },
@@ -820,7 +820,7 @@
       "benchRanks": {
         "codingIndex": 27,
         "swePro": 37,
-        "bugHunt": 38,
+        "bugHunt": 39,
         "terminalBench2": 13,
         "terminalBench4": 47,
         "deepSwe": 34
@@ -846,7 +846,7 @@
       "benchRanks": {
         "codingIndex": 35,
         "swePro": 37,
-        "bugHunt": 38,
+        "bugHunt": 39,
         "terminalBench2": 13,
         "terminalBench4": 47,
         "deepSwe": 34
@@ -871,7 +871,7 @@
       "benchRanks": {
         "codingIndex": 27,
         "swePro": 37,
-        "bugHunt": 38,
+        "bugHunt": 39,
         "terminalBench2": 13,
         "terminalBench4": 47,
         "deepSwe": 34
@@ -917,7 +917,7 @@
       "name": "DeepSeek V4.1 Flash 1017",
       "rank": 14,
       "benchRanks": {
-        "bugHunt": 12,
+        "bugHunt": 13,
         "frontierCode2": 23,
         "terminalBench2": 3,
         "terminalBench4": 25,
@@ -942,7 +942,7 @@
       "name": "DeepSeek V4.1 Flash 1017",
       "rank": 14,
       "benchRanks": {
-        "bugHunt": 12,
+        "bugHunt": 13,
         "frontierCode2": 23,
         "terminalBench2": 3,
         "terminalBench4": 25,
@@ -966,7 +966,7 @@
       "name": "DeepSeek V4.1 Flash 1017",
       "rank": 14,
       "benchRanks": {
-        "bugHunt": 12,
+        "bugHunt": 13,
         "frontierCode2": 23,
         "terminalBench2": 3,
         "terminalBench4": 25,
@@ -992,7 +992,7 @@
       "name": "DeepSeek V4.1 Flash 1017 Free",
       "rank": 14,
       "benchRanks": {
-        "bugHunt": 12,
+        "bugHunt": 13,
         "frontierCode2": 23,
         "terminalBench2": 3,
         "terminalBench4": 25,
@@ -1191,7 +1191,7 @@
       "rank": 40,
       "benchRanks": {
         "codingIndex": 10,
-        "bugHunt": 28,
+        "bugHunt": 29,
         "terminalBench2": 18,
         "terminalBench4": 49,
         "deepSwe": 30
@@ -1214,7 +1214,7 @@
       "rank": 40,
       "benchRanks": {
         "codingIndex": 10,
-        "bugHunt": 28,
+        "bugHunt": 29,
         "terminalBench2": 18,
         "terminalBench4": 49,
         "deepSwe": 30
@@ -1238,7 +1238,7 @@
       "rank": 28,
       "benchRanks": {
         "codingIndex": 8,
-        "bugHunt": 33,
+        "bugHunt": 34,
         "terminalBench2": 5,
         "terminalBench4": 42,
         "deepSwe": 11
@@ -1261,7 +1261,7 @@
       "rank": 28,
       "benchRanks": {
         "codingIndex": 8,
-        "bugHunt": 33,
+        "bugHunt": 34,
         "terminalBench2": 5,
         "terminalBench4": 42,
         "deepSwe": 11
@@ -1283,9 +1283,9 @@
     },
     {
       "name": "Gemini 4 Argon",
-      "rank": 7,
+      "rank": 8,
       "benchRanks": {
-        "bugHunt": 11,
+        "bugHunt": 12,
         "frontierCode2": 18,
         "terminalBench4": 13,
         "deepSwe": 2
@@ -1308,9 +1308,9 @@
     },
     {
       "name": "Gemini 4 Argon",
-      "rank": 7,
+      "rank": 8,
       "benchRanks": {
-        "bugHunt": 11,
+        "bugHunt": 12,
         "frontierCode2": 18,
         "terminalBench4": 13,
         "deepSwe": 2
@@ -1332,9 +1332,9 @@
     },
     {
       "name": "Gemini 4 Argon Contributor",
-      "rank": 7,
+      "rank": 8,
       "benchRanks": {
-        "bugHunt": 11,
+        "bugHunt": 12,
         "frontierCode2": 18,
         "terminalBench4": 13,
         "deepSwe": 2
@@ -1357,9 +1357,9 @@
     },
     {
       "name": "Gemini 4 Carbon",
-      "rank": 4,
+      "rank": 5,
       "benchRanks": {
-        "bugHunt": 3,
+        "bugHunt": 4,
         "frontierCode2": 7,
         "terminalBench4": 3
       },
@@ -1378,9 +1378,9 @@
     },
     {
       "name": "Gemini 4 Carbon",
-      "rank": 4,
+      "rank": 5,
       "benchRanks": {
-        "bugHunt": 3,
+        "bugHunt": 4,
         "frontierCode2": 7,
         "terminalBench4": 3
       },
@@ -1404,7 +1404,7 @@
       "name": "Gemini 4 Hydrogen",
       "rank": 16,
       "benchRanks": {
-        "bugHunt": 14,
+        "bugHunt": 15,
         "frontierCode2": 10,
         "terminalBench4": 12
       },
@@ -1423,14 +1423,16 @@
     },
     {
       "name": "Gemini 4 Neon",
-      "rank": 11,
+      "rank": 3,
       "benchRanks": {
+        "bugHunt": 1,
         "frontierCode2": 3,
-        "terminalBench4": 5
+        "terminalBench4": 7
       },
       "codingIndex": null,
+      "bugHunt": 63,
       "frontierCode2": 46.2,
-      "terminalBench4": 63.6,
+      "terminalBench4": 61.2,
       "inputCost": 3,
       "outputCost": 15,
       "cachedReadCost": 0.15,
@@ -1494,6 +1496,20 @@
       "na": true,
       "naSince": "2026-11-19",
       "addedOn": "2026-11-19"
+    },
+    {
+      "name": "Gemini Omni 1.2 Flash",
+      "rank": null,
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "na": true,
+      "naSince": "2026-11-21",
+      "addedOn": "2026-11-21"
     },
     {
       "name": "GLM 5.3 FlashX",
@@ -1605,7 +1621,7 @@
       "rank": 27,
       "benchRanks": {
         "codingIndex": 13,
-        "bugHunt": 31,
+        "bugHunt": 32,
         "terminalBench2": 12,
         "terminalBench4": 21,
         "deepSwe": 27
@@ -1630,7 +1646,7 @@
       "rank": 27,
       "benchRanks": {
         "codingIndex": 13,
-        "bugHunt": 31,
+        "bugHunt": 32,
         "terminalBench2": 12,
         "terminalBench4": 21,
         "deepSwe": 27
@@ -1654,7 +1670,7 @@
       "rank": 37,
       "benchRanks": {
         "codingIndex": 21,
-        "bugHunt": 35,
+        "bugHunt": 36,
         "terminalBench2": 23,
         "terminalBench4": 30,
         "deepSwe": 33
@@ -1680,7 +1696,7 @@
       "rank": 37,
       "benchRanks": {
         "codingIndex": 21,
-        "bugHunt": 35,
+        "bugHunt": 36,
         "terminalBench2": 23,
         "terminalBench4": 30,
         "deepSwe": 33
@@ -1704,7 +1720,7 @@
       "rank": 37,
       "benchRanks": {
         "codingIndex": 21,
-        "bugHunt": 35,
+        "bugHunt": 36,
         "terminalBench2": 23,
         "terminalBench4": 30,
         "deepSwe": 33
@@ -1978,7 +1994,7 @@
       "benchRanks": {
         "codingIndex": 22,
         "swePro": 17,
-        "bugHunt": 18,
+        "bugHunt": 19,
         "terminalBench2": 22,
         "terminalBench4": 43,
         "deepSwe": 26
@@ -2005,7 +2021,7 @@
       "benchRanks": {
         "codingIndex": 22,
         "swePro": 17,
-        "bugHunt": 18,
+        "bugHunt": 19,
         "terminalBench2": 22,
         "terminalBench4": 43,
         "deepSwe": 26
@@ -2045,7 +2061,7 @@
       "benchRanks": {
         "codingIndex": 3,
         "swePro": 13,
-        "bugHunt": 9,
+        "bugHunt": 10,
         "frontierCode2": 14,
         "terminalBench2": 1,
         "terminalBench4": 25,
@@ -2072,7 +2088,7 @@
       "benchRanks": {
         "codingIndex": 3,
         "swePro": 13,
-        "bugHunt": 9,
+        "bugHunt": 10,
         "frontierCode2": 14,
         "terminalBench2": 1,
         "terminalBench4": 25,
@@ -2099,7 +2115,7 @@
       "benchRanks": {
         "codingIndex": 6,
         "swePro": 15,
-        "bugHunt": 16,
+        "bugHunt": 17,
         "terminalBench2": 15,
         "terminalBench4": 40,
         "deepSwe": 19
@@ -2124,7 +2140,7 @@
       "benchRanks": {
         "codingIndex": 6,
         "swePro": 15,
-        "bugHunt": 16,
+        "bugHunt": 17,
         "terminalBench2": 15,
         "terminalBench4": 40,
         "deepSwe": 19
@@ -2145,10 +2161,10 @@
     },
     {
       "name": "GPT 6 Astra",
-      "rank": 10,
+      "rank": 11,
       "benchRanks": {
         "codingIndex": 4,
-        "bugHunt": 6,
+        "bugHunt": 7,
         "frontierCode2": 5,
         "terminalBench2": 8,
         "terminalBench4": 9,
@@ -2170,10 +2186,10 @@
     },
     {
       "name": "GPT 6 Astra",
-      "rank": 10,
+      "rank": 11,
       "benchRanks": {
         "codingIndex": 4,
-        "bugHunt": 6,
+        "bugHunt": 7,
         "frontierCode2": 5,
         "terminalBench2": 8,
         "terminalBench4": 9,
@@ -2240,7 +2256,7 @@
       "name": "GPT-6 Luna",
       "rank": 42,
       "benchRanks": {
-        "bugHunt": 32,
+        "bugHunt": 33,
         "frontierCode2": 21,
         "terminalBench4": 45,
         "deepSwe": 28
@@ -2265,7 +2281,7 @@
       "name": "GPT-6 Luna",
       "rank": 42,
       "benchRanks": {
-        "bugHunt": 32,
+        "bugHunt": 33,
         "frontierCode2": 21,
         "terminalBench4": 45,
         "deepSwe": 28
@@ -2289,7 +2305,7 @@
       "name": "GPT-6 Sol",
       "rank": 19,
       "benchRanks": {
-        "bugHunt": 19,
+        "bugHunt": 20,
         "frontierCode2": 11,
         "terminalBench4": 16,
         "deepSwe": 20
@@ -2310,9 +2326,9 @@
     },
     {
       "name": "GPT-6.1 Sol",
-      "rank": 9,
+      "rank": 10,
       "benchRanks": {
-        "bugHunt": 7,
+        "bugHunt": 8,
         "frontierCode2": 9,
         "terminalBench4": 8,
         "deepSwe": 15
@@ -2332,9 +2348,9 @@
     },
     {
       "name": "GPT-6.1 Sol",
-      "rank": 9,
+      "rank": 10,
       "benchRanks": {
-        "bugHunt": 7,
+        "bugHunt": 8,
         "frontierCode2": 9,
         "terminalBench4": 8,
         "deepSwe": 15
@@ -2378,11 +2394,11 @@
     },
     {
       "name": "GPT-6.2 Astra",
-      "rank": 3,
+      "rank": 4,
       "benchRanks": {
-        "bugHunt": 1,
+        "bugHunt": 2,
         "frontierCode2": 4,
-        "terminalBench4": 6
+        "terminalBench4": 5
       },
       "codingIndex": null,
       "bugHunt": 62.7,
@@ -2398,11 +2414,11 @@
     },
     {
       "name": "GPT-6.2 Sol",
-      "rank": 5,
+      "rank": 6,
       "benchRanks": {
-        "bugHunt": 4,
+        "bugHunt": 5,
         "frontierCode2": 6,
-        "terminalBench4": 7
+        "terminalBench4": 6
       },
       "codingIndex": null,
       "bugHunt": 54.7,
@@ -2422,7 +2438,7 @@
       "benchRanks": {
         "codingIndex": 17,
         "swePro": 12,
-        "bugHunt": 36,
+        "bugHunt": 37,
         "terminalBench2": 25,
         "terminalBench4": 49
       },
@@ -2445,7 +2461,7 @@
       "benchRanks": {
         "codingIndex": 17,
         "swePro": 12,
-        "bugHunt": 36,
+        "bugHunt": 37,
         "terminalBench2": 25,
         "terminalBench4": 49
       },
@@ -2468,7 +2484,7 @@
       "rank": 30,
       "benchRanks": {
         "codingIndex": 5,
-        "bugHunt": 22,
+        "bugHunt": 23,
         "terminalBench2": 8,
         "terminalBench4": 41,
         "deepSwe": 29
@@ -2491,7 +2507,7 @@
       "rank": 30,
       "benchRanks": {
         "codingIndex": 5,
-        "bugHunt": 22,
+        "bugHunt": 23,
         "terminalBench2": 8,
         "terminalBench4": 41,
         "deepSwe": 29
@@ -2514,7 +2530,7 @@
       "name": "Grok 4.7",
       "rank": 21,
       "benchRanks": {
-        "bugHunt": 20,
+        "bugHunt": 21,
         "frontierCode2": 14,
         "terminalBench4": 24,
         "deepSwe": 17
@@ -2539,7 +2555,7 @@
       "name": "Grok 4.7",
       "rank": 21,
       "benchRanks": {
-        "bugHunt": 20,
+        "bugHunt": 21,
         "frontierCode2": 14,
         "terminalBench4": 24,
         "deepSwe": 17
@@ -2724,7 +2740,7 @@
       "rank": 48,
       "benchRanks": {
         "swePro": 11,
-        "bugHunt": 33,
+        "bugHunt": 34,
         "terminalBench2": 19,
         "terminalBench4": 52,
         "deepSwe": 32
@@ -2749,7 +2765,7 @@
       "rank": 48,
       "benchRanks": {
         "swePro": 11,
-        "bugHunt": 33,
+        "bugHunt": 34,
         "terminalBench2": 19,
         "terminalBench4": 52,
         "deepSwe": 32
@@ -2977,7 +2993,7 @@
       "rank": 32,
       "benchRanks": {
         "codingIndex": 9,
-        "bugHunt": 30,
+        "bugHunt": 31,
         "frontierCode2": 26,
         "terminalBench2": 11,
         "terminalBench4": 39,
@@ -3004,7 +3020,7 @@
       "rank": 32,
       "benchRanks": {
         "codingIndex": 9,
-        "bugHunt": 30,
+        "bugHunt": 31,
         "frontierCode2": 26,
         "terminalBench2": 11,
         "terminalBench4": 39,
@@ -3029,7 +3045,7 @@
       "name": "Kimi K3.1 Pro",
       "rank": 12,
       "benchRanks": {
-        "bugHunt": 13,
+        "bugHunt": 14,
         "frontierCode2": 24,
         "terminalBench4": 10,
         "deepSwe": 5
@@ -3053,7 +3069,7 @@
       "name": "Kimi K3.1 Pro",
       "rank": 12,
       "benchRanks": {
-        "bugHunt": 13,
+        "bugHunt": 14,
         "frontierCode2": 24,
         "terminalBench4": 10,
         "deepSwe": 5
@@ -3230,7 +3246,7 @@
       "name": "MiMo V2.6 Flash",
       "rank": 36,
       "benchRanks": {
-        "bugHunt": 26,
+        "bugHunt": 27,
         "terminalBench2": 14,
         "terminalBench4": 44,
         "deepSwe": 22
@@ -3253,7 +3269,7 @@
       "name": "MiMo V2.6 Flash",
       "rank": 36,
       "benchRanks": {
-        "bugHunt": 26,
+        "bugHunt": 27,
         "terminalBench2": 14,
         "terminalBench4": 44,
         "deepSwe": 22
@@ -3266,7 +3282,7 @@
       "terminalBench4": 16.1,
       "deepSwe": 67.9,
       "params": "309B",
-      "context": "1.05M",
+      "context": "1M",
       "inputCost": 0.14,
       "outputCost": 0.28,
       "cachedReadCost": 0.0028,
@@ -3277,7 +3293,7 @@
       "name": "MiMo V2.6 Pro",
       "rank": 26,
       "benchRanks": {
-        "bugHunt": 27,
+        "bugHunt": 28,
         "terminalBench2": 4,
         "terminalBench4": 36,
         "deepSwe": 15
@@ -3300,7 +3316,7 @@
       "name": "MiMo V2.6 Pro",
       "rank": 26,
       "benchRanks": {
-        "bugHunt": 27,
+        "bugHunt": 28,
         "terminalBench2": 4,
         "terminalBench4": 36,
         "deepSwe": 15
@@ -3313,7 +3329,7 @@
       "terminalBench4": 27,
       "deepSwe": 71.9,
       "params": "1.02T",
-      "context": "1.05M",
+      "context": "1M",
       "inputCost": 0.435,
       "outputCost": 0.87,
       "cachedReadCost": 0.0036,
@@ -3632,7 +3648,7 @@
       "name": "Mistral Large 4",
       "rank": 43,
       "benchRanks": {
-        "bugHunt": 39,
+        "bugHunt": 40,
         "frontierCode2": 25,
         "terminalBench4": 35,
         "deepSwe": 35
@@ -3694,7 +3710,7 @@
       "rank": 51,
       "benchRanks": {
         "codingIndex": 18,
-        "bugHunt": 36,
+        "bugHunt": 37,
         "terminalBench2": 26,
         "terminalBench4": 54,
         "deepSwe": 38
@@ -3717,7 +3733,7 @@
       "rank": 51,
       "benchRanks": {
         "codingIndex": 18,
-        "bugHunt": 36,
+        "bugHunt": 37,
         "terminalBench2": 26,
         "terminalBench4": 54,
         "deepSwe": 38
@@ -3741,7 +3757,7 @@
       "rank": 51,
       "benchRanks": {
         "codingIndex": 18,
-        "bugHunt": 36,
+        "bugHunt": 37,
         "terminalBench2": 26,
         "terminalBench4": 54,
         "deepSwe": 38
@@ -3765,7 +3781,7 @@
       "rank": 51,
       "benchRanks": {
         "codingIndex": 18,
-        "bugHunt": 36,
+        "bugHunt": 37,
         "terminalBench2": 26,
         "terminalBench4": 54,
         "deepSwe": 38
@@ -3790,7 +3806,7 @@
       "rank": 25,
       "benchRanks": {
         "codingIndex": 11,
-        "bugHunt": 15,
+        "bugHunt": 16,
         "terminalBench2": 7,
         "terminalBench4": 46,
         "deepSwe": 6
@@ -3813,7 +3829,7 @@
       "rank": 25,
       "benchRanks": {
         "codingIndex": 11,
-        "bugHunt": 15,
+        "bugHunt": 16,
         "terminalBench2": 7,
         "terminalBench4": 46,
         "deepSwe": 6
@@ -3837,7 +3853,7 @@
       "rank": 25,
       "benchRanks": {
         "codingIndex": 11,
-        "bugHunt": 15,
+        "bugHunt": 16,
         "terminalBench2": 7,
         "terminalBench4": 46,
         "deepSwe": 6
@@ -3862,7 +3878,7 @@
       "rank": 25,
       "benchRanks": {
         "codingIndex": 11,
-        "bugHunt": 15,
+        "bugHunt": 16,
         "terminalBench2": 7,
         "terminalBench4": 46,
         "deepSwe": 6
@@ -3886,7 +3902,7 @@
       "name": "Muse Wonder",
       "rank": 13,
       "benchRanks": {
-        "bugHunt": 17,
+        "bugHunt": 18,
         "frontierCode2": 19,
         "terminalBench4": 18,
         "deepSwe": 1
@@ -3903,7 +3919,6 @@
       "plan": "zen",
       "na": true,
       "naSince": "2026-10-21",
-      "addedOn": "2026-10-21",
       "deepSwe": 78.8,
       "hfUrl": "https://developer.meta.com/ai/models/muse-wonder/"
     },
@@ -3911,7 +3926,7 @@
       "name": "Muse Wonder",
       "rank": 13,
       "benchRanks": {
-        "bugHunt": 17,
+        "bugHunt": 18,
         "frontierCode2": 19,
         "terminalBench4": 18,
         "deepSwe": 1
@@ -4067,7 +4082,7 @@
       "rank": 37,
       "benchRanks": {
         "codingIndex": 21,
-        "bugHunt": 35,
+        "bugHunt": 36,
         "terminalBench2": 23,
         "terminalBench4": 30,
         "deepSwe": 33
@@ -4229,7 +4244,7 @@
       "benchRanks": {
         "codingIndex": 30,
         "swePro": 20,
-        "bugHunt": 39,
+        "bugHunt": 40,
         "terminalBench2": 37,
         "terminalBench4": 55,
         "deepSwe": 47
@@ -4243,7 +4258,7 @@
       "terminalBench4": 5.6,
       "deepSwe": 42.2,
       "inputCost": 0.06,
-      "outputCost": 2.2,
+      "outputCost": 1.96,
       "cachedReadCost": 0.059,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/Qwen/Qwen3.8-27B"
@@ -4254,7 +4269,7 @@
       "benchRanks": {
         "codingIndex": 16,
         "swePro": 18,
-        "bugHunt": 24,
+        "bugHunt": 25,
         "terminalBench2": 17,
         "terminalBench4": 37,
         "deepSwe": 40
@@ -4281,7 +4296,7 @@
       "benchRanks": {
         "codingIndex": 16,
         "swePro": 18,
-        "bugHunt": 24,
+        "bugHunt": 25,
         "terminalBench2": 17,
         "terminalBench4": 37,
         "deepSwe": 40
@@ -4306,7 +4321,7 @@
       "benchRanks": {
         "codingIndex": 19,
         "swePro": 9,
-        "bugHunt": 25,
+        "bugHunt": 26,
         "terminalBench2": 16,
         "terminalBench4": 23,
         "deepSwe": 41
@@ -4333,7 +4348,7 @@
       "benchRanks": {
         "codingIndex": 19,
         "swePro": 9,
-        "bugHunt": 25,
+        "bugHunt": 26,
         "terminalBench2": 16,
         "terminalBench4": 23,
         "deepSwe": 41
@@ -4641,11 +4656,11 @@
       "addedOn": "2026-11-20"
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-11-20",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-11-20",
-  "benchmarkTerminal2": "Terminal-Bench 2 (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-20",
-  "benchmarkTerminal4": "Terminal-Bench 4 (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-20",
-  "rankingSource": "Composite log-odds latent skill with 2-parameter Mean-Sigma equating and conservative Bayesian LCB, computed 2026-11-20",
-  "benchmarkBugHunt": "Bug Hunt Bench (Product Compass) planted bugs fixed out of 105, via https://benchlm.ai/data/models.json and https://bughunt.productcompass.pm/data/benchmark.json, retrieved 2026-11-20",
-  "benchmarkFrontierCode2": "FrontierCode 2.0 (Cognition) mergeability score, via https://benchlm.ai/data/models.json, retrieved 2026-11-20"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-11-21",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-11-21",
+  "benchmarkTerminal2": "Terminal-Bench 2 (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-21",
+  "benchmarkTerminal4": "Terminal-Bench 4 (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-21",
+  "rankingSource": "Composite log-odds latent skill with 2-parameter Mean-Sigma equating and conservative Bayesian LCB, computed 2026-11-21",
+  "benchmarkBugHunt": "Bug Hunt Bench (Product Compass) planted bugs fixed out of 105, via https://benchlm.ai/data/models.json and https://bughunt.productcompass.pm/data/benchmark.json, retrieved 2026-11-21",
+  "benchmarkFrontierCode2": "FrontierCode 2.0 (Cognition) mergeability score, via https://benchlm.ai/data/models.json, retrieved 2026-11-21"
 }
