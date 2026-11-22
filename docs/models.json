@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-11-21",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-11-22",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-11-21",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-11-22",
   "models": [
     {
       "name": "Beam Free",
@@ -954,9 +954,9 @@
       "terminalBench2": 90.6,
       "terminalBench4": 38.5,
       "deepSwe": 77,
-      "inputCost": 0.3,
-      "outputCost": 1.2,
-      "cachedReadCost": 0.006,
+      "inputCost": 0.12,
+      "outputCost": 0.48,
+      "cachedReadCost": 0.0024,
       "context": "1M",
       "params": "763B",
       "plan": "zen",
@@ -1073,7 +1073,6 @@
       "context": "262K",
       "params": "40B",
       "plan": "zen",
-      "addedOn": "2026-10-22",
       "hfUrl": "https://huggingface.co/RecursiveSI/flint"
     },
     {
@@ -1638,8 +1637,7 @@
       "cachedReadCost": 0.26,
       "plan": "go",
       "hfUrl": "https://docs.z.ai/guides/llm/glm-5.3",
-      "goUsage": 500.0,
-      "alsoOnZen": true
+      "goUsage": 500.0
     },
     {
       "name": "GLM-5.3",
@@ -1664,6 +1662,29 @@
       "cachedReadCost": 0.0689,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.3"
+    },
+    {
+      "name": "GLM-5.3",
+      "rank": 27,
+      "benchRanks": {
+        "codingIndex": 13,
+        "bugHunt": 32,
+        "terminalBench2": 12,
+        "terminalBench4": 21,
+        "deepSwe": 27
+      },
+      "codingIndex": 74.76,
+      "bugHunt": 19,
+      "terminalBench2": 88.2,
+      "terminalBench4": 41.2,
+      "deepSwe": 66.9,
+      "inputCost": 0.56,
+      "outputCost": 1.76,
+      "cachedReadCost": 0.104,
+      "context": "1M",
+      "params": "744B",
+      "plan": "zen",
+      "hfUrl": "https://docs.z.ai/guides/llm/glm-5.3"
     },
     {
       "name": "GLM-5.3-Flash",
@@ -1709,8 +1730,8 @@
       "terminalBench2": 84.3,
       "terminalBench4": 37,
       "deepSwe": 63.4,
-      "inputCost": 0.0399,
-      "outputCost": 0.0784,
+      "inputCost": 0.15,
+      "outputCost": 0.5,
       "cachedReadCost": 0.03,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.3-Flash"
@@ -2253,6 +2274,20 @@
       "addedOn": "2026-11-19"
     },
     {
+      "name": "GPT Live 1.1",
+      "rank": null,
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "na": true,
+      "naSince": "2026-11-22",
+      "addedOn": "2026-11-22"
+    },
+    {
       "name": "GPT-6 Luna",
       "rank": 42,
       "benchRanks": {
@@ -2632,9 +2667,9 @@
       "swePro": 57.9,
       "terminalBench2": null,
       "deepSwe": null,
-      "inputCost": 0.132,
-      "outputCost": 0.528,
-      "cachedReadCost": 0.033,
+      "inputCost": 0.14,
+      "outputCost": 0.58,
+      "cachedReadCost": 0.035,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/tencent/Hy3"
     },
@@ -4257,9 +4292,9 @@
       "terminalBench2": 73,
       "terminalBench4": 5.6,
       "deepSwe": 42.2,
-      "inputCost": 0.06,
-      "outputCost": 1.96,
-      "cachedReadCost": 0.059,
+      "inputCost": 0.035,
+      "outputCost": 1.5,
+      "cachedReadCost": 0.0175,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/Qwen/Qwen3.8-27B"
     },
@@ -4656,11 +4691,11 @@
       "addedOn": "2026-11-20"
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-11-21",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-11-21",
-  "benchmarkTerminal2": "Terminal-Bench 2 (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-21",
-  "benchmarkTerminal4": "Terminal-Bench 4 (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-21",
-  "rankingSource": "Composite log-odds latent skill with 2-parameter Mean-Sigma equating and conservative Bayesian LCB, computed 2026-11-21",
-  "benchmarkBugHunt": "Bug Hunt Bench (Product Compass) planted bugs fixed out of 105, via https://benchlm.ai/data/models.json and https://bughunt.productcompass.pm/data/benchmark.json, retrieved 2026-11-21",
-  "benchmarkFrontierCode2": "FrontierCode 2.0 (Cognition) mergeability score, via https://benchlm.ai/data/models.json, retrieved 2026-11-21"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-11-22",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-11-22",
+  "benchmarkTerminal2": "Terminal-Bench 2 (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-22",
+  "benchmarkTerminal4": "Terminal-Bench 4 (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-22",
+  "rankingSource": "Composite log-odds latent skill with 2-parameter Mean-Sigma equating and conservative Bayesian LCB, computed 2026-11-22",
+  "benchmarkBugHunt": "Bug Hunt Bench (Product Compass) planted bugs fixed out of 105, via https://benchlm.ai/data/models.json and https://bughunt.productcompass.pm/data/benchmark.json, retrieved 2026-11-22",
+  "benchmarkFrontierCode2": "FrontierCode 2.0 (Cognition) mergeability score, via https://benchlm.ai/data/models.json, retrieved 2026-11-22"
 }
