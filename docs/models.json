@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-11-22",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-11-23",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-11-22",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-11-23",
   "models": [
     {
       "name": "Beam Free",
@@ -752,7 +752,7 @@
       "terminalBench2": 82.7,
       "terminalBench4": 31.2,
       "deepSwe": 54.4,
-      "inputCost": 0.0443,
+      "inputCost": 0.0434,
       "outputCost": 0.3,
       "cachedReadCost": 0.035,
       "plan": "openrouter",
@@ -1637,7 +1637,7 @@
       "cachedReadCost": 0.26,
       "plan": "go",
       "hfUrl": "https://docs.z.ai/guides/llm/glm-5.3",
-      "goUsage": 500.0
+      "goUsage": 200.0
     },
     {
       "name": "GLM-5.3",
@@ -1730,8 +1730,8 @@
       "terminalBench2": 84.3,
       "terminalBench4": 37,
       "deepSwe": 63.4,
-      "inputCost": 0.15,
-      "outputCost": 0.5,
+      "inputCost": 0.0399,
+      "outputCost": 0.0784,
       "cachedReadCost": 0.03,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.3-Flash"
@@ -2946,6 +2946,20 @@
       "hfUrl": "https://artificialwatch.com/stealth-models"
     },
     {
+      "name": "Jev 1.14",
+      "rank": null,
+      "codingIndex": null,
+      "inputCost": 0.042,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "na": true,
+      "naSince": "2026-11-23",
+      "addedOn": "2026-11-23"
+    },
+    {
       "name": "Kimi K2.5",
       "rank": 89,
       "benchRanks": {
@@ -3118,9 +3132,9 @@
       "deepSwe": 75.5,
       "params": "2.8T",
       "context": "1M",
-      "inputCost": 0.253,
-      "outputCost": 8.8,
-      "cachedReadCost": 0.18,
+      "inputCost": 0.2403,
+      "outputCost": 8.4023,
+      "cachedReadCost": 0.2,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/moonshotai/Kimi-K3.1-Pro",
       "addedOn": "2026-11-15"
@@ -3236,6 +3250,8 @@
       "context": "1M",
       "params": "1.6T",
       "plan": "go",
+      "na": true,
+      "naSince": "2026-11-23",
       "alsoOnZen": true,
       "hfUrl": "https://huggingface.co/meituan-longcat/LongCat-2.5",
       "addedOn": "2026-11-09",
@@ -3274,8 +3290,31 @@
       "outputCost": 1.2,
       "cachedReadCost": 0.006,
       "plan": "go",
+      "na": true,
+      "naSince": "2026-11-23",
       "hfUrl": "https://huggingface.co/meituan-longcat/LongCat-2.0",
       "goUsage": 60.0
+    },
+    {
+      "name": "LongCat-2.5",
+      "rank": 29,
+      "benchRanks": {
+        "terminalBench2": 8,
+        "terminalBench4": 25,
+        "deepSwe": 31
+      },
+      "codingIndex": null,
+      "terminalBench2": 88.4,
+      "terminalBench4": 38.5,
+      "deepSwe": 64.6,
+      "inputCost": 0.3,
+      "outputCost": 1.2,
+      "cachedReadCost": 0.006,
+      "context": "1M",
+      "params": null,
+      "plan": "go",
+      "goUsage": 60.0,
+      "addedOn": "2026-11-23"
     },
     {
       "name": "MiMo V2.6 Flash",
@@ -3618,7 +3657,6 @@
       "params": "220B",
       "plan": "go",
       "goUsage": 20.0,
-      "addedOn": "2026-10-23",
       "deepSwe": 73.7,
       "hfUrl": "https://huggingface.co/MiniMaxAI/MiniMax-M3.1-Flash"
     },
@@ -4446,6 +4484,18 @@
       "addedOn": "2026-11-17"
     },
     {
+      "name": "Qwen4 Max Free",
+      "rank": null,
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "addedOn": "2026-11-23"
+    },
+    {
       "name": "Solar Mini 4",
       "rank": null,
       "codingIndex": null,
@@ -4691,11 +4741,11 @@
       "addedOn": "2026-11-20"
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-11-22",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-11-22",
-  "benchmarkTerminal2": "Terminal-Bench 2 (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-22",
-  "benchmarkTerminal4": "Terminal-Bench 4 (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-22",
-  "rankingSource": "Composite log-odds latent skill with 2-parameter Mean-Sigma equating and conservative Bayesian LCB, computed 2026-11-22",
-  "benchmarkBugHunt": "Bug Hunt Bench (Product Compass) planted bugs fixed out of 105, via https://benchlm.ai/data/models.json and https://bughunt.productcompass.pm/data/benchmark.json, retrieved 2026-11-22",
-  "benchmarkFrontierCode2": "FrontierCode 2.0 (Cognition) mergeability score, via https://benchlm.ai/data/models.json, retrieved 2026-11-22"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-11-23",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-11-23",
+  "benchmarkTerminal2": "Terminal-Bench 2 (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-23",
+  "benchmarkTerminal4": "Terminal-Bench 4 (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-23",
+  "rankingSource": "Composite log-odds latent skill with 2-parameter Mean-Sigma equating and conservative Bayesian LCB, computed 2026-11-23",
+  "benchmarkBugHunt": "Bug Hunt Bench (Product Compass) planted bugs fixed out of 105, via https://benchlm.ai/data/models.json and https://bughunt.productcompass.pm/data/benchmark.json, retrieved 2026-11-23",
+  "benchmarkFrontierCode2": "FrontierCode 2.0 (Cognition) mergeability score, via https://benchlm.ai/data/models.json, retrieved 2026-11-23"
 }
