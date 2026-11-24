@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-11-23",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-11-24",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-11-23",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-11-24",
   "models": [
     {
       "name": "Beam Free",
@@ -752,7 +752,7 @@
       "terminalBench2": 82.7,
       "terminalBench4": 31.2,
       "deepSwe": 54.4,
-      "inputCost": 0.0434,
+      "inputCost": 0.047,
       "outputCost": 0.3,
       "cachedReadCost": 0.035,
       "plan": "openrouter",
@@ -859,9 +859,9 @@
       "terminalBench2": 87.9,
       "terminalBench4": 14.1,
       "deepSwe": 62.7,
-      "inputCost": 0.9,
-      "outputCost": 1.5,
-      "cachedReadCost": 0.2,
+      "inputCost": 1.28,
+      "outputCost": 2.56,
+      "cachedReadCost": 0.108,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro"
     },
@@ -907,9 +907,9 @@
       "terminalBench2": 87.9,
       "terminalBench4": 14.1,
       "deepSwe": 62.7,
-      "inputCost": 1.32,
-      "outputCost": 3.96,
-      "cachedReadCost": 0.044,
+      "inputCost": 0.111,
+      "outputCost": 4.44,
+      "cachedReadCost": 0.097,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813"
     },
@@ -981,9 +981,9 @@
       "deepSwe": 77,
       "params": "763B",
       "context": "1M",
-      "inputCost": 0.15,
-      "outputCost": 0.6,
-      "cachedReadCost": 0.003,
+      "inputCost": 0.03,
+      "outputCost": 0.2,
+      "cachedReadCost": 0.001,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017",
       "addedOn": "2026-11-15"
@@ -1449,10 +1449,11 @@
       "cachedReadCost": 0,
       "context": "1M",
       "params": null,
-      "plan": "zen",
+      "plan": "go",
       "na": true,
       "naSince": "2026-11-19",
-      "addedOn": "2026-11-19"
+      "addedOn": "2026-11-19",
+      "alsoOnZen": true
     },
     {
       "name": "Gemini Embedding 001",
@@ -1477,10 +1478,11 @@
       "cachedReadCost": 0,
       "context": "1M",
       "params": null,
-      "plan": "zen",
+      "plan": "go",
       "na": true,
       "naSince": "2026-11-20",
-      "addedOn": "2026-11-20"
+      "addedOn": "2026-11-20",
+      "alsoOnZen": true
     },
     {
       "name": "Gemini Nano Banana 2.1",
@@ -1730,9 +1732,9 @@
       "terminalBench2": 84.3,
       "terminalBench4": 37,
       "deepSwe": 63.4,
-      "inputCost": 0.0399,
-      "outputCost": 0.0784,
-      "cachedReadCost": 0.03,
+      "inputCost": 0.12,
+      "outputCost": 0.38,
+      "cachedReadCost": 0.02,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.3-Flash"
     },
@@ -2240,10 +2242,11 @@
       "cachedReadCost": 0.01,
       "context": "1M",
       "params": null,
-      "plan": "zen",
+      "plan": "go",
       "na": true,
       "naSince": "2026-11-19",
-      "addedOn": "2026-11-19"
+      "addedOn": "2026-11-19",
+      "alsoOnZen": true
     },
     {
       "name": "GPT Image 2.5 Sunburst",
@@ -2637,6 +2640,46 @@
       "addedOn": "2026-11-19"
     },
     {
+      "name": "Grok Imagine Video 1.5",
+      "rank": null,
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "na": true,
+      "naSince": "2026-11-24",
+      "addedOn": "2026-11-24"
+    },
+    {
+      "name": "Grok Imagine Video 1.5 Lite",
+      "rank": null,
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "na": true,
+      "naSince": "2026-11-24",
+      "addedOn": "2026-11-24"
+    },
+    {
+      "name": "HungerG Free",
+      "rank": null,
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "go",
+      "addedOn": "2026-11-24"
+    },
+    {
       "name": "Hy3",
       "rank": 69,
       "benchRanks": {
@@ -2667,9 +2710,9 @@
       "swePro": 57.9,
       "terminalBench2": null,
       "deepSwe": null,
-      "inputCost": 0.14,
-      "outputCost": 0.58,
-      "cachedReadCost": 0.035,
+      "inputCost": 0.132,
+      "outputCost": 0.528,
+      "cachedReadCost": 0.033,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/tencent/Hy3"
     },
@@ -2954,10 +2997,11 @@
       "cachedReadCost": 0,
       "context": "1M",
       "params": null,
-      "plan": "zen",
+      "plan": "go",
       "na": true,
       "naSince": "2026-11-23",
-      "addedOn": "2026-11-23"
+      "addedOn": "2026-11-23",
+      "alsoOnZen": true
     },
     {
       "name": "Kimi K2.5",
@@ -3110,9 +3154,9 @@
       "params": "2.8T",
       "plan": "go",
       "goUsage": 15.0,
-      "addedOn": "2026-10-24",
       "deepSwe": 75.5,
-      "hfUrl": "https://huggingface.co/moonshotai/Kimi-K3.1-Pro"
+      "hfUrl": "https://huggingface.co/moonshotai/Kimi-K3.1-Pro",
+      "alsoOnZen": true
     },
     {
       "name": "Kimi K3.1 Pro",
@@ -4219,10 +4263,11 @@
       "cachedReadCost": 0,
       "context": "1M",
       "params": null,
-      "plan": "zen",
+      "plan": "go",
       "na": true,
       "naSince": "2026-11-20",
-      "addedOn": "2026-11-20"
+      "addedOn": "2026-11-20",
+      "alsoOnZen": true
     },
     {
       "name": "Qwen3.5 Plus",
@@ -4493,6 +4538,8 @@
       "context": "1M",
       "params": null,
       "plan": "zen",
+      "na": true,
+      "naSince": "2026-11-24",
       "addedOn": "2026-11-23"
     },
     {
@@ -4665,10 +4712,11 @@
       "cachedReadCost": 0,
       "context": "1M",
       "params": null,
-      "plan": "zen",
+      "plan": "go",
       "na": true,
       "naSince": "2026-11-20",
-      "addedOn": "2026-11-20"
+      "addedOn": "2026-11-20",
+      "alsoOnZen": true
     },
     {
       "name": "Tidepool Alpha Free",
@@ -4741,11 +4789,11 @@
       "addedOn": "2026-11-20"
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-11-23",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-11-23",
-  "benchmarkTerminal2": "Terminal-Bench 2 (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-23",
-  "benchmarkTerminal4": "Terminal-Bench 4 (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-23",
-  "rankingSource": "Composite log-odds latent skill with 2-parameter Mean-Sigma equating and conservative Bayesian LCB, computed 2026-11-23",
-  "benchmarkBugHunt": "Bug Hunt Bench (Product Compass) planted bugs fixed out of 105, via https://benchlm.ai/data/models.json and https://bughunt.productcompass.pm/data/benchmark.json, retrieved 2026-11-23",
-  "benchmarkFrontierCode2": "FrontierCode 2.0 (Cognition) mergeability score, via https://benchlm.ai/data/models.json, retrieved 2026-11-23"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-11-24",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-11-24",
+  "benchmarkTerminal2": "Terminal-Bench 2 (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-24",
+  "benchmarkTerminal4": "Terminal-Bench 4 (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-24",
+  "rankingSource": "Composite log-odds latent skill with 2-parameter Mean-Sigma equating and conservative Bayesian LCB, computed 2026-11-24",
+  "benchmarkBugHunt": "Bug Hunt Bench (Product Compass) planted bugs fixed out of 105, via https://benchlm.ai/data/models.json and https://bughunt.productcompass.pm/data/benchmark.json, retrieved 2026-11-24",
+  "benchmarkFrontierCode2": "FrontierCode 2.0 (Cognition) mergeability score, via https://benchlm.ai/data/models.json, retrieved 2026-11-24"
 }
