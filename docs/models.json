@@ -1,8 +1,8 @@
 {
-  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-11-25",
+  "source": "OpenCode Zen pricing (OpenCode model registry / Zen pricing page), retrieved 2026-11-26",
   "benchmark": "Artificial Analysis Coding Index (AA Coding Index), percentage score, snapshot 2026-08-21, from https://benchlm.ai/benchmarks/aacodingindex (mirror of https://artificialanalysis.ai/leaderboards/models)",
   "units": "USD per 1M tokens",
-  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-11-25",
+  "goSource": "OpenCode Go plan (https://opencode.ai/zen/go/v1/models), retrieved 2026-11-26",
   "models": [
     {
       "name": "Beam Free",
@@ -752,9 +752,9 @@
       "terminalBench2": 82.7,
       "terminalBench4": 31.2,
       "deepSwe": 54.4,
-      "inputCost": 0.047,
-      "outputCost": 0.3,
-      "cachedReadCost": 0.035,
+      "inputCost": 0.06,
+      "outputCost": 0.18,
+      "cachedReadCost": 0.015,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731"
     },
@@ -859,9 +859,9 @@
       "terminalBench2": 87.9,
       "terminalBench4": 14.1,
       "deepSwe": 62.7,
-      "inputCost": 1.28,
-      "outputCost": 2.56,
-      "cachedReadCost": 0.108,
+      "inputCost": 0.888188,
+      "outputCost": 1.5082,
+      "cachedReadCost": 0.2,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro"
     },
@@ -1732,9 +1732,9 @@
       "terminalBench2": 84.3,
       "terminalBench4": 37,
       "deepSwe": 63.4,
-      "inputCost": 0.12,
-      "outputCost": 0.38,
-      "cachedReadCost": 0.02,
+      "inputCost": 0.15,
+      "outputCost": 0.5,
+      "cachedReadCost": 0.03,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/zai-org/GLM-5.3-Flash"
     },
@@ -4374,9 +4374,9 @@
       "terminalBench2": 73,
       "terminalBench4": 5.6,
       "deepSwe": 42.2,
-      "inputCost": 0.035,
-      "outputCost": 1.5,
-      "cachedReadCost": 0.0175,
+      "inputCost": 0.06,
+      "outputCost": 1.96,
+      "cachedReadCost": 0.059,
       "plan": "openrouter",
       "hfUrl": "https://huggingface.co/Qwen/Qwen3.8-27B"
     },
@@ -4540,6 +4540,18 @@
       "na": true,
       "naSince": "2026-11-24",
       "addedOn": "2026-11-23"
+    },
+    {
+      "name": "Seaglass Alpha Free",
+      "rank": null,
+      "codingIndex": null,
+      "inputCost": 0,
+      "outputCost": 0,
+      "cachedReadCost": 0,
+      "context": "1M",
+      "params": null,
+      "plan": "zen",
+      "addedOn": "2026-11-26"
     },
     {
       "name": "Solar Mini 4",
@@ -4727,6 +4739,8 @@
       "context": "1M",
       "params": null,
       "plan": "zen",
+      "na": true,
+      "naSince": "2026-11-26",
       "addedOn": "2026-11-19"
     },
     {
@@ -4788,11 +4802,11 @@
       "addedOn": "2026-11-20"
     }
   ],
-  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-11-25",
-  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-11-25",
-  "benchmarkTerminal2": "Terminal-Bench 2 (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-25",
-  "benchmarkTerminal4": "Terminal-Bench 4 (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-25",
-  "rankingSource": "Composite log-odds latent skill with 2-parameter Mean-Sigma equating and conservative Bayesian LCB, computed 2026-11-25",
-  "benchmarkBugHunt": "Bug Hunt Bench (Product Compass) planted bugs fixed out of 105, via https://benchlm.ai/data/models.json and https://bughunt.productcompass.pm/data/benchmark.json, retrieved 2026-11-25",
-  "benchmarkFrontierCode2": "FrontierCode 2.0 (Cognition) mergeability score, via https://benchlm.ai/data/models.json, retrieved 2026-11-25"
+  "benchmarkPro": "SWE-bench Pro (Scale AI), via https://benchlm.ai/data/models.json, retrieved 2026-11-26",
+  "benchmarkDeepSwe": "DeepSWE (Datacurve), via https://benchlm.ai/data/models.json, retrieved 2026-11-26",
+  "benchmarkTerminal2": "Terminal-Bench 2 (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-26",
+  "benchmarkTerminal4": "Terminal-Bench 4 (Laude Institute), via https://benchlm.ai/data/models.json, retrieved 2026-11-26",
+  "rankingSource": "Composite log-odds latent skill with 2-parameter Mean-Sigma equating and conservative Bayesian LCB, computed 2026-11-26",
+  "benchmarkBugHunt": "Bug Hunt Bench (Product Compass) planted bugs fixed out of 105, via https://benchlm.ai/data/models.json and https://bughunt.productcompass.pm/data/benchmark.json, retrieved 2026-11-26",
+  "benchmarkFrontierCode2": "FrontierCode 2.0 (Cognition) mergeability score, via https://benchlm.ai/data/models.json, retrieved 2026-11-26"
 }
